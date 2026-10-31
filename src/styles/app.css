@@ -711,3 +711,8 @@ html[data-kb="open"] body.adding .with-tabbar > .scroll {
 .swipe-fill { position: absolute; inset: 0; width: 100%; height: 100% }
 .pin-mark { display: inline-flex; vertical-align: -2px; margin-left: 6px; color: #63586B }
 .project-row > .swipe-row { flex: 1; min-width: 0 }
+
+/* The Pichi talk's steps (screens/MeetPichi.tsx): a thin line that fills up, and "3 of 7" (Nora, 31 Oct). */
+.meet-progress { display: flex; align-items: center; gap: 10px; margin: 2px 0 12px }
+.meet-bar { flex: 1; height: 6px; border-radius: 3px; background: color-mix(in srgb, var(--hero) 18%, #FFFDF8); overflow: hidden }
+.meet-bar span { display: block; height: 100%; border-radius: 3px; background: var(--hero-dark); transition: width .35s var(--ease-out) }

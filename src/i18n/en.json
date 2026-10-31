@@ -679,15 +679,22 @@
       ]
     },
     "ownLabel": "Something else",
-    "ownPlaceholder": "Micellar water",
+    "ownPlaceholder": {
+      "kitchen": "Oat milk",
+      "bathroom": "Micellar water"
+    },
     "ownAdd": "Add",
     "notNow": "Not now",
     "next": "Next",
-    "oftenTitle": "How often do you buy them?",
     "oftenText": "Don't worry if it's not accurate. I will learn alongside you.",
     "start": "Keep track",
     "doneTitle": "Got it!",
     "doneText": "I'll keep track of them and put them on the list when they run low.",
-    "teach": "Teach Pichi"
+    "teach": "Teach Pichi",
+    "go": "Let's go",
+    "kitchenTitle": "What do you use every day in the kitchen?",
+    "bathroomTitle": "And in the bathroom?",
+    "nothing": "Nothing for now",
+    "stepOf": "{{n}} of {{total}}"
   }
 }

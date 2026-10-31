@@ -694,15 +694,22 @@
       ]
     },
     "ownLabel": "Nešto drugo",
-    "ownPlaceholder": "Micelarna voda",
+    "ownPlaceholder": {
+      "kitchen": "Ovseno mleko",
+      "bathroom": "Micelarna voda"
+    },
     "ownAdd": "Dodaj",
     "notNow": "Ne sada",
     "next": "Dalje",
-    "oftenTitle": "Koliko često ih kupuješ?",
     "oftenText": "Ne brini ako nije tačno. Učiću zajedno s tobom.",
     "start": "Prati",
     "doneTitle": "Važi!",
     "doneText": "Pratiću ih i staviću ih na spisak kad budu pri kraju.",
-    "teach": "Nauči Pichija"
+    "teach": "Nauči Pichija",
+    "go": "Hajde",
+    "kitchenTitle": "Šta svaki dan koristiš u kuhinji?",
+    "bathroomTitle": "A u kupatilu?",
+    "nothing": "Ništa za sada",
+    "stepOf": "{{n}} od {{total}}"
   }
 }

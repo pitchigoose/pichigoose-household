@@ -8,7 +8,6 @@ import { PichiSays } from '../components/PichiSays'
 import { KeepTrackFields, trackPatch } from '../components/KeepTrack'
 import { groupThings, type Group } from '../components/Shelves'
 import { containersFor, guessContainer } from '../components/Containers'
-import { Hand } from '../components/Scrapbook'
 import { Chip } from './Todos'
 import { spotOf } from './Pantry'
 
@@ -62,15 +61,16 @@ export function MeetPichi({ open, onClose }: { open: boolean; onClose: () => voi
   const pantry = usePantry(hid)
   const rooms = useRooms(hid)
   const spots = useSpots(hid)
-  const [step, setStep] = useState<'pick' | 'often' | 'done'>('pick')
+  // Small steps, one thing at a time, with a counter (Nora, 31 Oct): hello, the kitchen, the bathroom, then one step
+  // for each thing you picked. -1 is the end.
+  const [step, setStep] = useState(0)
   const [picked, setPicked] = useState<Pick[]>([])
   const [own, setOwn] = useState('')
-  const [ownKind, setOwnKind] = useState<RoomKind>('kitchen')
 
   // Fresh each time it opens.
   useEffect(() => {
     if (!open) return
-    setStep('pick')
+    setStep(0)
     setPicked([])
     setOwn('')
   }, [open])
@@ -81,20 +81,21 @@ export function MeetPichi({ open, onClose }: { open: boolean; onClose: () => voi
     return rooms.rows.find((r) => r.id === spot?.room_id)?.kind ?? (p.place === 'bathroom' ? 'bathroom' : 'kitchen')
   }
   const watching = groups.filter((g) => g.rows.some(tracked))
-  const onShelves = groups.filter((g) => !g.rows.some(tracked))
   const has = (name: string) => groups.some((g) => g.name.toLocaleLowerCase() === name.trim().toLocaleLowerCase())
   const ideas = (kind: 'kitchen' | 'bathroom') => (t(`meet.ideas.${kind}`, { returnObjects: true }) as string[]).filter((n) => !has(n))
+  // The bathroom step has the bathroom's shelves; the kitchen step has the kitchen's and any other room's.
+  const shelvesFor = (kind: 'kitchen' | 'bathroom') => groups.filter((g) => !g.rows.some(tracked) && (kindOf(g.rows[0]) === 'bathroom') === (kind === 'bathroom'))
 
   const isPicked = (key: string) => picked.some((x) => x.key === key)
   const toggle = (x: Pick) => setPicked((all) => (all.some((y) => y.key === x.key) ? all.filter((y) => y.key !== x.key) : [...all, x]))
   const fromGroup = (g: Group): Pick => ({ key: g.key, name: g.name, group: g, kind: kindOf(g.rows[0]), every: 14, count: Math.min(6, g.rows.length) })
   const fromName = (name: string, kind: RoomKind): Pick => ({ key: `new:${name.trim().toLocaleLowerCase()}`, name: name.trim(), kind, every: 14, count: 1 })
 
-  function addOwn() {
+  function addOwn(kind: 'kitchen' | 'bathroom') {
     const name = own.trim()
     if (!name) return
     const g = groups.find((x) => x.name.toLocaleLowerCase() === name.toLocaleLowerCase())
-    const x = g ? fromGroup(g) : fromName(name, ownKind)
+    const x = g ? fromGroup(g) : fromName(name, kind)
     if (!isPicked(x.key)) setPicked((all) => [...all, x])
     setOwn('')
   }
@@ -139,7 +140,7 @@ export function MeetPichi({ open, onClose }: { open: boolean; onClose: () => voi
         })
       }
     }
-    setStep('done')
+    setStep(-1)
   }
 
   const chips = (list: Pick[]) => (
@@ -152,7 +153,30 @@ export function MeetPichi({ open, onClose }: { open: boolean; onClose: () => voi
     </div>
   )
 
-  if (step === 'done') {
+  // Hello, kitchen, bathroom, then one for each thing.
+  const total = 3 + picked.length
+  const at = Math.min(step, total - 1)
+  /** How far along: a thin line filling up, and "3 of 7". */
+  const progress = (
+    <div className="meet-progress" aria-label={t('meet.stepOf', { n: at + 1, total })}>
+      <span className="meet-bar" aria-hidden>
+        <span style={{ width: `${((at + 1) / total) * 100}%` }} />
+      </span>
+      <span className="cap" style={{ fontSize: 12, fontWeight: 800 }}>{t('meet.stepOf', { n: at + 1, total })}</span>
+    </div>
+  )
+  const buttons = (next: () => void, label: string, disabled = false) => (
+    <div className="row" style={{ gap: 12, marginTop: 18 }}>
+      <button type="button" className="stk sec" style={{ flex: 1 }} onClick={at === 0 ? onClose : () => setStep(at - 1)}>
+        {at === 0 ? t('meet.notNow') : t('common.back')}
+      </button>
+      <button type="button" className="stk prim" style={{ flex: 1.4 }} disabled={disabled} onClick={next}>
+        {label}
+      </button>
+    </div>
+  )
+
+  if (step === -1) {
     return (
       <PichiSays open={open} onClose={onClose} pose="honk" title={t('meet.doneTitle')}>
         <p className="body" style={{ margin: '0 0 14px' }}>{t('meet.doneText')}</p>
@@ -163,86 +187,73 @@ export function MeetPichi({ open, onClose }: { open: boolean; onClose: () => voi
     )
   }
 
-  if (step === 'often') {
+  // 1. Hello.
+  if (at === 0) {
     return (
-      <PichiSays open={open} onClose={onClose} title={t('meet.oftenTitle')}>
-        <p className="body" style={{ margin: '0 0 16px' }}>{t('meet.oftenText')}</p>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>
-          {picked.map((x) => (
-            <div key={x.key}>
-              <Hand size={26} lineHeight={28} style={{ display: 'block', marginBottom: 6 }}>
-                {x.name}
-              </Hand>
-              <KeepTrackFields every={x.every} count={x.count} onChange={(every, count) => setPicked((all) => all.map((y) => (y.key === x.key ? { ...y, every, count } : y)))} />
-            </div>
-          ))}
-        </div>
-        <div className="row" style={{ gap: 12, marginTop: 20 }}>
-          <button type="button" className="stk sec" style={{ flex: 1 }} onClick={() => setStep('pick')}>
-            {t('common.back')}
-          </button>
-          <button type="button" className="stk prim" style={{ flex: 1.4 }} onClick={finish}>
-            {t('meet.start')}
-          </button>
-        </div>
+      <PichiSays open={open} onClose={onClose} title={t('pichi.title')}>
+        {progress}
+        <p className="body" style={{ margin: 0 }}>{t('meet.intro')}</p>
+        {watching.length > 0 && <p className="cap" style={{ margin: '12px 0 0' }}>{t('meet.watching', { list: watching.map((g) => g.name).join(', ') })}</p>}
+        {buttons(() => setStep(1), t('meet.go'))}
       </PichiSays>
     )
   }
 
-  return (
-    <PichiSays open={open} onClose={onClose} title={t('pichi.title')}>
-      <p className="body" style={{ margin: '0 0 14px' }}>{t('meet.intro')}</p>
-      {watching.length > 0 && (
-        <p className="cap" style={{ margin: '0 0 14px' }}>{t('meet.watching', { list: watching.map((g) => g.name).join(', ') })}</p>
-      )}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-        {onShelves.length > 0 && (
-          <div>
-            <span className="label">{t('meet.fromShelves')}</span>
-            {chips(onShelves.map(fromGroup))}
-          </div>
-        )}
-        <div>
-          <span className="label">{t('meet.ideasLabel')}</span>
-          {chips([...ideas('kitchen').map((n) => fromName(n, 'kitchen')), ...ideas('bathroom').map((n) => fromName(n, 'bathroom'))])}
-        </div>
-        {/* Your own, like micellar water: it goes in the kitchen or the bathroom. */}
-        <form
-          onSubmit={(e) => {
-            e.preventDefault()
-            addOwn()
-          }}
-          style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
-        >
-          <span className="label" style={{ margin: 0 }}>{t('meet.ownLabel')}</span>
-          <div className="row" style={{ gap: 8 }}>
-            <input className="input" style={{ flex: 1, minWidth: 0 }} placeholder={t('meet.ownPlaceholder')} aria-label={t('meet.ownLabel')} value={own} onChange={(e) => setOwn(e.target.value)} enterKeyHint="done" />
-            <button type="submit" className="stk sec sm" disabled={!own.trim()}>
-              {t('meet.ownAdd')}
-            </button>
-          </div>
-          {own.trim() && !has(own) && (
-            <div className="chips">
-              {(['kitchen', 'bathroom'] as const).map((k) => (
-                <Chip key={k} on={ownKind === k} onClick={() => setOwnKind(k)}>
-                  {t(`pantry.rooms.kinds.${k}`)}
-                </Chip>
-              ))}
+  // 2 and 3. The kitchen, then the bathroom: what's on your shelves, Pichi's ideas, and your own.
+  if (at === 1 || at === 2) {
+    const kind = at === 1 ? 'kitchen' : 'bathroom'
+    const shelves = shelvesFor(kind)
+    const mine = picked.filter((x) => x.key.startsWith('new:') && x.kind === kind && !ideas(kind).some((n) => n.toLocaleLowerCase() === x.name.toLocaleLowerCase()))
+    return (
+      <PichiSays open={open} onClose={onClose} title={t(`meet.${kind}Title`)}>
+        {progress}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+          {shelves.length > 0 && (
+            <div>
+              <span className="label">{t('meet.fromShelves')}</span>
+              {chips(shelves.map(fromGroup))}
             </div>
           )}
-          {/* What you typed yourself, so you can see it's in. */}
-          {picked.some((x) => x.key.startsWith('new:') && !ideas(x.kind === 'bathroom' ? 'bathroom' : 'kitchen').some((n) => n.toLocaleLowerCase() === x.name.toLocaleLowerCase())) &&
-            chips(picked.filter((x) => x.key.startsWith('new:') && !ideas(x.kind === 'bathroom' ? 'bathroom' : 'kitchen').some((n) => n.toLocaleLowerCase() === x.name.toLocaleLowerCase())))}
-        </form>
-      </div>
-      <div className="row" style={{ gap: 12, marginTop: 20 }}>
-        <button type="button" className="stk sec" style={{ flex: 1 }} onClick={onClose}>
-          {t('meet.notNow')}
-        </button>
-        <button type="button" className="stk prim" style={{ flex: 1.4 }} disabled={!picked.length} onClick={() => setStep('often')}>
-          {t('meet.next')}
-        </button>
-      </div>
+          <div>
+            <span className="label">{t('meet.ideasLabel')}</span>
+            {chips(ideas(kind).map((n) => fromName(n, kind)))}
+          </div>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault()
+              addOwn(kind)
+            }}
+            style={{ display: 'flex', flexDirection: 'column', gap: 8 }}
+          >
+            <span className="label" style={{ margin: 0 }}>{t('meet.ownLabel')}</span>
+            <div className="row" style={{ gap: 8 }}>
+              <input className="input" style={{ flex: 1, minWidth: 0 }} placeholder={t(`meet.ownPlaceholder.${kind}`)} aria-label={t('meet.ownLabel')} value={own} onChange={(e) => setOwn(e.target.value)} enterKeyHint="done" />
+              <button type="submit" className="stk sec sm" disabled={!own.trim()}>
+                {t('meet.ownAdd')}
+              </button>
+            </div>
+            {mine.length > 0 && chips(mine)}
+          </form>
+        </div>
+        {buttons(() => {
+          setOwn('')
+          if (at === 2 && !picked.length) onClose()
+          else setStep(at + 1)
+        }, at === 2 && !picked.length ? t('meet.nothing') : t('meet.next'))}
+      </PichiSays>
+    )
+  }
+
+  // 4 and on. One thing at a time: how often you buy it, and how many.
+  const x = picked[at - 3]
+  const last = at === total - 1
+  return (
+    <PichiSays open={open} onClose={onClose} title={x.name}>
+      {progress}
+      {/* Nora's line, on the first one. */}
+      {at === 3 && <p className="body" style={{ margin: '0 0 14px' }}>{t('meet.oftenText')}</p>}
+      <KeepTrackFields every={x.every} count={x.count} onChange={(every, count) => setPicked((all) => all.map((y) => (y.key === x.key ? { ...y, every, count } : y)))} />
+      {buttons(last ? finish : () => setStep(at + 1), last ? t('meet.start') : t('meet.next'))}
     </PichiSays>
   )
 }
