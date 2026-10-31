@@ -4,9 +4,12 @@ import { useTranslation } from 'react-i18next'
 import { useMe } from '../auth'
 import { db } from '../data/store'
 import { useHousehold, useItemsIn, useLists, usePantry, useRooms, useSpots, type Container, type PantryItem, type Room, type RoomKind, type Spot } from '../data/hooks'
-import { setPantryLevel } from '../data/actions'
+import { setPantryLevel, tracked } from '../data/actions'
+import { KeepTrackFields, everyOf, trackPatch } from '../components/KeepTrack'
+import { Toggle } from '../components/Toggle'
 import { Floating, Screen } from '../components/Shell'
-import { EmptyState, Hand, PeekingPichi, Sheet, showToast, showUndo, type TapeKind } from '../components/Scrapbook'
+import { EmptyState, Hand, PeekingPichi, PichiAvatar, Sheet, showToast, showUndo, type TapeKind } from '../components/Scrapbook'
+import { MeetPichi } from './MeetPichi'
 import { BackIcon, BroomIcon, PlusIcon } from '../components/Icons'
 import { CONTAINERS, ContainerDrawing, containersFor, guessContainer, insideSpan } from '../components/Containers'
 import { GroupDrawing, ShelfRows, groupKey, groupThings, useShelfWidth, type Group } from '../components/Shelves'
@@ -120,6 +123,7 @@ export function PantryScreen() {
   const [open, setOpen] = useKept<string | null>(`pantry:${hid}:open`, null)
   const [adding, setAdding] = useKept<string | null>(`pantry:${hid}:adding`, null)
   const [cleaning, setCleaning] = useState(false)
+  const [teaching, setTeaching] = useState(false)
   // Rooms and spots: adding (a blank one) or changing one.
   const [roomEdit, setRoomEdit] = useKept<{ id: string | null; name: string; kind: RoomKind } | null>(`pantry:${hid}:room`, null)
   const [spotEdit, setSpotEdit] = useKept<{ id: string | null; name: string } | null>(`pantry:${hid}:spot`, null)
@@ -183,6 +187,10 @@ export function PantryScreen() {
             {room?.name ?? t('pantry.title')}
           </Hand>
           <span style={{ flex: 1 }} />
+          {/* Tell Pichi what you use every day, and he keeps track of it (Nora, 31 Oct). */}
+          <button type="button" aria-label={t('meet.teach')} title={t('meet.teach')} onClick={() => setTeaching(true)} style={{ display: 'flex', borderRadius: '50%', transform: 'rotate(-3deg)' }}>
+            <PichiAvatar size={desktop ? 42 : 38} />
+          </button>
           {/* The deep clean: empties this room in one go, after asking. */}
           {things.length > 0 && room && (
             <button type="button" className="stk sec sm" aria-label={t('pantry.clean.room.title', { name: room.name })} title={t('pantry.clean.room.title', { name: room.name })} style={{ width: desktop ? 42 : 38, padding: 0, transform: `rotate(${desktop ? 3 : 2}deg)` }} onClick={() => setCleaning(true)}>
@@ -293,6 +301,7 @@ export function PantryScreen() {
       )}
 
       <GroupSheet groupId={open} onClose={() => setOpen(null)} />
+      <MeetPichi open={teaching} onClose={() => setTeaching(false)} />
 
       {/* A room: its name, and what kind of room it is (that decides the drawings). */}
       <Sheet small open={Boolean(roomEdit)} onClose={() => setRoomEdit(null)} title={roomEdit?.id ? t('pantry.rooms.edit') : t('pantry.rooms.new')}>
@@ -409,6 +418,8 @@ export function PantryScreen() {
               level,
               low_at: like ? like.low_at : 20,
               list_id: like ? like.list_id : null,
+              // Joining a group Pichi keeps track of: it's one of those too.
+              ...(like && tracked(like) ? { lasts_days: like.lasts_days, buy_count: like.buy_count, drained_at: like.drained_at, pichi_drained: like.pichi_drained } : {}),
               position: like ? like.position : inSpot.length ? Math.max(...inSpot.map((x) => x.position)) + 1 : 0,
               created_by: me,
               created_at: now,
@@ -557,6 +568,30 @@ function GroupSheet({ groupId, onClose }: { groupId: string | null; onClose: () 
             <button type="button" className="stk sec sm" style={{ flex: 1, transform: 'rotate(1deg)' }} onClick={oneMore}>
               {t('pantry.oneMore')}
             </button>
+          </div>
+
+          {/* Pichi keeps track (Nora, 31 Oct): for what you use every day. Say how often you buy it and how many, and
+              Pichi lowers it himself and learns from every correction. */}
+          <div>
+            <div className="row" style={{ alignItems: 'center', gap: 12, marginBottom: 10 }}>
+              <span className="label" style={{ margin: 0, flex: 1 }}>{t('track.who')}</span>
+              <Toggle
+                label={t('track.who')}
+                value={tracked(p) ? 'pichi' : 'me'}
+                options={[{ value: 'me', label: t('track.me') }, { value: 'pichi', label: 'Pichi' }]}
+                onChange={(v) => save(v === 'pichi' ? trackPatch(14, Math.min(6, rows.length)) : { lasts_days: null, drained_at: null, pichi_drained: 0 })}
+              />
+            </div>
+            {tracked(p) ? (
+              <>
+                <KeepTrackFields every={everyOf(p)} count={p.buy_count ?? 1} onChange={(every, count) => save(trackPatch(every, count))} />
+                <p className="cap" style={{ margin: '10px 0 0' }}>
+                  {t('track.thinks', { count: Math.max(1, Math.round(p.lasts_days ?? 1)) })}
+                </p>
+              </>
+            ) : (
+              <p className="cap" style={{ margin: 0 }}>{t('track.meHint')}</p>
+            )}
           </div>
 
           <div>

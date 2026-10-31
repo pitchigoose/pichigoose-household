@@ -648,5 +648,61 @@
     "on": "u „{{title}}”",
     "inMessages": "u porukama",
     "go": "Pogledaj"
+  },
+  "track": {
+    "who": "Ko prati",
+    "me": "Ja",
+    "meHint": "Ti menjaš koliko je puno. Za stvari koje koristiš svaki dan, prepusti to Pichiju.",
+    "howOften": "Kupujem ga na",
+    "howMany": "Koliko komada odjednom?",
+    "every": {
+      "3": "par dana",
+      "7": "nedelju dana",
+      "14": "2 nedelje",
+      "30": "mesec dana",
+      "60": "2 meseca",
+      "90": "3 meseca"
+    },
+    "thinks_one": "Pichi misli da jedan traje oko {{count}} dan. Uči svaki put kad ga ispraviš.",
+    "thinks_few": "Pichi misli da jedan traje oko {{count}} dana. Uči svaki put kad ga ispraviš.",
+    "thinks_other": "Pichi misli da jedan traje oko {{count}} dana. Uči svaki put kad ga ispraviš."
+  },
+  "meet": {
+    "intro": "Reci mi šta koristiš svaki dan, i ja ću to pratiti umesto tebe. Nema više ručnog ažuriranja.",
+    "watching": "Već pratim: {{list}}.",
+    "fromShelves": "Sa tvojih polica",
+    "ideasLabel": "Ideje",
+    "ideas": {
+      "kitchen": [
+        "Kafa",
+        "Mleko",
+        "Hleb",
+        "Jaja",
+        "Pavlaka",
+        "Jogurt",
+        "Puter",
+        "Čaj"
+      ],
+      "bathroom": [
+        "Pasta za zube",
+        "Toalet papir",
+        "Sapun",
+        "Šampon",
+        "Serum za lice",
+        "Micelarna voda",
+        "Dezodorans"
+      ]
+    },
+    "ownLabel": "Nešto drugo",
+    "ownPlaceholder": "Micelarna voda",
+    "ownAdd": "Dodaj",
+    "notNow": "Ne sada",
+    "next": "Dalje",
+    "oftenTitle": "Koliko često ih kupuješ?",
+    "oftenText": "Ne brini ako nije tačno. Učiću zajedno s tobom.",
+    "start": "Prati",
+    "doneTitle": "Važi!",
+    "doneText": "Pratiću ih i staviću ih na spisak kad budu pri kraju.",
+    "teach": "Nauči Pichija"
   }
 }

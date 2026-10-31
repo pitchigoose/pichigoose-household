@@ -77,6 +77,8 @@ Stories marked **[Nora]** come from Nora. Stories marked **[Claude]** are Claude
 - **K8** As a member, I want finishing one to be a single tap, and empty ones to disappear from the shelf, because we toss them. [Nora]
 - **K9** As a member, I want to type my own percentage, not only full, 75%, half, 25% or almost out. [Nora]
 - **K11** As a member, I want my own rooms and storage spots in them, like a second cabinet or a bathtub shelf, and to move a thing from one spot to another, like fabric softener from the bathroom cabinet to the pantry. [Danko]
+- **K12** As a member, I want Pichi to keep track of the things I use every day, like coffee, toothpaste or sour cream, from how often I buy them and how many ("every 2 weeks, 4"), so I don't have to update them myself. He learns from every correction. [Nora's mom]
+- **K13** As a new member, I want Pichi to ask me what I use every day when I first open the household, so I don't have to fill in every cabinet first. Things already on a shelf get switched on, never added twice. [Nora]
 - **K10** As a member, I want a broom in the corner for a deep clean that empties the pantry (or the bathroom cabinet) after asking, because it can't be undone. [Nora]
 
 ### Money (who owes who)

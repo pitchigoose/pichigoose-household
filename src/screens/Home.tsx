@@ -30,6 +30,7 @@ import { MentionBanner } from '../components/MentionBanner'
 import { PersonLink } from './Person'
 import { NotePanel, colorOf } from './Notes'
 import { AskName, madeFromEmail } from './AskName'
+import { MeetPichi, useMeetPichiOnce } from './MeetPichi'
 import { ago, daysFromToday, dueLabel, fromDateString } from '../lib/time'
 import { useDesktop } from '../lib/desktop'
 import { DragBoard } from '../components/DragBoard'
@@ -138,6 +139,8 @@ export function HomeScreen() {
   const email = useAuth().session?.user.email ?? ''
   const [askedName, setAskedName] = useState(false)
   const needsName = Boolean(profile && email && madeFromEmail(profile.display_name, email))
+  // Meeting Pichi (Nora, 31 Oct): once for each person in each household, after the name is sorted.
+  const meet = useMeetPichiOnce()
 
   const person = (id: string | null) => people.find((p) => p.id === id)
   const commentsOn = useCommentCounts()
@@ -489,6 +492,7 @@ export function HomeScreen() {
           </div>
         </div>
         <AskName save open={needsName && !askedName} onClose={() => setAskedName(true)} onJoin={() => {}} />
+        <MeetPichi open={meet.open && !(needsName && !askedName)} onClose={meet.close} />
         {openNote && <NotePanel id={openNote} onClose={() => setOpenNote(null)} />}
         <MentionBanner />
       </Screen>
@@ -552,6 +556,7 @@ export function HomeScreen() {
       <AddSheet open={adding} onClose={() => setAdding(false)} />
       <MentionBanner />
       <AskName save open={needsName && !askedName} onClose={() => setAskedName(true)} onJoin={() => {}} />
+        <MeetPichi open={meet.open && !(needsName && !askedName)} onClose={meet.close} />
     </Screen>
   )
 }

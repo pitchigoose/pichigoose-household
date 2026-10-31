@@ -212,12 +212,18 @@ What's on the shelves (K1 to K6) [Nora]: the pantry, and the bathroom cabinet.
 | low_at | smallint | at or below this, Pichi puts it on the shopping list. Default 20 [Claude] |
 | list_id | uuid, nullable | the list Pichi puts it on. Empty: the household's first list [Claude] |
 | position | int | order on the shelves; the app fills each shelf left to right |
+| lasts_days | real, nullable | **Pichi keeps track** [Nora and her mom, 31 Oct]: how many days one of them lasts. Empty: people update it themselves |
+| buy_count | smallint, default 1 | how many you buy at once; buying it on the list puts this many back on the shelf, and Pichi writes "Sour cream × 4" on the list |
+| drained_at | timestamptz, nullable | up to when Pichi has counted |
+| pichi_drained | int, default 0 | how much Pichi took since a person last said how full it is; the app compares the two to learn |
 | created_by, updated_by | uuid | |
 | created_at, updated_at | timestamptz | |
 
 - Everyone in the household can read and change everything. Live updates on.
 - When someone lowers the level to `low_at` or below, the app adds a list item with `added_by_pichi = true`, unless one for it is already on the list. Undo removes it [Claude].
 - Deleting a pantry thing keeps its list items; they just lose the link.
+- **Pichi keeps track** [Nora and her mom, 31 Oct]: for things used every day. `pichi_tick()` runs every hour (pg_cron, at 17 past) and, for each group with `lasts_days`, takes what was used since `drained_at` from the emptiest one first, tosses empty ones while others are left, and puts the group on the list when it gets down to its last one at or below `low_at` (its list, else the household's first shopping list, never a project's). The four columns are shared by the group, like `low_at`.
+- **Learning** [Claude]: when a person says how full a tracked thing is, the app compares what Pichi took with what was really used, moves `lasts_days` halfway toward what it saw (at most half again or twice as fast at once, and only after Pichi took 10% or more), and sets `pichi_drained` back to 0. Adding more teaches nothing.
 - **Groups** [Nora]: rows with the same name in the same place (ignoring capitals and spaces at the ends) are one group, like four bottles of wine. Each row is one bottle with its own level. A bottle that reaches 0 is deleted while others are left; the last one stays at 0. Pichi adds the group to the list only when one is left and it's at or below `low_at`. Buying it fills that last one back up; more bottles are added with "+ One more". No extra columns.
 
 ### rooms and storage_spots

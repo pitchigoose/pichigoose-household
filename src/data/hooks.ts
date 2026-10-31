@@ -82,6 +82,14 @@ export type PantryItem = Row & {
   created_at: string
   updated_by: string | null
   updated_at: string
+  /** Pichi keeps track (Nora, 31 Oct): how many days one lasts. Empty: people update it themselves. Shared by the group. */
+  lasts_days?: number | null
+  /** How many you buy at once; buying it puts this many back on the shelf. */
+  buy_count?: number
+  /** Up to when Pichi has counted (his hourly round on the server). */
+  drained_at?: string | null
+  /** How much Pichi has taken since a person last said how full it is. */
+  pichi_drained?: number
 }
 
 export type Todo = Row & {

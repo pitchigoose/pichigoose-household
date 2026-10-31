@@ -634,5 +634,60 @@
     "on": "on “{{title}}”",
     "inMessages": "in Messages",
     "go": "Go check"
+  },
+  "track": {
+    "who": "Who keeps track",
+    "me": "Me",
+    "meHint": "You update how full it is. For things you use every day, let Pichi do it.",
+    "howOften": "I buy it every",
+    "howMany": "How many at once?",
+    "every": {
+      "3": "few days",
+      "7": "week",
+      "14": "2 weeks",
+      "30": "month",
+      "60": "2 months",
+      "90": "3 months"
+    },
+    "thinks_one": "Pichi thinks one lasts about {{count}} day. He learns every time you correct him.",
+    "thinks_other": "Pichi thinks one lasts about {{count}} days. He learns every time you correct him."
+  },
+  "meet": {
+    "intro": "Tell me what you use every day, and I'll keep track of it for you. No more updating it by hand.",
+    "watching": "I'm already keeping track of {{list}}.",
+    "fromShelves": "From your shelves",
+    "ideasLabel": "Ideas",
+    "ideas": {
+      "kitchen": [
+        "Coffee",
+        "Milk",
+        "Bread",
+        "Eggs",
+        "Sour cream",
+        "Yogurt",
+        "Butter",
+        "Tea"
+      ],
+      "bathroom": [
+        "Toothpaste",
+        "Toilet paper",
+        "Soap",
+        "Shampoo",
+        "Face serum",
+        "Micellar water",
+        "Deodorant"
+      ]
+    },
+    "ownLabel": "Something else",
+    "ownPlaceholder": "Micellar water",
+    "ownAdd": "Add",
+    "notNow": "Not now",
+    "next": "Next",
+    "oftenTitle": "How often do you buy them?",
+    "oftenText": "Don't worry if it's not accurate. I will learn alongside you.",
+    "start": "Keep track",
+    "doneTitle": "Got it!",
+    "doneText": "I'll keep track of them and put them on the list when they run low.",
+    "teach": "Teach Pichi"
   }
 }

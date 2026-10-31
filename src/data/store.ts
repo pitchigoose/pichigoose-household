@@ -161,6 +161,14 @@ function mutate(op: NewOp) {
   void flush()
 }
 
+/** Every row of a table this phone has right now, from any collection that holds it (each once). For actions that
+ *  need a row the screen doesn't have at hand, like the pantry thing a shopping item fills up. */
+export function cachedRows<T extends Row = Row>(table: string): T[] {
+  const seen = new Map<string, Row>()
+  for (const def of defs.values()) if (def.table === table) for (const r of state.cache[def.key] ?? []) seen.set(r.id, r)
+  return [...seen.values()] as T[]
+}
+
 export function newId(): string {
   if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) return crypto.randomUUID()
   return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
