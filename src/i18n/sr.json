@@ -149,7 +149,10 @@
       "bathroom": "kupatilo"
     },
     "projects": "projekti",
-    "noProjects": "Još nema projekata."
+    "noProjects": "Još nema projekata.",
+    "fromProjects_one": "+ još {{count}} iz projekata",
+    "fromProjects_few": "+ još {{count}} iz projekata",
+    "fromProjects_other": "+ još {{count}} iz projekata"
   },
   "arrange": {
     "title": "Složi svoju početnu",
@@ -237,7 +240,8 @@
     "delete": "Obriši zadatak",
     "pinned": "Zakačeno",
     "pin": "Zakači",
-    "unpin": "Otkači"
+    "unpin": "Otkači",
+    "openProject": "Otvori {{name}}"
   },
   "notes": {
     "title": "Beleške",

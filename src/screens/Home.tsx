@@ -149,13 +149,17 @@ export function HomeScreen() {
   const openTodos = useMemo(
     () =>
       todos.rows
-        .filter((x) => !x.done_at)
+        // A project's steps stay with their project, off this note (Nora, 31 Oct): "Boxes under the table" means
+        // nothing without "Organize my room" above it. The note says how many there are instead.
+        .filter((x) => !x.done_at && !x.project_id)
         .sort(byTodoOrder),
     [todos.rows],
   )
+  // Open steps of projects that are still under way.
+  const projectSteps = todos.rows.filter((x) => !x.done_at && x.project_id && projects.rows.some((p) => p.id === x.project_id && !p.done_at)).length
   // Done today stays on the note, crossed out at the bottom, until the day passes.
   const doneTodos = useMemo(
-    () => todos.rows.filter((x) => recentlyDone(x)).sort((a, b) => (b.done_at ?? '').localeCompare(a.done_at ?? '')),
+    () => todos.rows.filter((x) => recentlyDone(x) && !x.project_id).sort((a, b) => (b.done_at ?? '').localeCompare(a.done_at ?? '')),
     [todos.rows],
   )
   const todayCount = openTodos.filter((x) => x.due_date && daysFromToday(fromDateString(x.due_date)) <= 0).length
@@ -204,7 +208,7 @@ export function HomeScreen() {
     const pichi = toBuy.find((x) => x.added_by_pichi && fresh(x.created_at))
     if (pichi && (!recent || pichi.created_at > recent.created_at)) return t('home.newsPichi', { item: pichi.name })
     if (recent) return t('home.newsAdded', { name: person(recent.added_by)?.display_name ?? t('common.someone'), item: recent.name })
-    const mineToday = openTodos.filter((x) => x.assignee_id === me && x.due_date && daysFromToday(fromDateString(x.due_date)) <= 0).length
+    const mineToday = todos.rows.filter((x) => !x.done_at && x.assignee_id === me && x.due_date && daysFromToday(fromDateString(x.due_date)) <= 0).length
     if (mineToday) return t('home.newsTodos', { count: mineToday })
     return t('home.newsCalm')
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -366,7 +370,12 @@ export function HomeScreen() {
                 </Tick>
               )
             })}
-            {!openTodos.length && !doneTodos.length && <Empty>{t('home.noTodos')}</Empty>}
+            {!openTodos.length && !doneTodos.length && !projectSteps && <Empty>{t('home.noTodos')}</Empty>}
+            {projectSteps > 0 && (
+              <Link to="/projects" className="cap" style={{ fontWeight: 800, color: 'var(--hero-dark)' }} onClick={(e) => e.stopPropagation()}>
+                {t('home.fromProjects', { count: projectSteps })}
+              </Link>
+            )}
           </div>
         </div>
       )

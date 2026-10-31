@@ -144,7 +144,9 @@
       "bathroom": "bathroom"
     },
     "projects": "projects",
-    "noProjects": "No projects yet."
+    "noProjects": "No projects yet.",
+    "fromProjects_one": "+ {{count}} more from projects",
+    "fromProjects_other": "+ {{count}} more from projects"
   },
   "arrange": {
     "title": "Arrange your home",
@@ -232,7 +234,8 @@
     "delete": "Delete to-do",
     "pinned": "Pinned",
     "pin": "Pin",
-    "unpin": "Unpin"
+    "unpin": "Unpin",
+    "openProject": "Open {{name}}"
   },
   "notes": {
     "title": "Notes",

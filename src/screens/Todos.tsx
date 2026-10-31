@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type FormEvent } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useMe } from '../auth'
 import { db } from '../data/store'
@@ -128,12 +128,29 @@ export function TodosScreen() {
     return ORDER
       .map((g) => ({
         g,
+        // A project's steps get their own section under the project's name (Nora, 31 Oct), not mixed in here.
         rows: visible
-          .filter((x) => groupOf(x) === g)
+          .filter((x) => !x.project_id && groupOf(x) === g)
           .sort(byTodoOrder),
       }))
       .filter((x) => x.rows.length)
   }, [visible])
+
+  // Projects under way, each with its steps in the project's own order (done ones at the end).
+  const projectGroups = useMemo(
+    () =>
+      projects.rows
+        .filter((p) => !p.done_at)
+        .sort((a, b) => a.position - b.position || a.created_at.localeCompare(b.created_at))
+        .map((p) => ({
+          p,
+          rows: visible
+            .filter((x) => x.project_id === p.id)
+            .sort((a, b) => Number(Boolean(a.done_at)) - Number(Boolean(b.done_at)) || (a.position ?? 0) - (b.position ?? 0) || a.created_at.localeCompare(b.created_at)),
+        }))
+        .filter((x) => x.rows.length),
+    [projects.rows, visible],
+  )
 
   const { arrived, leaving } = useArrivals(groups.map((x) => x.g))
 
@@ -172,15 +189,65 @@ export function TodosScreen() {
       parts.push(days < 0 && !x.done_at ? `${dueLabel(x.due_date, i18n.language)}, ${t('todos.late')}` : dueLabel(x.due_date, i18n.language))
     }
     if (x.repeat) parts.push(t('todos.repeats'))
-    // A step of a project carries the project's name.
-    const project = x.project_id ? projects.rows.find((p) => p.id === x.project_id) : undefined
-    if (project) parts.unshift(project.name)
     if (!x.assignee_id) parts.push(t('todos.nobody'))
     return parts.join(' · ')
   }
 
+  /** One to-do on the page: tick it, swipe it, tap it to change it. */
+  function todoRow(x: Todo) {
+    const who = person(x.assignee_id)
+    const done = Boolean(x.done_at)
+    return (
+      <Tick key={x.id} checked={done} onCommit={() => toggleTodo(x, me)}>
+        {(on, toggle) => (
+          // Swipe left for Delete, like WhatsApp (Nora, 30 Oct). Undo stays possible for a few seconds.
+          // Swipe right to pin it to the top, or unpin it (Nora, 30 Oct).
+          <SwipeRow
+            left={
+              done
+                ? []
+                : [
+                    {
+                      key: 'pin',
+                      label: x.pinned ? t('todos.unpin') : t('todos.pin'),
+                      icon: <PinIcon />,
+                      color: '#63586B',
+                      fill: '#857A8C',
+                      onClick: () => db.update('todos', x.id, { pinned: !x.pinned }),
+                    },
+                  ]
+            }
+            right={[
+              {
+                key: 'delete',
+                label: t('common.delete'),
+                icon: <TrashIcon />,
+                color: 'var(--error-dark)',
+                fill: 'var(--hero)',
+                onClick: () => showUndo(t('todos.deleted'), t('common.undo'), db.removeWithUndo('todos', x.id)),
+              },
+            ]}
+          >
+          <div className={`ln${on ? ' row-done' : ''}${detail(x) ? ' top' : ''}`} style={{ minHeight: 64, ['--title-top' as string]: '8px' }}>
+            <Check checked={on} onToggle={toggle} label={x.title} rotate={tilt(x.id)} />
+            <button type="button" onClick={() => setEditing(x)} style={{ flex: 1, minWidth: 0, fontSize: 17, padding: '8px 0' }}>
+              <Struck on={on}>{x.title}</Struck>
+              {isNewTodo(x) && <NewTag />}
+              <CommentCount n={commentsOn(x.id)} />
+              {detail(x) && <div className="cap">{detail(x)}</div>}
+            </button>
+            <span className={`av-fade${on ? ' done' : ''}`}>
+              {who ? <PersonLink id={who.id}><Avatar avatar={who.avatar} label={who.display_name} /></PersonLink> : <NobodyAvatar />}
+            </span>
+          </div>
+          </SwipeRow>
+        )}
+      </Tick>
+    )
+  }
+
   return (
-    <Screen tabbar className="has-fab" doodle={groups.length ? 'walk' : undefined}>
+    <Screen tabbar className="has-fab" doodle={groups.length || projectGroups.length ? 'walk' : undefined}>
       <div style={{ padding: 'calc(var(--top) + 10px) 22px 0 40px' }}>
         <div className="row" style={{ justifyContent: 'space-between', gap: 10 }}>
           <Hand as="h1" style={{ margin: 0 }}>
@@ -251,60 +318,22 @@ export function TodosScreen() {
                 {t(`todos.${g}`)}
               </Stamp>
             </div>
-            {rows.map((x) => {
-              const who = person(x.assignee_id)
-              const done = Boolean(x.done_at)
-              return (
-                <Tick key={x.id} checked={done} onCommit={() => toggleTodo(x, me)}>
-                  {(on, toggle) => (
-                    // Swipe left for Delete, like WhatsApp (Nora, 30 Oct). Undo stays possible for a few seconds.
-                    // Swipe right to pin it to the top, or unpin it (Nora, 30 Oct).
-                    <SwipeRow
-                      left={
-                        done
-                          ? []
-                          : [
-                              {
-                                key: 'pin',
-                                label: x.pinned ? t('todos.unpin') : t('todos.pin'),
-                                icon: <PinIcon />,
-                                color: '#63586B',
-                                fill: '#857A8C',
-                                onClick: () => db.update('todos', x.id, { pinned: !x.pinned }),
-                              },
-                            ]
-                      }
-                      right={[
-                        {
-                          key: 'delete',
-                          label: t('common.delete'),
-                          icon: <TrashIcon />,
-                          color: 'var(--error-dark)',
-                          fill: 'var(--hero)',
-                          onClick: () => showUndo(t('todos.deleted'), t('common.undo'), db.removeWithUndo('todos', x.id)),
-                        },
-                      ]}
-                    >
-                    <div className={`ln${on ? ' row-done' : ''}${detail(x) ? ' top' : ''}`} style={{ minHeight: 64, ['--title-top' as string]: '8px' }}>
-                      <Check checked={on} onToggle={toggle} label={x.title} rotate={tilt(x.id)} />
-                      <button type="button" onClick={() => setEditing(x)} style={{ flex: 1, minWidth: 0, fontSize: 17, padding: '8px 0' }}>
-                        <Struck on={on}>{x.title}</Struck>
-                        {isNewTodo(x) && <NewTag />}
-                        <CommentCount n={commentsOn(x.id)} />
-                        {detail(x) && <div className="cap">{detail(x)}</div>}
-                      </button>
-                      <span className={`av-fade${on ? ' done' : ''}`}>
-                        {who ? <PersonLink id={who.id}><Avatar avatar={who.avatar} label={who.display_name} /></PersonLink> : <NobodyAvatar />}
-                      </span>
-                    </div>
-                    </SwipeRow>
-                  )}
-                </Tick>
-              )
-            })}
+            {rows.map(todoRow)}
           </section>
           )
         })}
+        {/* Each project's steps under its name, which opens the project. */}
+        {projectGroups.map(({ p, rows }) => (
+          <section key={p.id} style={{ marginTop: 22 }}>
+            {/* The project's name is the way into it, so even a long name has room. */}
+            <Link to={`/projects/${p.id}`} aria-label={t('todos.openProject', { name: p.name })} style={{ display: 'inline-block', marginBottom: 4 }}>
+              <Stamp color={STAMP_COLORS.open} rotate={-2}>
+                {p.name}
+              </Stamp>
+            </Link>
+            {rows.map(todoRow)}
+          </section>
+        ))}
         {/* Done before today: archived, one tap away, with "Again" for the things you do over and over (Nora, 30 Oct).
             It follows the All / Mine / someone's filter above, like the list does. */}
         <ArchiveLink
@@ -327,7 +356,7 @@ export function TodosScreen() {
             })
           }}
         />
-        {todos.loaded && !groups.length && (
+        {todos.loaded && !groups.length && !projectGroups.length && (
           // Pichi honks: nothing to do!
           <EmptyState pose="honk" color="#F2C1C4" zoom={1.05} rotate={3}>
             {t('todos.empty')}
