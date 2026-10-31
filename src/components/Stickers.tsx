@@ -68,13 +68,11 @@ export function StickerButton({ onSend }: { onSend: (name: string) => void }) {
           if (e.detail === 0) setOpen((o) => !o)
         }}
       >
-        {/* A round sticker with its corner peeling up, and a little smile (Nora, 30 Oct). Drawn 10% smaller than the Send
-            button (36 px), with the line still 2 px on screen (2.22 in the 40-wide box), and the face centered on the
-            circle itself, not on the space the peel leaves. */}
+        {/* WhatsApp's sticker icon (Nora, 31 Oct): a rounded square with its bottom-right corner peeled up, no face.
+            36 px, with the line still 2 px on screen (2.22 in the 40-wide box). */}
         <svg viewBox="0 0 40 40" width="36" height="36" fill="none" stroke="currentColor" strokeWidth="2.22" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
-          <path d="M38.5 20A18.5 18.5 0 1 0 20 38.5Z" />
-          <path d="M20 38.5Q24.9 24.9 38.5 20" />
-          <path d="M15.8 15.4v1.5M24.2 15.4v1.5M14.9 22.3c3.1 2.9 7.1 2.9 10.2 0" />
+          <path d="M22 34H13a7 7 0 0 1-7-7V13a7 7 0 0 1 7-7h14a7 7 0 0 1 7 7v9L22 34Z" />
+          <path d="M34 22h-5.5a6.5 6.5 0 0 0-6.5 6.5V34" />
         </svg>
       </button>
       {open && (
