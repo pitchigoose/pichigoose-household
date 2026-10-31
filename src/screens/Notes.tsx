@@ -1,5 +1,5 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useMe } from '../auth'
 import { db } from '../data/store'
@@ -11,7 +11,7 @@ import { BackIcon, ChevronDown, CloseIcon, DotsIcon, PlusIcon, SearchIcon } from
 import { MyHouseholds } from './MyHouseholds'
 import { ago } from '../lib/time'
 import { useDesktop } from '../lib/desktop'
-import { useBack } from '../lib/back'
+import { canGoBackInApp, useBack } from '../lib/back'
 import { CommentCount, Comments, useCommentCounts } from '../components/Comments'
 import { HeartButton, HeartedBy, useHeartsOn } from '../components/Hearts'
 
@@ -70,6 +70,10 @@ export function NotesScreen() {
       <Link
         key={n.id}
         to={`/notes/${n.id}`}
+        // Remembers it came from this list, so closing the note goes back here. On desktop, switching between notes in
+        // the panel replaces the page, so they don't pile up behind you.
+        state={{ fromNotes: true }}
+        replace={Boolean(openId)}
         className={`note ${colorOf(n.id)}`}
         aria-current={n.id === openId ? 'page' : undefined}
         style={{
@@ -131,7 +135,7 @@ export function NotesScreen() {
               </span>
               <input className="input" type="search" style={{ paddingLeft: 42 }} placeholder={t('notes.search')} aria-label={t('notes.search')} value={query} onChange={(e) => setQuery(e.target.value)} />
             </div>
-            <button type="button" className="stk prim" style={{ flex: 'none', transform: 'rotate(1deg)' }} onClick={() => navigate('/notes/new')}>
+            <button type="button" className="stk prim" style={{ flex: 'none', transform: 'rotate(1deg)' }} onClick={() => navigate('/notes/new', { state: { fromNotes: true } })}>
               <PlusIcon />
               {t('notes.new')}
             </button>
@@ -187,7 +191,7 @@ export function NotesScreen() {
         onClick={() => {
           if (!hid) return
           const n = newNote(hid, me)
-          navigate(`/notes/${n.id}`)
+          navigate(`/notes/${n.id}`, { state: { fromNotes: true } })
         }}
         style={{ transform: 'rotate(-4deg)' }}
       >
@@ -231,8 +235,12 @@ function NoteEditor({ panel, noteId, onClose }: { panel?: boolean; noteId?: stri
   const navigate = useNavigate()
   const params = useParams()
   const id = noteId ?? params.id
-  // Closing goes back to Notes, or just closes the panel when it was opened from Home.
-  const done = () => (onClose ? onClose() : navigate('/notes'))
+  const location = useLocation()
+  const fromNotes = Boolean((location.state as { fromNotes?: boolean } | null)?.fromNotes)
+  // Closing goes back to Notes, or just closes the panel when it was opened from Home. Opened from the Notes list, it
+  // steps back to that list. Opened from anywhere else (Home, a mention), the note is swapped for Notes instead of
+  // adding Notes on top, so Notes' own back then leads home and never back into the note (Nora, 31 Oct: that was a loop).
+  const done = () => (onClose ? onClose() : fromNotes && canGoBackInApp() ? navigate(-1) : navigate('/notes', { replace: true }))
   const { household, households, people, name } = useHousehold()
   const hid = household?.id ?? null
   const notes = useNotes(hid)
@@ -243,9 +251,9 @@ function NoteEditor({ panel, noteId, onClose }: { panel?: boolean; noteId?: stri
     if (id === 'new' && hid && !created.current) {
       created.current = true
       const n = newNote(hid, me)
-      navigate(`/notes/${n.id}`, { replace: true })
+      navigate(`/notes/${n.id}`, { replace: true, state: location.state })
     }
-  }, [id, hid, me, navigate])
+  }, [id, hid, me, navigate, location.state])
 
   const note = notes.rows.find((n) => n.id === id)
   const heartsOn = useHeartsOn()
