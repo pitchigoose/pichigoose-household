@@ -720,6 +720,7 @@
     "kitchenTitle": "Šta svaki dan koristiš u kuhinji?",
     "bathroomTitle": "A u kupatilu?",
     "nothing": "Ništa za sada",
-    "stepOf": "{{n}} od {{total}}"
+    "stepOf": "{{n}} od {{total}}",
+    "bathroomOnlyTitle": "Šta svaki dan koristiš u kupatilu?"
   }
 }

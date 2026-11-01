@@ -704,6 +704,7 @@
     "kitchenTitle": "What do you use every day in the kitchen?",
     "bathroomTitle": "And in the bathroom?",
     "nothing": "Nothing for now",
-    "stepOf": "{{n}} of {{total}}"
+    "stepOf": "{{n}} of {{total}}",
+    "bathroomOnlyTitle": "What do you use every day in the bathroom?"
   }
 }

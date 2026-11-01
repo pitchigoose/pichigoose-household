@@ -365,6 +365,7 @@ function Conversation({ chatKey, header, back }: { chatKey: string; header?: boo
       </div>
       <TypingBar
         mentionable
+        keepKeyboard
         className="composer"
         multiline
         value={text}
