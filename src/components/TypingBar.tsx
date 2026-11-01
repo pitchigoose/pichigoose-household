@@ -9,7 +9,7 @@ import { insertMention, typingMention } from '../lib/mentions'
 
 // One typing bar for every place you type a short text (Nora, 29 Oct): the chat, comments and Shopping's add field.
 // A strip of our paper with the field, stickers (where they fit) and the round send button, floating right above
-// the keyboard while you type. Sending closes the keyboard, everywhere. One component and one keyboard rule, so a fix
+// the keyboard while you type. Sending closes the keyboard, except in the chat (keepKeyboard). One component, so a fix
 // here fixes all of them.
 
 const touchScreen = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches
@@ -37,9 +37,11 @@ type Props = {
   closed?: boolean
   /** Typing @ offers the household's people to tag (comments and the chat). */
   mentionable?: boolean
+  /** Keep the keyboard up after sending, to write the next message right away (the chat, Nora, 1 Nov). */
+  keepKeyboard?: boolean
 }
 
-export function TypingBar({ value, onChange, onSend, placeholder, onSticker, multiline, above, fieldRef, className = '', onBlur, closed, mentionable }: Props) {
+export function TypingBar({ value, onChange, onSend, placeholder, onSticker, multiline, above, fieldRef, className = '', onBlur, closed, mentionable, keepKeyboard }: Props) {
   const { t } = useTranslation()
   const own = useRef<HTMLTextAreaElement & HTMLInputElement>(null)
   // While you're typing (and for a moment after the field lets go, so a tap on Send still lands on it).
@@ -70,8 +72,8 @@ export function TypingBar({ value, onChange, onSend, placeholder, onSticker, mul
     if (!text) return
     sentAt = Date.now()
     onSend(text)
-    // Sending closes the keyboard.
-    own.current?.blur()
+    // Sending closes the keyboard, except in the chat, where you often write the next one right away.
+    if (!keepKeyboard) own.current?.blur()
   }
 
   // Inside a scrolling pop-up (comments), iPhone can draw the floating bar in one place but decide the tap hit
