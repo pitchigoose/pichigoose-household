@@ -169,6 +169,7 @@ The order Nora chose: gamification first, then the iPhone wrap (Capacitor, built
 - [ ] **A privacy policy and a support page** on pichigoose.com, linked from Settings and from the App Store listing. Claude drafts, Nora edits.
 - [ ] **Nothing unfinished in sight.** Money is already hidden; check every screen for placeholders before review.
 - [ ] **The iPhone wrap with native touches:** real push notifications (no more "Add to Home Screen"), the native keyboard, haptics, the app icon and launch screen. Apple turns down apps that are only a website in a box.
+- [ ] **Sign in with Apple, Google and Facebook**, added right before the move to the iPhone wrap [Nora, 1 Nov]. Once Google or Facebook is there, Apple requires Sign in with Apple too, so all three go in together.
 - [ ] **Automated checks** for what must never break: the offline shopping list, sending messages, Pichi keeping track.
 
 **To do in App Store Connect**
@@ -177,7 +178,7 @@ The order Nora chose: gamification first, then the iPhone wrap (Capacitor, built
 - [ ] Screenshots, description, age rating, and the privacy questions (what the app stores: email, name, what people write).
 - [ ] TestFlight for family and friends first; Apple does a short check before outside testers can join.
 
-Already fine: email and password sign-in with a forgotten-password flow, so no Sign in with Apple is needed (Apple only asks for it when there's Google or Facebook sign-in).
+Already fine: email and password sign-in with a forgotten-password flow.
 
 ## Open questions (don't decide these, ask Nora)
 
