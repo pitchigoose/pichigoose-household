@@ -76,7 +76,17 @@ export function PersonScreen() {
         </div>
         {person && (
           <>
-            <Avatar whole avatar={person.avatar} size={220} label={person.display_name} className="" style={{ marginTop: 18, filter: 'drop-shadow(2px 4px 0 rgba(30,26,48,.12))' }} />
+            {id === me ? (
+              // Your own picture opens Change character, with a small "Edit" slice across its bottom (Nora, 1 Nov).
+              <Link to="/profile" className="av-edit-wrap" aria-label={t('settings.changeCharacter')} style={{ marginTop: 18 }}>
+                <Avatar whole avatar={person.avatar} size={220} label={person.display_name} className="" style={{ display: 'block', filter: 'drop-shadow(2px 4px 0 rgba(30,26,48,.12))' }} />
+                <span className="av-edit" aria-hidden>
+                  <span>{t('person.edit')}</span>
+                </span>
+              </Link>
+            ) : (
+              <Avatar whole avatar={person.avatar} size={220} label={person.display_name} className="" style={{ marginTop: 18, filter: 'drop-shadow(2px 4px 0 rgba(30,26,48,.12))' }} />
+            )}
             <Hand as="h1" size={48} lineHeight={52} style={{ margin: '22px 0 0', textAlign: 'center' }}>
               {person.display_name}
             </Hand>

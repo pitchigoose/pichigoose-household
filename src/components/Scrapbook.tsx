@@ -431,6 +431,72 @@ export function Sheet({ open, onClose, title, children, small, action }: SheetPr
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open])
 
+  // Pull the pop-up down to close it, keyboard and all (Nora, 1 Nov). From its top (the handle and title) it always
+  // follows your finger; from anywhere else once it's scrolled to the top, or right away while you're typing in it.
+  // Let go far enough (or with a flick) and it closes; otherwise it springs back.
+  const closeRef = useRef(onClose)
+  closeRef.current = onClose
+  useEffect(() => {
+    const sheet = ref.current
+    if (!open || !sheet) return
+    sheet.style.transform = ''
+    let start: { x: number; y: number; t: number; head: boolean; typing: boolean } | null = null
+    let dragging = false
+    let dy = 0
+    const reset = () => {
+      sheet.style.transition = 'transform .28s cubic-bezier(.34, 1.56, .64, 1)'
+      sheet.style.transform = ''
+      window.setTimeout(() => (sheet.style.transition = ''), 300)
+    }
+    const onStart = (e: TouchEvent) => {
+      if (e.touches.length !== 1) return (start = null)
+      const target = e.target as Element
+      // Things that move with your finger themselves keep it: the level you drag, sliders, rows you swipe.
+      if (target.closest('.level-drag, [role="slider"], .swipe-row, .no-sheet-drag')) return (start = null)
+      const touch = e.touches[0]
+      const top = sheet.getBoundingClientRect().top
+      const active = document.activeElement
+      start = { x: touch.clientX, y: touch.clientY, t: Date.now(), head: touch.clientY - top < 64, typing: Boolean(active && sheet.contains(active) && active.matches('input, textarea')) }
+      dragging = false
+      dy = 0
+    }
+    const onMove = (e: TouchEvent) => {
+      if (!start) return
+      const touch = e.touches[0]
+      const down = touch.clientY - start.y
+      if (!dragging) {
+        if (down < 8 || Math.abs(touch.clientX - start.x) > down) return
+        if (!start.head && !start.typing && sheet.scrollTop > 0) return (start = null)
+        dragging = true
+        // The keyboard goes as soon as you start pulling.
+        ;(document.activeElement as HTMLElement | null)?.blur?.()
+        sheet.style.transition = 'none'
+      }
+      e.preventDefault()
+      dy = Math.max(0, down)
+      sheet.style.transform = `translateY(${dy}px)`
+    }
+    const onEnd = () => {
+      if (!start || !dragging) return (start = null)
+      const fast = dy / Math.max(1, Date.now() - start.t) > 0.6
+      start = null
+      dragging = false
+      if (dy > 110 || (fast && dy > 30)) closeRef.current()
+      else reset()
+    }
+    sheet.addEventListener('touchstart', onStart, { passive: true })
+    sheet.addEventListener('touchmove', onMove, { passive: false })
+    sheet.addEventListener('touchend', onEnd)
+    sheet.addEventListener('touchcancel', onEnd)
+    return () => {
+      sheet.removeEventListener('touchstart', onStart)
+      sheet.removeEventListener('touchmove', onMove)
+      sheet.removeEventListener('touchend', onEnd)
+      sheet.removeEventListener('touchcancel', onEnd)
+      // Left where your finger let go, so it drops away from there.
+    }
+  }, [open, mounted])
+
   useEffect(() => {
     if (!open) return
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()

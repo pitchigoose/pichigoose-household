@@ -729,3 +729,13 @@ html[data-kb="open"] body.adding .with-tabbar > .scroll {
 .meet-progress { display: flex; align-items: center; gap: 10px; margin: 2px 0 12px }
 .meet-bar { flex: 1; height: 6px; border-radius: 3px; background: color-mix(in srgb, var(--hero) 18%, #FFFDF8); overflow: hidden }
 .meet-bar span { display: block; height: 100%; border-radius: 3px; background: var(--hero-dark); transition: width .35s var(--ease-out) }
+
+/* Your own big picture on your profile opens Change character: a slim "Edit" slice across the bottom of the circle,
+   cut along a line, not through the middle (Nora, 1 Nov). */
+.av-edit-wrap { position: relative; display: block; border-radius: 50%; -webkit-tap-highlight-color: transparent }
+.av-edit-wrap:active { transform: scale(.97) }
+.av-edit { position: absolute; inset: 0; border-radius: 50%; overflow: hidden; pointer-events: none }
+.av-edit span {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 16%; display: flex; align-items: flex-start; justify-content: center; padding-top: 5px;
+  background: rgba(30, 26, 48, .55); color: #FFFFFF; font-size: 14px; font-weight: 800; letter-spacing: .02em;
+}
