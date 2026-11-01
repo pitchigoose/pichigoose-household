@@ -301,7 +301,7 @@ export function PantryScreen() {
       )}
 
       <GroupSheet groupId={open} onClose={() => setOpen(null)} />
-      <MeetPichi open={teaching} onClose={() => setTeaching(false)} />
+      <MeetPichi open={teaching} onClose={() => setTeaching(false)} room={room} />
 
       {/* A room: its name, and what kind of room it is (that decides the drawings). */}
       <Sheet small open={Boolean(roomEdit)} onClose={() => setRoomEdit(null)} title={roomEdit?.id ? t('pantry.rooms.edit') : t('pantry.rooms.new')}>

@@ -74,6 +74,29 @@ export function TypingBar({ value, onChange, onSend, placeholder, onSticker, mul
     own.current?.blur()
   }
 
+  // Inside a scrolling pop-up (comments), iPhone can draw the floating bar in one place but decide the tap hit
+  // something else, so tapping Send only closed the keyboard (Nora, 1 Nov). While you're typing, also check where
+  // the finger really landed: on the Send button, it sends, whatever the phone thinks was tapped.
+  const sendRef = useRef<HTMLButtonElement>(null)
+  useEffect(() => {
+    if (!typing) return
+    const onTouch = (e: TouchEvent) => {
+      const btn = sendRef.current
+      const touch = e.touches[0]
+      if (!btn || !touch || e.touches.length > 1 || justSent()) return
+      const r = btn.getBoundingClientRect()
+      const slack = 6
+      const inside = touch.clientX >= r.left - slack && touch.clientX <= r.right + slack && touch.clientY >= r.top - slack && touch.clientY <= r.bottom + slack
+      if (!inside || btn.contains(e.target as Node)) return
+      e.preventDefault()
+      send()
+    }
+    document.addEventListener('touchstart', onTouch, { capture: true, passive: false })
+    return () => document.removeEventListener('touchstart', onTouch, { capture: true })
+    // send reads the field itself, so it's always current.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [typing])
+
   function key(e: KeyboardEvent<HTMLTextAreaElement>) {
     // On a computer, Enter sends and Shift+Enter starts a new line. On a phone, Return is a new line, like WhatsApp.
     if (!touchScreen && e.key === 'Enter' && !e.shiftKey) {
@@ -146,6 +169,7 @@ export function TypingBar({ value, onChange, onSend, placeholder, onSticker, mul
       {/* Sends the moment your finger touches it, before the keyboard or the bar can move (otherwise the field let
           go first, the bar settled, and the tap missed). Enter and the keyboard's Send key go through the form. */}
       <button
+        ref={sendRef}
         type="button"
         // Never switched off (a switched-off button ignores the tap, and only closes the keyboard); it just looks pale.
         className={`send-btn${value.trim() ? '' : ' empty'}`}

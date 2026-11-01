@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMe } from '../auth'
 import { db } from '../data/store'
-import { useHousehold, usePantry, useRooms, useSpots, type PantryItem, type RoomKind } from '../data/hooks'
+import { useHousehold, usePantry, useRooms, useSpots, type PantryItem, type Room, type RoomKind } from '../data/hooks'
 import { tracked } from '../data/actions'
 import { PichiSays } from '../components/PichiSays'
 import { KeepTrackFields, trackPatch } from '../components/KeepTrack'
@@ -53,7 +53,9 @@ export function useMeetPichiOnce() {
   return { open, close }
 }
 
-export function MeetPichi({ open, onClose }: { open: boolean; onClose: () => void }) {
+/** `room`: the room it was opened from in the pantry. Then Pichi only asks about that room (Nora, 1 Nov: from the
+ *  bathroom he suggested eggs and milk). */
+export function MeetPichi({ open, onClose, room }: { open: boolean; onClose: () => void; room?: Room | null }) {
   const { t } = useTranslation()
   const me = useMe()
   const { household } = useHousehold()
@@ -84,7 +86,14 @@ export function MeetPichi({ open, onClose }: { open: boolean; onClose: () => voi
   const has = (name: string) => groups.some((g) => g.name.toLocaleLowerCase() === name.trim().toLocaleLowerCase())
   const ideas = (kind: 'kitchen' | 'bathroom') => (t(`meet.ideas.${kind}`, { returnObjects: true }) as string[]).filter((n) => !has(n))
   // The bathroom step has the bathroom's shelves; the kitchen step has the kitchen's and any other room's.
-  const shelvesFor = (kind: 'kitchen' | 'bathroom') => groups.filter((g) => !g.rows.some(tracked) && (kindOf(g.rows[0]) === 'bathroom') === (kind === 'bathroom'))
+  // From a room: only what's on that room's shelves. Otherwise the bathroom step has the bathroom's shelves, and the
+  // kitchen step the kitchen's and any other room's.
+  const inRoom = (p: PantryItem) => spots.rows.find((x) => x.id === spotOf(p, rooms.rows, spots.rows))?.room_id === room?.id
+  const shelvesFor = (kind: 'kitchen' | 'bathroom') =>
+    groups.filter((g) => !g.rows.some(tracked) && (room ? inRoom(g.rows[0]) : (kindOf(g.rows[0]) === 'bathroom') === (kind === 'bathroom')))
+  // The room steps: just this room's kind when opened from a kitchen or bathroom, else both.
+  const kinds: ('kitchen' | 'bathroom')[] = room?.kind === 'bathroom' ? ['bathroom'] : room?.kind === 'kitchen' ? ['kitchen'] : ['kitchen', 'bathroom']
+  const firstThing = 1 + kinds.length
 
   const isPicked = (key: string) => picked.some((x) => x.key === key)
   const toggle = (x: Pick) => setPicked((all) => (all.some((y) => y.key === x.key) ? all.filter((y) => y.key !== x.key) : [...all, x]))
@@ -102,8 +111,13 @@ export function MeetPichi({ open, onClose }: { open: boolean; onClose: () => voi
 
   /** The first storage spot in the first room of that kind (else the first spot there is). */
   function spotFor(kind: RoomKind) {
-    const room = rooms.rows.find((r) => r.kind === kind) ?? rooms.rows[0]
-    return spots.rows.filter((x) => x.room_id === room?.id).sort((a, b) => a.position - b.position)[0] ?? spots.rows[0] ?? null
+    // Opened from a room of this kind: things go on that room's shelves.
+    if (room && room.kind === kind) {
+      const own = spots.rows.filter((x) => x.room_id === room.id).sort((a, b) => a.position - b.position)[0]
+      if (own) return own
+    }
+    const first = rooms.rows.find((r) => r.kind === kind) ?? rooms.rows[0]
+    return spots.rows.filter((x) => x.room_id === first?.id).sort((a, b) => a.position - b.position)[0] ?? spots.rows[0] ?? null
   }
 
   function finish() {
@@ -154,7 +168,7 @@ export function MeetPichi({ open, onClose }: { open: boolean; onClose: () => voi
   )
 
   // Hello, kitchen, bathroom, then one for each thing.
-  const total = 3 + picked.length
+  const total = firstThing + picked.length
   const at = Math.min(step, total - 1)
   /** How far along: a thin line filling up, and "3 of 7". */
   const progress = (
@@ -200,12 +214,12 @@ export function MeetPichi({ open, onClose }: { open: boolean; onClose: () => voi
   }
 
   // 2 and 3. The kitchen, then the bathroom: what's on your shelves, Pichi's ideas, and your own.
-  if (at === 1 || at === 2) {
-    const kind = at === 1 ? 'kitchen' : 'bathroom'
+  if (at >= 1 && at < firstThing) {
+    const kind = kinds[at - 1]
     const shelves = shelvesFor(kind)
     const mine = picked.filter((x) => x.key.startsWith('new:') && x.kind === kind && !ideas(kind).some((n) => n.toLocaleLowerCase() === x.name.toLocaleLowerCase()))
     return (
-      <PichiSays open={open} onClose={onClose} title={t(`meet.${kind}Title`)}>
+      <PichiSays open={open} onClose={onClose} title={t(kind === 'bathroom' && kinds.length === 1 ? 'meet.bathroomOnlyTitle' : `meet.${kind}Title`)}>
         {progress}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           {shelves.length > 0 && (
@@ -237,21 +251,21 @@ export function MeetPichi({ open, onClose }: { open: boolean; onClose: () => voi
         </div>
         {buttons(() => {
           setOwn('')
-          if (at === 2 && !picked.length) onClose()
+          if (at === firstThing - 1 && !picked.length) onClose()
           else setStep(at + 1)
-        }, at === 2 && !picked.length ? t('meet.nothing') : t('meet.next'))}
+        }, at === firstThing - 1 && !picked.length ? t('meet.nothing') : t('meet.next'))}
       </PichiSays>
     )
   }
 
   // 4 and on. One thing at a time: how often you buy it, and how many.
-  const x = picked[at - 3]
+  const x = picked[at - firstThing]
   const last = at === total - 1
   return (
     <PichiSays open={open} onClose={onClose} title={x.name}>
       {progress}
       {/* Nora's line, on the first one. */}
-      {at === 3 && <p className="body" style={{ margin: '0 0 14px' }}>{t('meet.oftenText')}</p>}
+      {at === firstThing && <p className="body" style={{ margin: '0 0 14px' }}>{t('meet.oftenText')}</p>}
       <KeepTrackFields every={x.every} count={x.count} onChange={(every, count) => setPicked((all) => all.map((y) => (y.key === x.key ? { ...y, every, count } : y)))} />
       {buttons(last ? finish : () => setStep(at + 1), last ? t('meet.start') : t('meet.next'))}
     </PichiSays>
