@@ -77,6 +77,7 @@ Who belongs to which household, plus each person's own settings for that househo
 | label | text, nullable | what this person calls the household, set with Rename in My households. Joining leaves it empty (Nora: the person joining doesn't name the household). If empty, the app shows `households.name` |
 | home_layout | jsonb | this person's own home order (A11): `[{ "section": "todos", "visible": true }, { "section": "shopping", "visible": true }, ...]` [Nora] |
 | joined_at | timestamptz | |
+| display_name | text, nullable | this person's name in this household, like "Lada" with her dad and "Nora" with her uncle [Nora, 1 Nov]. Set from the household's ··· menu, offered only to people in more than one household. Empty: `profiles.display_name`. Everyone in the household sees it |
 
 - Leaving a household deletes this row (A7). When the last member leaves, the household and everything in it is deleted [Claude].
 - The household's admin (`households.created_by`) can remove anyone else, which also deletes their row. What they wrote stays [Nora].

@@ -99,7 +99,10 @@
     "join": "Pridruži se",
     "createNew": "Napravi novo",
     "invite": "Pozovi nekoga",
-    "secret": "Tajna lozinka"
+    "secret": "Tajna lozinka",
+    "myName": "Tvoje ime ovde",
+    "myNameTitle": "Tvoje ime u: {{name}}",
+    "myNameHelp": "Vide ga samo ljudi u ovom domaćinstvu. Ostavi prazno i bićeš {{name}}."
   },
   "tabs": {
     "home": "Početna",
@@ -331,7 +334,8 @@
       "black": "Onigiri"
     },
     "name": "Tvoje ime",
-    "nameHint": "Ovo ime vide svi u svim tvojim domaćinstvima."
+    "nameHint": "Ovo ime vide svi u svim tvojim domaćinstvima.",
+    "nameHintMany": "Tvoje ime u svim domaćinstvima, osim ako u meniju ··· nekog domaćinstva izabereš drugo."
   },
   "invite": {
     "title": "Pozovi nekoga",

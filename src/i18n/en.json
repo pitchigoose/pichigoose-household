@@ -97,7 +97,10 @@
     "join": "Join",
     "createNew": "Create new",
     "invite": "Invite someone",
-    "secret": "Secret password"
+    "secret": "Secret password",
+    "myName": "Your name here",
+    "myNameTitle": "Your name in {{name}}",
+    "myNameHelp": "Only people in this household see it. Leave it empty to be {{name}}."
   },
   "tabs": {
     "home": "Home",
@@ -325,7 +328,8 @@
       "black": "Onigiri"
     },
     "name": "Your name",
-    "nameHint": "Everyone in all your households sees this name."
+    "nameHint": "Everyone in all your households sees this name.",
+    "nameHintMany": "Your name in every household, unless you pick another one in that household's ··· menu."
   },
   "invite": {
     "title": "Invite someone",

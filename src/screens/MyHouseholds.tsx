@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useMe } from '../auth'
 import { db } from '../data/store'
-import { setCurrentHousehold, useHousehold, useItemsIn, useLists, useNotes, useProjects, useRooms, useTodos, type Household } from '../data/hooks'
+import { setCurrentHousehold, useHousehold, useItemsIn, useMyProfile, useLists, useNotes, useProjects, useRooms, useTodos, type Household } from '../data/hooks'
 import { Avatar } from '../components/Avatar'
 import { Hand, Menu, Sheet, Tape, type TapeKind } from '../components/Scrapbook'
 import { DotsIcon, PencilIcon, PersonAddIcon, SmallCheck } from '../components/Icons'
@@ -34,6 +34,10 @@ export function MyHouseholds({ open, onClose, page }: { open: boolean; onClose: 
   const [inviting, setInviting] = useState<Household | null>(null)
   const [secretFor, setSecretFor] = useState<Household | null>(null)
   const [secretText, setSecretText] = useState('')
+  // Your name in one household (Nora, 1 Nov): only offered when you're in more than one.
+  const profile = useMyProfile()
+  const [naming, setNaming] = useState<Household | null>(null)
+  const [myName, setMyName] = useState('')
 
   // The hub's top part: this home's people, and a few numbers about it (Nora, 30 Oct): notes, to-dos still open,
   // things to buy, shelves and projects still going. Each one opens its screen.
@@ -63,6 +67,27 @@ export function MyHouseholds({ open, onClose, page }: { open: boolean; onClose: 
     setCurrentHousehold(h.id)
     onClose()
     if (page) navigate('/')
+  }
+
+  /** "Your name here", in a household's menu, when you're in more than one household. */
+  const nameItem = (h: Household) =>
+    households.length > 1
+      ? [
+          {
+            label: t('households.myName'),
+            onClick: () => {
+              setMyName(peopleIn(h.id).find((p) => p.id === me)?.display_name === profile?.display_name ? '' : peopleIn(h.id).find((p) => p.id === me)?.display_name ?? '')
+              setNaming(h)
+            },
+          },
+        ]
+      : []
+
+  function saveMyName() {
+    if (!naming) return
+    const clean = myName.trim()
+    db.update('household_members', { household_id: naming.id, user_id: me }, { display_name: clean && clean !== profile?.display_name ? clean : null })
+    setNaming(null)
   }
 
   function rename() {
@@ -126,6 +151,27 @@ export function MyHouseholds({ open, onClose, page }: { open: boolean; onClose: 
             />
             <p className="cap" style={{ margin: '8px 0 0' }}>
               {t('join.secretCreateHelp')}
+            </p>
+          </div>
+          <button type="submit" className="stk prim" style={{ width: '100%' }}>
+            {t('common.save')}
+          </button>
+        </form>
+      </Sheet>
+
+      {/* Your name in this household. Empty: your name from Settings. */}
+      <Sheet small open={Boolean(naming)} onClose={() => setNaming(null)} title={naming ? t('households.myNameTitle', { name: name(naming) }) : ''}>
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            saveMyName()
+          }}
+          style={{ display: 'flex', flexDirection: 'column', gap: 16 }}
+        >
+          <div>
+            <input className="input" ref={autoFocusField} maxLength={40} autoComplete="nickname" value={myName} placeholder={profile?.display_name ?? ''} onChange={(e) => setMyName(e.target.value)} aria-label={naming ? t('households.myNameTitle', { name: name(naming) }) : ''} />
+            <p className="cap" style={{ margin: '8px 0 0' }}>
+              {t('households.myNameHelp', { name: profile?.display_name ?? '' })}
             </p>
           </div>
           <button type="submit" className="stk prim" style={{ width: '100%' }}>
@@ -220,6 +266,7 @@ export function MyHouseholds({ open, onClose, page }: { open: boolean; onClose: 
                                 setRenaming(h)
                               },
                             },
+                            ...nameItem(h),
                             { label: t('households.invite'), onClick: () => setInviting(h) },
                             {
                       label: t('households.secret'),
@@ -257,7 +304,7 @@ export function MyHouseholds({ open, onClose, page }: { open: boolean; onClose: 
     <>
       {/* The "Our home" hub (Nora, 29 Oct): everything about this home first (its people, the notes and rooms
           that aren't in the menu, Arrange), then your other homes. Settings and About live elsewhere. */}
-      <Sheet open={open && !renaming && !leaving && !inviting && !secretFor && !deleting} onClose={onClose} title={current ? name(current) : t('households.title')}>
+      <Sheet open={open && !renaming && !naming && !leaving && !inviting && !secretFor && !deleting} onClose={onClose} title={current ? name(current) : t('households.title')}>
         {current && (
           <>
             <div className="cap" style={{ marginTop: -8 }}>
@@ -340,6 +387,7 @@ export function MyHouseholds({ open, onClose, page }: { open: boolean; onClose: 
                         setRenaming(h)
                       },
                     },
+                    ...nameItem(h),
                     { label: t('households.invite'), onClick: () => setInviting(h) },
                     {
                       label: t('households.secret'),

@@ -116,7 +116,7 @@ export function HomeScreen() {
   const { t, i18n } = useTranslation()
   const me = useMe()
   const profile = useMyProfile()
-  const { household, membership, people, name } = useHousehold()
+  const { household, membership, people, name, myName } = useHousehold()
   const hid = household?.id ?? null
   const lists = useLists(hid)
   const projects = useProjects(hid)
@@ -281,7 +281,7 @@ export function HomeScreen() {
           >
             {/* The greeting leads; the news sits a step smaller under it. */}
             <Hand size={desktop ? 31 : 27} lineHeight={desktop ? 34 : 30} color="#FFFFFF">
-              {t('home.hi', { name: profile?.display_name ?? '' })}
+              {t('home.hi', { name: myName })}
             </Hand>
             <div style={{ fontSize: desktop ? 16 : 14, lineHeight: desktop ? '22px' : '20px', fontWeight: 600, marginTop: 2, color: 'rgba(255, 255, 255, .82)' }}>{news}</div>
           </div>

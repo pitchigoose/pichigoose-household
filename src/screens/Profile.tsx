@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useAuth, useMe } from '../auth'
 import { supabase } from '../lib/supabase'
 import { db } from '../data/store'
-import { useMyProfile, type Avatar as AvatarData } from '../data/hooks'
+import { useHousehold, useMyProfile, type Avatar as AvatarData } from '../data/hooks'
 import { Screen } from '../components/Shell'
 import { ACCESSORIES, Avatar, CHARACTERS, COLORS, COLOR_HEX } from '../components/Avatar'
 import { Hand } from '../components/Scrapbook'
@@ -336,6 +336,7 @@ export function SettingsScreen() {
   const me = useMe()
   const profile = useMyProfile()
   const email = useAuth().session?.user.email ?? ''
+  const { households } = useHousehold()
   // Your name, right here in Settings (Nora, 1 Nov). Saved when you leave the field or press Enter; left empty, it
   // goes back to what it was.
   const [name, setName] = useState(profile?.display_name ?? '')
@@ -395,7 +396,7 @@ export function SettingsScreen() {
               }
             }}
           />
-          <p className="cap" style={{ margin: '6px 0 0', fontSize: 14 }}>{t('settings.nameHint')}</p>
+          <p className="cap" style={{ margin: '6px 0 0', fontSize: 14 }}>{t(households.length > 1 ? 'settings.nameHintMany' : 'settings.nameHint')}</p>
         </section>
 
         <section>
