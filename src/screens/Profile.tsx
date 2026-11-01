@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { useAuth, useMe } from '../auth'
 import { supabase } from '../lib/supabase'
 import { db } from '../data/store'
-import { useHousehold, useMyProfile, type Avatar as AvatarData } from '../data/hooks'
+import { useHousehold, useMembers, useMyProfile, type Avatar as AvatarData } from '../data/hooks'
 import { Screen } from '../components/Shell'
 import { ACCESSORIES, Avatar, CHARACTERS, COLORS, COLOR_HEX } from '../components/Avatar'
 import { Hand } from '../components/Scrapbook'
@@ -336,7 +336,7 @@ export function SettingsScreen() {
   const me = useMe()
   const profile = useMyProfile()
   const email = useAuth().session?.user.email ?? ''
-  const { households } = useHousehold()
+  const { households, name: householdName } = useHousehold()
   // Your name, right here in Settings (Nora, 1 Nov). Saved when you leave the field or press Enter; left empty, it
   // goes back to what it was.
   const [name, setName] = useState(profile?.display_name ?? '')
@@ -397,6 +397,16 @@ export function SettingsScreen() {
             }}
           />
           <p className="cap" style={{ margin: '6px 0 0', fontSize: 14 }}>{t(households.length > 1 ? 'settings.nameHintMany' : 'settings.nameHint')}</p>
+          {/* A different display name in each household, only for people in more than one (Nora, 1 Nov). */}
+          {households.length > 1 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 18 }}>
+              <span className="label" style={{ margin: 0 }}>{t('settings.perHousehold')}</span>
+              {households.map((h) => (
+                <HouseholdName key={h.id} householdId={h.id} label={householdName(h)} main={profile?.display_name ?? ''} />
+              ))}
+              <p className="cap" style={{ margin: 0, fontSize: 14 }}>{t('settings.perHouseholdHint', { name: profile?.display_name ?? '' })}</p>
+            </div>
+          )}
         </section>
 
         <section>
@@ -466,5 +476,46 @@ export function SettingsScreen() {
         </Link>
       </div>
     </Screen>
+  )
+}
+
+/** Your display name in one household, in Settings. Saved when you leave the field; empty means your display name. */
+function HouseholdName({ householdId, label, main }: { householdId: string; label: string; main: string }) {
+  const me = useMe()
+  const mine = useMembers().rows.find((m) => m.household_id === householdId && m.user_id === me)
+  const saved = mine?.display_name ?? ''
+  const [value, setValue] = useState(saved)
+  useEffect(() => setValue(saved), [saved])
+  function save() {
+    const clean = value.trim()
+    const next = clean && clean !== main ? clean : null
+    if (next !== (mine?.display_name ?? null)) db.update('household_members', { household_id: householdId, user_id: me }, { display_name: next })
+    if (!next) setValue('')
+  }
+  const id = `name-in-${householdId}`
+  return (
+    <div className="row" style={{ gap: 12, alignItems: 'center' }}>
+      <label htmlFor={id} className="body" style={{ flex: '0 0 38%', minWidth: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', fontWeight: 700 }}>
+        {label}
+      </label>
+      <input
+        id={id}
+        className="input"
+        style={{ flex: 1, minWidth: 0 }}
+        value={value}
+        placeholder={main}
+        maxLength={40}
+        autoComplete="nickname"
+        enterKeyHint="done"
+        onChange={(e) => setValue(e.target.value)}
+        onBlur={save}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault()
+            e.currentTarget.blur()
+          }
+        }}
+      />
+    </div>
   )
 }
