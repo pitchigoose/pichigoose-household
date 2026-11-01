@@ -157,6 +157,28 @@ A temporary household for something people from different homes do together, lik
 
 Each phase ends with Nora testing it on her phone.
 
+## Road to the App Store [Nora, 1 Nov]
+
+The order Nora chose: gamification first, then the iPhone wrap (Capacitor, built on Nora's Mac in Xcode), TestFlight for family and friends, then the public App Store. Android (Danko) waits.
+
+**To do in the app**
+- [ ] **Find the Pichi talk again.** After "Not now" it's only reachable from Pichi's face at the top of a pantry room (that room only) and "Teach Pichi" on Pichi's page, and neither says what it does. Make it easy to find, so everyday things can be tracked any time [Nora].
+- [ ] **Gamification** (trophies, see the ideas below), before anything else on this list [Nora].
+- [ ] **Delete your account inside the app.** Apple requires it for any app you can sign up for.
+- [ ] **Report and block** for the chat and comments. Apple requires it wherever people write to each other, even in a private family app.
+- [ ] **A privacy policy and a support page** on pichigoose.com, linked from Settings and from the App Store listing. Claude drafts, Nora edits.
+- [ ] **Nothing unfinished in sight.** Money is already hidden; check every screen for placeholders before review.
+- [ ] **The iPhone wrap with native touches:** real push notifications (no more "Add to Home Screen"), the native keyboard, haptics, the app icon and launch screen. Apple turns down apps that are only a website in a box.
+- [ ] **Automated checks** for what must never break: the offline shopping list, sending messages, Pichi keeping track.
+
+**To do in App Store Connect**
+- [ ] Apple developer account ($99 a year).
+- [ ] A demo login with a demo household for the reviewer (lists, chat, Pichi's things).
+- [ ] Screenshots, description, age rating, and the privacy questions (what the app stores: email, name, what people write).
+- [ ] TestFlight for family and friends first; Apple does a short check before outside testers can join.
+
+Already fine: email and password sign-in with a forgotten-password flow, so no Sign in with Apple is needed (Apple only asks for it when there's Google or Facebook sign-in).
+
 ## Open questions (don't decide these, ask Nora)
 
 - Events: how simple is "simpler than a household"?
