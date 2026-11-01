@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useRef } from 'react'
 import { useKept } from '../lib/kept'
 import { useTranslation } from 'react-i18next'
 import { useMe } from '../auth'
@@ -70,12 +70,16 @@ export function Comments({ target }: { target: CommentTarget }) {
   // What you're typing stays if you step away and come back.
   const [text, setText] = useKept(`comments:${Object.values(target)[0]}:text`, '')
   const heartsOn = useHeartsOn()
+  // Comments that were here when it opened; a new one pops in (Nora, 1 Nov).
+  const already = useRef<Set<string> | null>(null)
 
   const thread = useMemo(
     () => comments.rows.filter((c) => about(c, target)).sort((a, b) => a.created_at.localeCompare(b.created_at)),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [comments.rows, JSON.stringify(target)],
   )
+
+  if (already.current === null && comments.loaded) already.current = new Set(thread.map((c) => c.id))
 
   function send(body: string, sticker?: string) {
     if (!household) return
@@ -98,18 +102,19 @@ export function Comments({ target }: { target: CommentTarget }) {
     <section className="comments" aria-label={t('comments.title')}>
       <span className="label">{t('comments.title')}</span>
       {thread.map((c) => (
-        <CommentRow key={c.id} c={c} hearts={heartsOn({ comment_id: c.id })} />
+        <CommentRow key={c.id} c={c} hearts={heartsOn({ comment_id: c.id })} fresh={!already.current?.has(c.id)} />
       ))}
-      {/* The typing bar sits here, and floats up above the keyboard while you type. */}
+      {/* The typing bar, like the chat's (Nora, 1 Nov): in a pop-up it stays pinned to the bottom of the pop-up, which
+          rises with the keyboard, so nothing floats on top for iPhone to mix up. */}
       <div className="typing-slot" style={{ marginTop: thread.length ? 4 : 0 }}>
-        <TypingBar mentionable value={text} onChange={setText} onSend={(body) => send(body)} onSticker={(name) => send('', name)} placeholder={t('comments.placeholder')} />
+        <TypingBar mentionable keepKeyboard value={text} onChange={setText} onSend={(body) => send(body)} onSticker={(name) => send('', name)} placeholder={t('comments.placeholder')} />
       </div>
     </section>
   )
 }
 
 /** One comment. Double-tap it, or tap the small heart, to heart it; who hearted it shows under the text. */
-function CommentRow({ c, hearts }: { c: Comment; hearts: Heart[] }) {
+function CommentRow({ c, hearts, fresh }: { c: Comment; hearts: Heart[]; fresh?: boolean }) {
   const { t, i18n } = useTranslation()
   const me = useMe()
   const { people } = useHousehold()
@@ -118,7 +123,7 @@ function CommentRow({ c, hearts }: { c: Comment; hearts: Heart[] }) {
   const tap = useDoubleTap(() => add(target, hearts))
   const who = people.find((p) => p.id === c.author_id)
   return (
-    <div className="comment" onClick={tap.onClick}>
+    <div className={`comment${fresh ? ' pop' : ''}`} onClick={tap.onClick}>
       <PersonLink id={who?.id}>
         <Avatar avatar={who?.avatar} size={28} />
       </PersonLink>

@@ -625,6 +625,19 @@ html[data-kb="open"] body.adding .with-tabbar > .scroll {
   .typing-slot .typing-bar.typing { position: fixed; z-index: 60; left: calc(var(--edge) + 14px); right: calc(var(--edge) + 14px); bottom: calc(var(--kb) + var(--frame) + var(--tabbar-gap)); animation: typing-up .25s var(--ease-out) }
 }
 @keyframes typing-up { from { opacity: .4; transform: translateY(12px) } }
+/* In a pop-up (comments on a to-do, an item), the bar never floats: it stays at the end of the pop-up, like the chat's
+   bar at the end of its screen. The pop-up reaches behind the keyboard; while you type, it scrolls to its end, so the
+   bar sits right above the keyboard with the comments over it (Nora, 1 Nov). The bar carries the pop-up's bottom
+   space, so that end is the same on every phone. */
+.sheet:has(.typing-slot) { padding-bottom: 0 }
+.sheet .typing-slot { margin-top: 6px; padding-bottom: calc(14px + var(--bottom)) }
+.sheet .typing-slot .typing-bar.typing { position: relative; left: auto; right: auto; bottom: auto; z-index: auto; animation: typing-drop .36s cubic-bezier(.34, 1.56, .64, 1) }
+/* A new message or comment pops in from the bar, like WhatsApp (Nora, 1 Nov). */
+.msg.pop .bubble { animation: msg-pop .42s cubic-bezier(.34, 1.56, .64, 1) both; transform-origin: 0% 100% }
+.msg.mine.pop .bubble { transform-origin: 100% 100% }
+.comment.pop { animation: msg-pop .42s cubic-bezier(.34, 1.56, .64, 1) both; transform-origin: 0% 100% }
+@keyframes msg-pop { 0% { opacity: 0; transform: translateY(18px) scale(.86) } 60% { opacity: 1 } 100% { transform: none } }
+@media (prefers-reduced-motion: reduce) { .msg.pop .bubble, .comment.pop { animation: none } }
 /* Tapping into a typing bar: a tiny drop-of-water bounce. */
 .typing-bar.typing { animation: typing-drop .36s cubic-bezier(.34, 1.56, .64, 1) }
 @keyframes typing-drop { 0% { scale: 1 } 35% { scale: 1.025 .96 } 70% { scale: .995 1.01 } 100% { scale: 1 } }

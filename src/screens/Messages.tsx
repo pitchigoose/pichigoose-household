@@ -77,6 +77,9 @@ function Bubbles({ messages, joins = [], group, readByAll, onReply }: { messages
   const person = (id: string | null): Profile | undefined => people.find((p) => p.id === id)
   const heartsOn = useHeartsOn()
   const byId = new Map(messages.map((m) => [m.id, m]))
+  // What was already here when the chat opened; anything newer pops in, like WhatsApp (Nora, 1 Nov).
+  const already = useRef<Set<string> | null>(null)
+  if (already.current === null) already.current = new Set(messages.map((m) => m.id))
   const { t } = useTranslation()
   const quoteName = (q?: Message) => (!q ? '' : q.author_id === me ? t('messages.you') : (person(q.author_id)?.display_name ?? t('common.someone')))
   // Messages and joins in one line, by time. A join breaks a run of bubbles, like a new day does.
@@ -129,6 +132,7 @@ function Bubbles({ messages, joins = [], group, readByAll, onReply }: { messages
               quote={m.reply_to ? byId.get(m.reply_to) : undefined}
               quoteName={quoteName(m.reply_to ? byId.get(m.reply_to) : undefined)}
               onReply={() => onReply(m)}
+              fresh={!already.current?.has(m.id)}
             />
           </div>
         )
@@ -140,14 +144,14 @@ function Bubbles({ messages, joins = [], group, readByAll, onReply }: { messages
 /** One speech bubble. Double-tap it, or tap the small heart beside it, to heart it. Who hearted it
  *  shows on a little tag hanging under the bubble, like Instagram. Swipe it to the right to reply, like
  *  WhatsApp (on a computer: the reply arrow that shows when you point at it). */
-function Bubble({ m, mine, first, lastOfRun, group, who, time, read, hearts, quote, quoteName, onReply }: { m: Message; mine: boolean; first: boolean; lastOfRun: boolean; group: boolean; who?: Profile; time: string; read: boolean; hearts: Heart[]; quote?: Message; quoteName: string; onReply: () => void }) {
+function Bubble({ m, mine, first, lastOfRun, group, who, time, read, hearts, quote, quoteName, onReply, fresh }: { m: Message; mine: boolean; first: boolean; lastOfRun: boolean; group: boolean; who?: Profile; time: string; read: boolean; hearts: Heart[]; quote?: Message; quoteName: string; onReply: () => void; fresh?: boolean }) {
   const { t } = useTranslation()
   const { add } = useHeartActions()
   const target = { message_id: m.id }
   const tap = useDoubleTap(() => add(target, hearts))
   const swipe = useSwipeToReply(onReply)
   return (
-    <div id={`msg-${m.id}`} className={`msg${mine ? ' mine' : ''}${first ? ' first' : ''}${lastOfRun ? ' last' : ''}${hearts.length ? ' hearted' : ''}`} {...swipe.handlers}>
+    <div id={`msg-${m.id}`} className={`msg${fresh ? ' pop' : ''}${mine ? ' mine' : ''}${first ? ' first' : ''}${lastOfRun ? ' last' : ''}${hearts.length ? ' hearted' : ''}`} {...swipe.handlers}>
       <span className="reply-hint" style={{ opacity: Math.min(1, swipe.shift / 48), transform: `scale(${0.6 + Math.min(1, swipe.shift / 48) * 0.4})` }} aria-hidden>
         <ReplyIcon />
       </span>

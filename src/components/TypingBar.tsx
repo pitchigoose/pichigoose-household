@@ -99,6 +99,61 @@ export function TypingBar({ value, onChange, onSend, placeholder, onSticker, mul
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [typing])
 
+  // In a pop-up (comments), the bar stays at the pop-up's end: while you type, keep the pop-up scrolled to that end,
+  // following the keyboard as it slides in, so the bar sits right above it with the comments over it (Nora, 1 Nov).
+  useEffect(() => {
+    if (!typing) return
+    const sheet = own.current?.closest('.sheet') as HTMLElement | null
+    if (!sheet) return
+    let raf = 0
+    let until = 0
+    const step = () => {
+      sheet.scrollTop = sheet.scrollHeight
+      if (Date.now() < until) raf = requestAnimationFrame(step)
+    }
+    const follow = () => {
+      until = Date.now() + 700
+      cancelAnimationFrame(raf)
+      step()
+    }
+    follow()
+    window.visualViewport?.addEventListener('resize', follow)
+    // A comment you just sent grows the list: stay at the end.
+    const grew = new ResizeObserver(follow)
+    if (sheet.firstElementChild) for (const child of Array.from(sheet.children)) grew.observe(child)
+    return () => {
+      cancelAnimationFrame(raf)
+      grew.disconnect()
+      window.visualViewport?.removeEventListener('resize', follow)
+    }
+  }, [typing])
+
+  // Tapping outside the bar (the messages, the empty paper) closes the keyboard, like WhatsApp (Nora, 1 Nov).
+  // Only a tap: scrolling the messages doesn't count. Tapping another field just moves there.
+  const formRef = useRef<HTMLFormElement>(null)
+  useEffect(() => {
+    if (!typing) return
+    let start: { x: number; y: number; target: EventTarget | null } | null = null
+    const down = (e: PointerEvent) => {
+      start = { x: e.clientX, y: e.clientY, target: e.target }
+    }
+    const up = (e: PointerEvent) => {
+      const s = start
+      start = null
+      if (!s || Math.hypot(e.clientX - s.x, e.clientY - s.y) > 10) return
+      const el = s.target as Element | null
+      if (!el || formRef.current?.contains(el)) return
+      if (el.closest('input, textarea, select, [contenteditable="true"], .sticker-tray, .mention-picker')) return
+      own.current?.blur()
+    }
+    document.addEventListener('pointerdown', down, true)
+    document.addEventListener('pointerup', up, true)
+    return () => {
+      document.removeEventListener('pointerdown', down, true)
+      document.removeEventListener('pointerup', up, true)
+    }
+  }, [typing])
+
   function key(e: KeyboardEvent<HTMLTextAreaElement>) {
     // On a computer, Enter sends and Shift+Enter starts a new line. On a phone, Return is a new line, like WhatsApp.
     if (!touchScreen && e.key === 'Enter' && !e.shiftKey) {
@@ -152,7 +207,7 @@ export function TypingBar({ value, onChange, onSend, placeholder, onSticker, mul
     </div>
   )
   return (
-    <form className={`typing-bar${above || picker ? ' quoting' : ''}${typing ? ' typing' : ''} ${className}`} onSubmit={send}>
+    <form ref={formRef} className={`typing-bar${above || picker ? ' quoting' : ''}${typing ? ' typing' : ''} ${className}`} onSubmit={send}>
       {picker}
       {above}
       {multiline ? (
