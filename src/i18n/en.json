@@ -323,7 +323,9 @@
       "yellow": "Lemon",
       "brown": "Toast",
       "black": "Onigiri"
-    }
+    },
+    "name": "Your name",
+    "nameHint": "Everyone in all your households sees this name."
   },
   "invite": {
     "title": "Invite someone",

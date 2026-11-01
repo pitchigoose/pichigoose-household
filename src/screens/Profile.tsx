@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth, useMe } from '../auth'
@@ -336,6 +336,15 @@ export function SettingsScreen() {
   const me = useMe()
   const profile = useMyProfile()
   const email = useAuth().session?.user.email ?? ''
+  // Your name, right here in Settings (Nora, 1 Nov). Saved when you leave the field or press Enter; left empty, it
+  // goes back to what it was.
+  const [name, setName] = useState(profile?.display_name ?? '')
+  useEffect(() => setName(profile?.display_name ?? ''), [profile?.display_name])
+  function saveName() {
+    const clean = name.trim()
+    if (!clean) return setName(profile?.display_name ?? '')
+    if (clean !== profile?.display_name) db.update('profiles', me, { display_name: clean })
+  }
 
   return (
     <Screen center>
@@ -362,6 +371,32 @@ export function SettingsScreen() {
             </span>
           </span>
         </Link>
+
+        <section>
+          <label htmlFor="settings-name">
+            <Hand size={30} lineHeight={32}>
+              {t('settings.name')}
+            </Hand>
+          </label>
+          <input
+            id="settings-name"
+            className="input"
+            style={{ marginTop: 8 }}
+            value={name}
+            maxLength={40}
+            autoComplete="nickname"
+            enterKeyHint="done"
+            onChange={(e) => setName(e.target.value)}
+            onBlur={saveName}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault()
+                e.currentTarget.blur()
+              }
+            }}
+          />
+          <p className="cap" style={{ margin: '6px 0 0', fontSize: 14 }}>{t('settings.nameHint')}</p>
+        </section>
 
         <section>
           <Hand size={30} lineHeight={32}>

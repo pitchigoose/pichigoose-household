@@ -329,7 +329,9 @@
       "yellow": "Limun",
       "brown": "Tost",
       "black": "Onigiri"
-    }
+    },
+    "name": "Tvoje ime",
+    "nameHint": "Ovo ime vide svi u svim tvojim domaćinstvima."
   },
   "invite": {
     "title": "Pozovi nekoga",
