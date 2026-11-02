@@ -763,6 +763,8 @@
       "cleaning": "for cleaning {{count}} times in {{month}}",
       "cooking": "for cooking {{count}} times in {{month}}",
       "plants": "for looking after the plants {{count}} times in {{month}}"
-    }
+    },
+    "showDetails": "Show details",
+    "hideDetails": "Hide details"
   }
 }

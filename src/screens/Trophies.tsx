@@ -9,6 +9,7 @@ import { Avatar } from '../components/Avatar'
 import { BackIcon, ShareIcon } from '../components/Icons'
 import { Trophy } from '../components/Trophy'
 import { useBackInApp } from '../lib/back'
+import { THEMES } from '../lib/theme'
 import { entries, groceryItems, monthOf, monthsWithActivity, streakOf, trophies, type Chore, type Month, type Win } from '../lib/chores'
 
 const NOTES = ['n-butter', 'n-mint', 'n-blush', 'n-mist', 'n-sage', 'n-peach', 'n-lilac', 'n-sand']
@@ -182,6 +183,9 @@ function TrophySheet({ chore, months, onClose }: { chore: Chore | null; months: 
   const headline = t('trophies.shareHeadline', { trophy: trophyName })
   const line = chore && latest ? t(`trophies.shareLine.${chore}`, { count: latest.count, month: monthName(latest.month, i18n.language) }) : ''
   const [picture, setPicture] = useState<File | null>(null)
+  // "Show details" opens the day-by-day list under the tug of war (Nora, 2 Nov). Closed again each time it opens.
+  const [detailsOpen, setDetailsOpen] = useState<Month[]>([])
+  useEffect(() => setDetailsOpen([]), [chore])
   useEffect(() => {
     setPicture(null)
     if (!mine || !chore) return
@@ -210,21 +214,18 @@ function TrophySheet({ chore, months, onClose }: { chore: Chore | null; months: 
             </button>
           )}
           {parts.map(({ month, win, list }) => {
-            const who = win ? person(win.winner) : undefined
             return (
               <section key={month}>
                 <Hand size={26} lineHeight={28}>
                   {monthName(month, i18n.language)}
                 </Hand>
-                {win && (
-                  <div className="row" style={{ gap: 8, margin: '6px 0 10px' }}>
-                    {who && <Avatar avatar={who.avatar} label={who.display_name} size={28} />}
-                    <span style={{ fontWeight: 800, fontSize: 15 }}>
-                      {who?.display_name ?? t('common.someone')} · {t(chore === 'groceries' ? 'trophies.runs' : 'trophies.times', { count: win.count })}
-                    </span>
-                  </div>
-                )}
-                <span className="label">{t('trophies.counted')}</span>
+                {win && <TugOfWar counts={win.counts} chore={chore} />}
+                <button type="button" className="cap" aria-expanded={detailsOpen.includes(month)} style={{ fontWeight: 800, color: 'var(--hero-dark)', padding: '6px 0', marginTop: 4 }} onClick={() => setDetailsOpen((d) => (d.includes(month) ? d.filter((x) => x !== month) : [...d, month]))}>
+                  {detailsOpen.includes(month) ? t('trophies.hideDetails') : t('trophies.showDetails')}
+                </button>
+                {detailsOpen.includes(month) && (
+                <>
+                <span className="label" style={{ marginTop: 6 }}>{t('trophies.counted')}</span>
                 <div style={{ display: 'flex', flexDirection: 'column' }}>
                   {list.map((e, i) => {
                     const p = person(e.who)
@@ -240,11 +241,67 @@ function TrophySheet({ chore, months, onClose }: { chore: Chore | null; months: 
                     )
                   })}
                 </div>
+                </>
+                )}
               </section>
             )
           })}
         </div>
       )}
     </Sheet>
+  )
+}
+
+/** Mixes a color toward white, `share` from 0 (as is) to 1 (white). */
+function lighter(hex: string, share: number) {
+  const n = parseInt(hex.slice(1), 16)
+  const mix = (c: number) => Math.round(c + (255 - c) * share)
+  return `rgb(${mix(n >> 16)}, ${mix((n >> 8) & 255)}, ${mix(n & 255)})`
+}
+
+/**
+ * Tug of war (Nora, 2 Nov): one bar split by who did how much, each person in the color they picked for the app. You
+ * on the left, then everyone else, most first. Two people with the same color: the second gets 30% white over it (a
+ * third, 60%). It starts even and pulls to the real split when it opens. Underneath, a legend: picture, color, name.
+ */
+function TugOfWar({ counts, chore }: { counts: Record<string, number>; chore: Chore }) {
+  const { t } = useTranslation()
+  const me = useMe()
+  const { people } = useHousehold()
+  const total = Object.values(counts).reduce((n, x) => n + x, 0) || 1
+  const order = Object.entries(counts).sort((a, b) => (a[0] === me ? -1 : b[0] === me ? 1 : b[1] - a[1]))
+  const used: Record<string, number> = {}
+  const sides = order.map(([id, n]) => {
+    const p = people.find((x) => x.id === id)
+    const hex = THEMES.find((x) => x.id === p?.theme)?.hex ?? THEMES[0].hex
+    const seen = used[hex] ?? 0
+    used[hex] = seen + 1
+    return { id, n, p, color: seen ? lighter(hex, Math.min(0.9, 0.3 * seen)) : hex, share: n / total }
+  })
+  const [pulled, setPulled] = useState(false)
+  useEffect(() => {
+    const id = requestAnimationFrame(() => requestAnimationFrame(() => setPulled(true)))
+    return () => cancelAnimationFrame(id)
+  }, [])
+  return (
+    <div style={{ margin: '8px 0 4px' }}>
+      <div className="tug" role="img" aria-label={sides.map((x) => `${x.p?.display_name ?? ''} ${Math.round(x.share * 100)}%`).join(', ')}>
+        {sides.map((x) => (
+          <span key={x.id} style={{ width: `${(pulled ? x.share : 1 / sides.length) * 100}%`, background: x.color }} />
+        ))}
+      </div>
+      <div className="tug-legend">
+        {sides.map((x) => (
+          <span key={x.id} className="tug-who">
+            <Avatar avatar={x.p?.avatar} label={x.p?.display_name} size={26} />
+            <i style={{ background: x.color }} aria-hidden />
+            <b>{x.p?.display_name ?? t('common.someone')}</b>
+            <span className="cap">
+              {Math.round(x.share * 100)}% · {t(chore === 'groceries' ? 'trophies.runs' : 'trophies.times', { count: x.n })}
+            </span>
+          </span>
+        ))}
+      </div>
+    </div>
   )
 }

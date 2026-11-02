@@ -784,6 +784,8 @@
       "cleaning": "čišćenje, {{count}} puta ({{month}})",
       "cooking": "kuvanje, {{count}} puta ({{month}})",
       "plants": "briga o biljkama, {{count}} puta ({{month}})"
-    }
+    },
+    "showDetails": "Prikaži detalje",
+    "hideDetails": "Sakrij detalje"
   }
 }

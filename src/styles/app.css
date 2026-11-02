@@ -739,3 +739,14 @@ html[data-kb="open"] body.adding .with-tabbar > .scroll {
   position: absolute; left: 0; right: 0; bottom: 0; height: 16%; display: flex; align-items: flex-start; justify-content: center; padding-top: 5px;
   background: rgba(30, 26, 48, .55); color: #FFFFFF; font-size: 14px; font-weight: 800; letter-spacing: .02em;
 }
+
+/* Tug of war in a trophy (Nora, 2 Nov): one bar, each person's part in their own app color, pulled from even to the
+   real split. A notebook-ish rounded bar with a thin ink edge, like the rest of the paper. */
+.tug { display: flex; height: 22px; border-radius: 11px; overflow: hidden; box-shadow: inset 0 0 0 1.5px rgba(30, 26, 48, .18); background: #FFFDF8 }
+.tug span { height: 100%; transition: width .9s cubic-bezier(.34, 1.4, .64, 1) }
+.tug span + span { box-shadow: inset 2px 0 0 #FFFDF8 }
+.tug-legend { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 10px }
+.tug-who { display: inline-flex; align-items: center; gap: 7px; font-size: 15px }
+.tug-who i { width: 12px; height: 12px; border-radius: 4px; flex: none }
+.tug-who b { font-weight: 800; color: #1E1A30 }
+@media (prefers-reduced-motion: reduce) { .tug span { transition: none } }
