@@ -159,6 +159,8 @@ Each phase ends with Nora testing it on her phone.
 
 ## Road to the App Store [Nora, 1 Nov]
 
+The full launch plan, with everything still to build in order, is in `docs/LAUNCH.md`.
+
 The order Nora chose: gamification first, then the iPhone wrap (Capacitor, built on Nora's Mac in Xcode), TestFlight for family and friends, then the public App Store. Android (Danko) waits.
 
 **To do in the app**
