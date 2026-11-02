@@ -21,7 +21,7 @@ Each item says who it came from. ✅ means built, ⏳ means built but waiting fo
 ## 1. Built, waiting for Nora
 
 - ✅ **A display name for each household** [Nora, 1 Nov]. In Settings, only for people in more than one household. Live 2 Nov.
-- ⏳ **Settings that look like your profile** [Nora]. Big character, your name, a small pink "Change character", settings underneath. Say "push it live". Branch `settings-profile-look`.
+- ✅ **Settings that look like your profile** [Nora]. Big character, your name, a small pink "Change character", settings underneath. Live 2 Nov.
 - ✅ **Trophies, first version** [Danko and Nora]. Pichi guesses the chore from each to-do's name in English and Serbian, one trophy per chore each month, the rosette for three months in a row, a monthly recap, a trophy case on profiles. Live 2 Nov.
 - ⬜ **Pichi is a he, and the Serbian copy** [Nora, 1 Nov]. Nora fixes the Serbian text across the app herself, including the About page.
 - ✅ **Tidy-up:** the shopping items' old note column is gone from the database (2 Nov).
@@ -104,6 +104,5 @@ The same app, wrapped for iPhone with Capacitor and built on Nora's Mac in Xcode
 
 ## Questions only Nora can answer
 
-1. The new Settings look: push it live?
-2. Money, events, photos in chat and the calendar: before launch or after?
-3. The gamification decisions in section 2.
+1. Money, events, photos in chat and the calendar: before launch or after?
+2. The gamification decisions in section 2.
