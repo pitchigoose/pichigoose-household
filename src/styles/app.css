@@ -772,15 +772,15 @@ html[data-bars="away"] .tabbar {
   scale: var(--pill-x, .3) var(--pill-y, .08); pointer-events: none; box-shadow: none;
   /* Corners that come out perfectly round once it's shrunk (it shrinks more in height than in width). */
   border-radius: calc(2.5px / var(--pill-x, .3)) / calc(2.5px / var(--pill-y, .08));
-  /* Starts moving the moment you scroll, then settles with the same gentle spring (no slow start: it read as a delay). */
-  transition: scale .55s cubic-bezier(.2, .9, .3, 1.12), border-radius .55s cubic-bezier(.2, .9, .3, 1.12), box-shadow .2s ease;
+  /* The exact reverse of coming back (Nora, 2 Nov): the same .6 s, with the same curve played backwards. */
+  transition: scale .6s cubic-bezier(.75, -.32, .55, 1), border-radius .6s cubic-bezier(.75, -.32, .55, 1), box-shadow .2s ease .4s;
 }
-html[data-bars="away"] .tabbar::after { opacity: 1; transition: opacity .2s ease }
-html[data-bars="away"] .tabbar > * { opacity: 0; transition: opacity .12s ease }
+html[data-bars="away"] .tabbar::after { opacity: 1; transition: opacity .3s ease .25s }
+html[data-bars="away"] .tabbar > * { opacity: 0; transition: opacity .28s ease .14s }
 /* No fade at the bottom of the paper while the bars are away (Nora, 2 Nov). */
 html[data-bars="away"] .with-tabbar > .scroll { -webkit-mask-image: none; mask-image: none }
 .fab { transition: transform .45s var(--kinetic, ease), box-shadow .3s ease, scale .55s cubic-bezier(.45, 0, .25, 1.32), opacity .3s ease .05s }
-html[data-bars="away"] .fab { scale: .4; opacity: 0; pointer-events: none; transform-origin: 50% 100%; transition: scale .5s cubic-bezier(.2, .9, .3, 1.12), opacity .22s ease }
+html[data-bars="away"] .fab { scale: .4; opacity: 0; pointer-events: none; transform-origin: 50% 100%; transition: scale .55s cubic-bezier(.75, -.32, .55, 1), opacity .3s ease .2s }
 /* The pill is small, so an invisible, bigger tap area sits over it while the bars are away. */
 .bars-back { display: none }
 html[data-bars="away"] .bars-back {
