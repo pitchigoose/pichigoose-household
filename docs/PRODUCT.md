@@ -109,6 +109,13 @@ A temporary household for something people from different homes do together, lik
 
 ---
 
+### Living alone [Nora, 2 Nov]
+- **L1** As someone living alone, I want the app to ask at setup whether I live alone or with others, so I get a simpler version without the chat and other things that only make sense with more people. [Nora]
+- **L2** As someone living alone, I want to buy, projects, budgeting and (if I want them) to-dos. [Nora]
+- **L3** As someone living alone who later moves in with someone, I want to invite them and grow into the shared version. [Claude]
+
+Open question: why would someone living alone switch from pen and paper? Claude's first thoughts are in LAUNCH.md.
+
 ## Screens
 
 | Screen | Image | Stories |

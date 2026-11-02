@@ -9,7 +9,7 @@ Each item says who it came from. ✅ means built, ⏳ means built but waiting fo
 1. **Finish what's waiting.** Things already built that need Nora's yes.
 2. **Gamification.** Trophies, recaps and the game slider.
 3. **Pichi gets smarter.** Finding his talk again, then scanning receipts.
-4. **The rest of the plan.** Money, events, photos in chat and the calendar, all before launch.
+4. **The rest of the plan.** A calmer menu first, then money, photos in chat, the calendar, events, and the app for people living alone. All before launch.
 5. **What Apple requires.** Account deletion, report and block, privacy pages, automated checks.
 6. **Sign in with Apple, Google and Facebook.** Right before the move to native.
 7. **The iPhone app.** The same app wrapped for iPhone, built on Nora's Mac.
@@ -59,11 +59,25 @@ Still to decide (Nora):
 
 Each one gets planned with Nora first, then built.
 
-- ⬜ **Money, who owes who** (M1 to M8). Hidden in the app for now. Open question in PRODUCT.md: what money looks like in version 2.
-- ⬜ **Events** (E1 to E3). A simple temporary household for a picnic or a trip. Open question in PRODUCT.md: how simple is "simpler than a household"?
+- ⬜ **A calmer menu, first** [Nora, 2 Nov]. The menu is getting cluttered, and money, the calendar and events would each want a place in it. Rethink where everything lives before adding more, so it never feels like too much at once.
+- ⬜ **Money, who owes who** (M1 to M8). Hidden in the app for now. Waits for the menu rethink; then the open question in PRODUCT.md: what money looks like in version 2.
+- ⬜ **Events** (E1 to E3). A simple temporary household for a picnic or a trip. To discuss later [Nora, 2 Nov]. Open question in PRODUCT.md: how simple is "simpler than a household"?
 - ⬜ **Photos in chat** [Nora]. Needs a private storage space and one new column on messages (a table change, so Nora's OK first).
 - ⬜ **Calendar.** Planning not started: what goes on it (to-dos with dates, events, chores) and where it lives.
 - ⬜ **Notifications** (X1, X2, P3). The real push comes with the iPhone app (section 7).
+- ⬜ **For people living alone** [Nora, 2 Nov]. When setting up, Pichi asks: "Are you living alone or with someone?" Living alone gets its own, simpler version of the app:
+  - **Keeps:** to buy, projects, budgeting, and to-dos if they want them. Everything that makes sense for one person.
+  - **Leaves out:** the chat, members, inviting, read ticks, and anything else that's about other people.
+  - **Nora tests it** by creating a new household while she's alone.
+  - **The big question to answer first:** why would someone living alone switch from pen and paper? (Claude's first thoughts below.)
+
+  Claude's first thoughts on "why not pen and paper" (to discuss, not decided):
+  - **Pichi does what paper can't:** he notices when coffee or toothpaste is running low and puts it on the list himself, and later reads receipts.
+  - **The list is always with you:** in the store, offline, even when the paper list is on the fridge at home.
+  - **Things come back on their own:** repeating to-dos and reminders.
+  - **Money in one place:** budgeting, and who owes you, without a spreadsheet.
+  - **It's still a notebook:** the scrapbook look keeps the joy of pen and paper, so switching doesn't feel like giving it up.
+  - **Moving in with someone later is one tap:** invite them, and the same app grows into the shared version.
 
 ## 5. What Apple requires
 
