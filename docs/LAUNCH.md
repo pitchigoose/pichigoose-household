@@ -104,7 +104,6 @@ The same app, wrapped for iPhone with Capacitor and built on Nora's Mac in Xcode
 
 ## Questions only Nora can answer
 
-1. Push live: the household display names, and the new Settings look?
-2. Switch the old Serbian lines so Pichi is a he?
-3. Money, events, photos in chat and the calendar: before launch or after?
-4. The gamification decisions in section 2.
+1. The new Settings look: push it live?
+2. Money, events, photos in chat and the calendar: before launch or after?
+3. The gamification decisions in section 2.
