@@ -629,7 +629,10 @@
     "shelves_other": "polica",
     "projects_one": "projekat",
     "projects_few": "projekta",
-    "projects_other": "projekata"
+    "projects_other": "projekata",
+    "trophies_one": "trofej",
+    "trophies_few": "trofeja",
+    "trophies_other": "trofeja"
   },
   "archive": {
     "open_one": "Ranije urađeno · {{count}}",
@@ -722,5 +725,49 @@
     "nothing": "Ništa za sada",
     "stepOf": "{{n}} od {{total}}",
     "bathroomOnlyTitle": "Šta svaki dan koristiš u kupatilu?"
+  },
+  "trophies": {
+    "title": "Trofeji",
+    "case": "Trofeji",
+    "caseEmpty": "Još nema trofeja. Svakog meseca, ko najviše radi neki posao, osvaja ga.",
+    "empty": "Ovog meseca još nema trofeja. Štikliraj poslove i Pichi broji.",
+    "how": "Pichi po imenu zadatka zna koji je posao u pitanju. Odlasci u prodavnicu se broje po danima kad si nešto kupio.",
+    "earlier": "Prethodni mesec",
+    "later": "Sledeći mesec",
+    "times_one": "{{count}} put",
+    "times_few": "{{count}} puta",
+    "times_other": "{{count}} puta",
+    "runs_one": "{{count}} odlazak u prodavnicu",
+    "runs_few": "{{count}} odlaska u prodavnicu",
+    "runs_other": "{{count}} odlazaka u prodavnicu",
+    "inARow_one": "{{count}} mesec zaredom",
+    "inARow_few": "{{count}} meseca zaredom",
+    "inARow_other": "{{count}} meseci zaredom",
+    "wonTimes_one": "osvojen jednom",
+    "wonTimes_few": "osvojen {{count}} puta",
+    "wonTimes_other": "osvojen {{count}} puta",
+    "names": {
+      "dishes": "Čuvar sudopere",
+      "laundry": "Čarobnjak za veš",
+      "hanging-laundry": "Majstor štipaljki",
+      "ironing": "Majstor pegle",
+      "groceries": "Snabdevač frižidera",
+      "trash": "Heroj kante",
+      "cleaning": "Lovac na prašinu",
+      "cooking": "Glavni kuvar",
+      "plants": "Biljni roditelj"
+    },
+    "big": {
+      "dishes": "Kraljevstvo sudopere",
+      "laundry": "Veliki čarobnjak za veš",
+      "hanging-laundry": "Veliki majstor štipaljki",
+      "ironing": "Velemajstor pegle",
+      "groceries": "Heroj frižidera",
+      "trash": "Legenda kante",
+      "cleaning": "Vrhovni lovac na prašinu",
+      "cooking": "Master kuvar",
+      "plants": "Šaptač biljkama"
+    },
+    "tile": "trofeji"
   }
 }

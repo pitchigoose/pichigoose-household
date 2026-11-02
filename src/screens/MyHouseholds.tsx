@@ -11,6 +11,7 @@ import { DeleteHouseholdSheet } from './HouseholdClean'
 import { copyText, joinLink } from '../lib/share'
 import { InviteSheet } from './Invite'
 import { autoFocusField } from '../lib/keyboard'
+import { monthOf, trophies } from '../lib/chores'
 
 const TILES: { note: string; tape: TapeKind }[] = [
   { note: 'n-sage', tape: 'tcheck' },
@@ -53,6 +54,8 @@ export function MyHouseholds({ open, onClose, page }: { open: boolean; onClose: 
     { to: '/shopping', count: items.rows.filter((x) => !x.checked_at).length, key: 'hub.toBuy' },
     { to: '/pantry', count: rooms.rows.length, key: 'hub.shelves' },
     { to: '/projects', count: projects.rows.filter((p) => !p.done_at).length, key: 'hub.projects' },
+    // This month's trophies so far, one per chore (Danko and Nora).
+    { to: '/trophies', count: trophies(todos.rows, items.rows, monthOf(new Date().toISOString())).length, key: 'hub.trophies' },
   ]
   function go(to: string) {
     onClose()
