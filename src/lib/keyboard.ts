@@ -9,6 +9,11 @@
 // On Android the page itself shrinks (interactive-widget=resizes-content in index.html), so --kb
 // stays 0 there.
 
+// In the iPhone app (Capacitor, Nora 2 Nov) none of the guessing is needed: iPhone tells the app the keyboard's real
+// height just before it slides in, so bars move together with it, and the page itself never gets pushed.
+import { Capacitor } from '@capacitor/core'
+import { Keyboard } from '@capacitor/keyboard'
+
 // (v2: heights saved before this were sometimes measured mid-push and came out too small.)
 const REMEMBER = 'pichigoose.keyboard.v2'
 const isIOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
@@ -27,7 +32,8 @@ function isField(el: Element | null): el is HTMLElement {
  */
 export function focusField(el: HTMLElement | null) {
   if (!el) return
-  if (!isIOS || document.activeElement === el) {
+  // In the iPhone app the page never gets pushed, so the trick isn't needed there.
+  if (!isIOS || Capacitor.isNativePlatform() || document.activeElement === el) {
     el.focus({ preventScroll: true })
     return
   }
@@ -93,9 +99,36 @@ export function watchKeyboard() {
     if (!open && (window.scrollY || vv.offsetTop)) window.scrollTo(0, 0)
   }
 
+  // The iPhone app: the keyboard's real height, the moment it's about to move.
+  if (Capacitor.isNativePlatform()) {
+    void Keyboard.setScroll({ isDisabled: true }).catch(() => {})
+    void Keyboard.setAccessoryBarVisible({ isVisible: false }).catch(() => {})
+    void Keyboard.addListener('keyboardWillShow', (info) => set(Math.round(info.keyboardHeight)))
+    void Keyboard.addListener('keyboardWillHide', () => set(0))
+    document.addEventListener('focusin', (e) => revealField(e.target as Element | null))
+    return
+  }
+
   vv?.addEventListener('resize', update)
   vv?.addEventListener('scroll', update)
   update()
+
+  function revealField(el: Element | null) {
+    if (!isField(el) || el.closest('.add-bar, .composer, .typing-bar')) return
+    const reveal = () => {
+      if (document.activeElement !== el) return
+      const sheet = el.closest('.sheet') as HTMLElement | null
+      const scroller = sheet ?? (el.closest('.scroll') as HTMLElement | null)
+      if (!scroller) return
+      const actions = sheet?.querySelector<HTMLElement>('.sheet-actions')
+      const pinned = actions && !actions.contains(el) ? (actions.firstElementChild as HTMLElement | null)?.offsetHeight ?? 0 : 0
+      const visibleBottom = window.innerHeight - target - (pinned ? pinned + 30 : 0) - 16
+      const r = el.getBoundingClientRect()
+      if (r.bottom > visibleBottom) scroller.scrollBy({ top: r.bottom - visibleBottom, behavior: 'smooth' })
+    }
+    window.setTimeout(reveal, 60)
+    window.setTimeout(reveal, 450)
+  }
 
   // Tapping a field: focus it ourselves, the way that keeps iPhone from pushing the page up
   // (only for a real tap, not when a scroll happens to end on a field).
@@ -129,20 +162,7 @@ export function watchKeyboard() {
     // pop-up) scrolled so it isn't hidden behind the keyboard, or behind a pop-up's pinned buttons; that
     // scroll glides. Checked again once the keyboard's real height is known. A reply's "Replying to" sits
     // right above its field, so it comes into view with it.
-    if (el.closest('.add-bar, .composer, .typing-bar')) return
-    const reveal = () => {
-      if (document.activeElement !== el) return
-      const sheet = el.closest('.sheet') as HTMLElement | null
-      const scroller = sheet ?? (el.closest('.scroll') as HTMLElement | null)
-      if (!scroller) return
-      const actions = sheet?.querySelector<HTMLElement>('.sheet-actions')
-      const pinned = actions && !actions.contains(el) ? (actions.firstElementChild as HTMLElement | null)?.offsetHeight ?? 0 : 0
-      const visibleBottom = window.innerHeight - target - (pinned ? pinned + 30 : 0) - 16
-      const r = el.getBoundingClientRect()
-      if (r.bottom > visibleBottom) scroller.scrollBy({ top: r.bottom - visibleBottom, behavior: 'smooth' })
-    }
-    window.setTimeout(reveal, 60)
-    window.setTimeout(reveal, 450)
+    revealField(el)
   })
 
   // Letting go of a field: slide down right away, unless focus just moved to another field.

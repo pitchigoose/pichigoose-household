@@ -97,9 +97,9 @@ Each one gets planned with Nora first, then built.
 
 The same app, wrapped for iPhone with Capacitor and built on Nora's Mac in Xcode. Nora is the first tester.
 
-- ⬜ The wrap itself, with the app icon and launch screen.
+- ✅ The wrap itself, with the app icon and launch screen (2 Nov). How to install it: `docs/NATIVE.md`.
 - ⬜ **Real push notifications**, so nobody needs "Add to Home Screen" anymore.
-- ⬜ **The keyboard under the app's control**, which fixes most of what the web keyboard fights.
+- ✅ **The keyboard under the app's control**: the app gets the keyboard's real height before it moves (2 Nov). To check on Nora's iPhone.
 - ⬜ **Haptics**, the real share sheet, and a smoother camera for receipts and photos.
 
 ## 8. TestFlight, then the App Store
