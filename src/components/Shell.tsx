@@ -274,14 +274,15 @@ export function useBarsAway(scrollRef: { current: HTMLElement | null }, on: bool
       const y = el.scrollTop
       const fromTop = y
       const fromEnd = el.scrollHeight - el.clientHeight - y
-      const home = toward === 'down' ? fromTop < 60 : fromEnd < 80
+      // Reacts to the first few pixels of a scroll, not after a run-up (Nora, 2 Nov: it felt late).
+      const home = toward === 'down' ? fromTop < 8 : fromEnd < 80
       const far = toward === 'down' ? fromEnd < 4 : fromTop < 4
-      const goingAway = toward === 'down' ? y > last + 6 : y < last - 6
+      const goingAway = toward === 'down' ? y > last + 3 : y < last - 3
       const back = toward === 'down' ? y < last - 6 : y > last + 6
       if (home) delete root.dataset.bars
       else if (goingAway && !far) away()
       else if (back) delete root.dataset.bars
-      if (Math.abs(y - last) > 6 || home) last = y
+      if (Math.abs(y - last) > 3 || home) last = y
     }
     el.addEventListener('scroll', onScroll, { passive: true })
     return () => {
