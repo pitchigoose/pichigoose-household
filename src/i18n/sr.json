@@ -770,6 +770,20 @@
     },
     "tile": "trofeji",
     "counted": "Šta se računalo",
-    "bought": "kupovina: {{items}}"
+    "bought": "kupovina: {{items}}",
+    "share": "Podeli",
+    "shareHeadline": "Novi trofej: {{trophy}}!",
+    "shareSaved": "Slika je sačuvana",
+    "shareLine": {
+      "dishes": "pranje sudova, {{count}} puta ({{month}})",
+      "laundry": "pranje veša, {{count}} puta ({{month}})",
+      "hanging-laundry": "kačenje veša, {{count}} puta ({{month}})",
+      "ironing": "peglanje, {{count}} puta ({{month}})",
+      "groceries": "{{count}} odlazaka u prodavnicu ({{month}})",
+      "trash": "iznošenje smeća, {{count}} puta ({{month}})",
+      "cleaning": "čišćenje, {{count}} puta ({{month}})",
+      "cooking": "kuvanje, {{count}} puta ({{month}})",
+      "plants": "briga o biljkama, {{count}} puta ({{month}})"
+    }
   }
 }

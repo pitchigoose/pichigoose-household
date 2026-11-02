@@ -1,10 +1,12 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useHousehold, useItemsIn, useLists, useTodos, type Item, type Todo } from '../data/hooks'
 import { Screen } from '../components/Shell'
-import { Hand, Sheet } from '../components/Scrapbook'
+import { Hand, Sheet, showToast } from '../components/Scrapbook'
+import { useMe } from '../auth'
+import { sharePicture, trophyPicture } from '../lib/shareTrophy'
 import { Avatar } from '../components/Avatar'
-import { BackIcon } from '../components/Icons'
+import { BackIcon, ShareIcon } from '../components/Icons'
 import { Trophy } from '../components/Trophy'
 import { useBackInApp } from '../lib/back'
 import { entries, groceryItems, monthOf, monthsWithActivity, streakOf, trophies, type Chore, type Month, type Win } from '../lib/chores'
@@ -172,6 +174,28 @@ function TrophySheet({ chore, months, onClose }: { chore: Chore | null; months: 
     : []
   const latest = parts[0]?.win
   const big = chore && latest ? streakOf(todos, items, chore, latest.winner, latest.month) >= 3 : false
+  // Your own trophy can be shared, with its picture (Nora, 2 Nov). The picture is made as soon as the pop-up opens,
+  // so tapping Share opens the share sheet right away (phones only allow it straight from the tap).
+  const me = useMe()
+  const mine = Boolean(chore && latest && latest.winner === me)
+  const trophyName = chore ? (big ? t(`trophies.big.${chore}`) : t(`trophies.names.${chore}`)) : ''
+  const headline = t('trophies.shareHeadline', { trophy: trophyName })
+  const line = chore && latest ? t(`trophies.shareLine.${chore}`, { count: latest.count, month: monthName(latest.month, i18n.language) }) : ''
+  const [picture, setPicture] = useState<File | null>(null)
+  useEffect(() => {
+    setPicture(null)
+    if (!mine || !chore) return
+    let live = true
+    trophyPicture(chore, headline, line).then((f) => live && setPicture(f)).catch(() => {})
+    return () => {
+      live = false
+    }
+  }, [mine, chore, headline, line])
+  async function share() {
+    if (!picture) return
+    const done = await sharePicture(picture, `${headline} ${line} · pichigoose.com`)
+    if (done === 'saved') showToast(t('trophies.shareSaved'))
+  }
   return (
     <Sheet open={Boolean(chore)} onClose={onClose} title={chore ? (big ? t(`trophies.big.${chore}`) : t(`trophies.names.${chore}`)) : ''}>
       {chore && (
@@ -179,6 +203,12 @@ function TrophySheet({ chore, months, onClose }: { chore: Chore | null; months: 
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <Trophy chore={chore} size={170} />
           </div>
+          {mine && (
+            <button type="button" className="stk prim" style={{ alignSelf: 'center', transform: 'rotate(-1.5deg)' }} disabled={!picture} onClick={share}>
+              <ShareIcon />
+              {t('trophies.share')}
+            </button>
+          )}
           {parts.map(({ month, win, list }) => {
             const who = win ? person(win.winner) : undefined
             return (

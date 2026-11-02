@@ -749,6 +749,20 @@
     },
     "tile": "trophies",
     "counted": "What counted",
-    "bought": "bought {{items}}"
+    "bought": "bought {{items}}",
+    "share": "Share",
+    "shareHeadline": "I won {{trophy}}!",
+    "shareSaved": "Picture saved",
+    "shareLine": {
+      "dishes": "for doing the dishes {{count}} times in {{month}}",
+      "laundry": "for doing the laundry {{count}} times in {{month}}",
+      "hanging-laundry": "for hanging the laundry {{count}} times in {{month}}",
+      "ironing": "for ironing {{count}} times in {{month}}",
+      "groceries": "for {{count}} grocery runs in {{month}}",
+      "trash": "for taking out the trash {{count}} times in {{month}}",
+      "cleaning": "for cleaning {{count}} times in {{month}}",
+      "cooking": "for cooking {{count}} times in {{month}}",
+      "plants": "for looking after the plants {{count}} times in {{month}}"
+    }
   }
 }

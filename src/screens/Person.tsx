@@ -99,10 +99,9 @@ export function PersonScreen() {
                 {t('person.message')}
               </Link>
             )}
-            <WishList ownerId={person.id} ownerName={person.display_name} />
             <TrophyCase personId={person.id} />
-            {/* The numbers are parked under a button at the bottom for now (Nora, 29 Oct): interesting once in a while,
-                not every day. The wish list comes first. */}
+            {/* The order (Nora, 2 Nov): trophies, then the numbers (parked under a button: interesting once in a while,
+                not every day), then the wish list. */}
             <button type="button" className="stk sec sm" aria-expanded={showStats} style={{ marginTop: 34, transform: 'rotate(-1deg)' }} onClick={() => setShowStats((v) => !v)}>
               {t('person.data')}
             </button>
@@ -120,6 +119,7 @@ export function PersonScreen() {
                 ))}
               </div>
             )}
+            <WishList ownerId={person.id} ownerName={person.display_name} />
             {canRemove && (
               <div style={{ marginTop: 40 }}>
                 <DeleteLink label={t('person.remove')} onClick={() => setRemoving(true)} />
