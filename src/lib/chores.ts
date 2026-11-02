@@ -112,6 +112,31 @@ export function trophies(todos: Todo[], items: Item[], month: Month): Win[] {
   return wins
 }
 
+export type Entry = { at: string; who: string; title: string; items?: string[] }
+
+/** Everything that counted for one chore in one month, oldest first: each to-do done (for whoever it was given to),
+ *  and for groceries each day someone bought food, with what they bought (Nora, 2 Nov). */
+export function entries(todos: Todo[], items: Item[], chore: Chore, month: Month): Entry[] {
+  const out: Entry[] = []
+  if (chore === 'groceries') {
+    const days = new Map<string, Entry>()
+    for (const x of items) {
+      if (!x.checked_at || !x.checked_by || monthOf(x.checked_at) !== month) continue
+      const key = `${x.checked_by}|${x.checked_at.slice(0, 10)}`
+      const day = days.get(key) ?? { at: x.checked_at, who: x.checked_by, title: '', items: [] }
+      day.items?.push(x.name)
+      if (x.checked_at < day.at) day.at = x.checked_at
+      days.set(key, day)
+    }
+    out.push(...days.values())
+  }
+  for (const x of todos) {
+    if (!x.done_at || !x.done_by || monthOf(x.done_at) !== month || guessChore(x.title) !== chore) continue
+    out.push({ at: x.done_at, who: x.assignee_id ?? x.done_by, title: x.title })
+  }
+  return out.sort((a, b) => a.at.localeCompare(b.at))
+}
+
 /** Every month that has anything done in it, newest first. */
 export function monthsWithActivity(todos: Todo[], items: Item[]): Month[] {
   const set = new Set<Month>()

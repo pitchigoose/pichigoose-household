@@ -768,6 +768,8 @@
       "cooking": "Master kuvar",
       "plants": "Šaptač biljkama"
     },
-    "tile": "trofeji"
+    "tile": "trofeji",
+    "counted": "Šta se računalo",
+    "bought": "kupovina: {{items}}"
   }
 }

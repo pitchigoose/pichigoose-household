@@ -2,12 +2,12 @@ import { useMemo, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useHousehold, useItemsIn, useLists, useTodos, type Item, type Todo } from '../data/hooks'
 import { Screen } from '../components/Shell'
-import { Hand } from '../components/Scrapbook'
+import { Hand, Sheet } from '../components/Scrapbook'
 import { Avatar } from '../components/Avatar'
 import { BackIcon } from '../components/Icons'
 import { Trophy } from '../components/Trophy'
 import { useBackInApp } from '../lib/back'
-import { groceryItems, monthOf, monthsWithActivity, streakOf, trophies, type Chore, type Month, type Win } from '../lib/chores'
+import { entries, groceryItems, monthOf, monthsWithActivity, streakOf, trophies, type Chore, type Month, type Win } from '../lib/chores'
 
 const NOTES = ['n-butter', 'n-mint', 'n-blush', 'n-mist', 'n-sage', 'n-peach', 'n-lilac', 'n-sand']
 
@@ -42,6 +42,7 @@ export function TrophiesScreen() {
   const oldest = useMemo(() => monthsWithActivity(todos, items).at(-1) ?? thisMonth, [todos, items, thisMonth])
   const wins = useMemo(() => trophies(todos, items, month), [todos, items, month])
   const person = (id: string) => people.find((p) => p.id === id)
+  const [open, setOpen] = useState<Chore | null>(null)
 
   function card(w: Win, i: number) {
     const who = person(w.winner)
@@ -50,7 +51,7 @@ export function TrophiesScreen() {
       .filter(([id]) => id !== w.winner)
       .sort((a, b) => b[1] - a[1])
     return (
-      <div key={w.chore} className={`note ${NOTES[i % NOTES.length]}`} style={{ display: 'flex', gap: 14, alignItems: 'center', transform: `rotate(${[-0.8, 0.7, -0.5, 0.9][i % 4]}deg)` }}>
+      <button type="button" key={w.chore} onClick={() => setOpen(w.chore)} className={`note ${NOTES[i % NOTES.length]}`} style={{ display: 'flex', gap: 14, alignItems: 'center', textAlign: 'left', width: '100%', transform: `rotate(${[-0.8, 0.7, -0.5, 0.9][i % 4]}deg)` }}>
         <Trophy chore={w.chore} big={big} size={92} />
         <div style={{ minWidth: 0, flex: 1 }}>
           <Hand size={26} lineHeight={28}>
@@ -69,7 +70,7 @@ export function TrophiesScreen() {
           )}
           {big && <div className="cap" style={{ marginTop: 4, fontWeight: 700 }}>{t('trophies.inARow', { count: streakOf(todos, items, w.chore, w.winner, w.month) })}</div>}
         </div>
-      </div>
+      </button>
     )
   }
 
@@ -107,6 +108,7 @@ export function TrophiesScreen() {
           {t('trophies.how')}
         </p>
       </div>
+      <TrophySheet chore={open} months={open ? [month] : []} onClose={() => setOpen(null)} />
     </Screen>
   )
 }
@@ -128,6 +130,7 @@ export function TrophyCase({ personId }: { personId: string }) {
     for (const r of out) r.best = Math.max(...r.months.map((m) => streakOf(todos, items, r.chore, personId, m)))
     return out
   }, [todos, items, personId])
+  const [open, setOpen] = useState<Chore | null>(null)
 
   return (
     <section style={{ alignSelf: 'stretch', marginTop: 34 }}>
@@ -137,18 +140,81 @@ export function TrophyCase({ personId }: { personId: string }) {
       {won.length ? (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))', gap: '18px 12px', marginTop: 12 }}>
           {won.map((r) => (
-            <div key={r.chore} style={{ textAlign: 'center' }} title={r.months.map((m) => monthName(m, i18n.language)).join(', ')}>
+            <button type="button" key={r.chore} onClick={() => setOpen(r.chore)} style={{ textAlign: 'center', display: 'block' }} title={r.months.map((m) => monthName(m, i18n.language)).join(', ')}>
               <Trophy chore={r.chore} big={r.best >= 3} size={84} />
               <div style={{ fontSize: 13, fontWeight: 800, lineHeight: '16px', marginTop: 2 }}>{r.best >= 3 ? t(`trophies.big.${r.chore}`) : t(`trophies.names.${r.chore}`)}</div>
               <div className="cap" style={{ fontSize: 12 }}>
                 {r.months.length > 1 ? t('trophies.wonTimes', { count: r.months.length }) : monthName(r.months[0], i18n.language)}
               </div>
-            </div>
+            </button>
           ))}
         </div>
       ) : (
         <div className="cap" style={{ fontSize: 14, padding: '6px 0' }}>{t('trophies.caseEmpty')}</div>
       )}
+      <TrophySheet chore={open} months={won.find((r) => r.chore === open)?.months ?? []} onClose={() => setOpen(null)} />
     </section>
+  )
+}
+
+/**
+ * A trophy up close (Nora, 2 Nov): the drawing big, who won it, and everything that counted, day by day, like
+ * "1 October · Nora · Oprati sudove". For a trophy won in several months, each month gets its own part, newest first.
+ */
+function TrophySheet({ chore, months, onClose }: { chore: Chore | null; months: Month[]; onClose: () => void }) {
+  const { t, i18n } = useTranslation()
+  const { people, todos, items } = useTrophyData()
+  const person = (id: string) => people.find((p) => p.id === id)
+  const lang = i18n.language === 'sr' ? 'sr-Latn' : 'en-US'
+  const day = (iso: string) => new Date(iso).toLocaleDateString(lang, { day: 'numeric', month: 'long' })
+  const parts = chore
+    ? [...months].sort().reverse().map((m) => ({ month: m, win: trophies(todos, items, m).find((w) => w.chore === chore), list: entries(todos, items, chore, m) }))
+    : []
+  const latest = parts[0]?.win
+  const big = chore && latest ? streakOf(todos, items, chore, latest.winner, latest.month) >= 3 : false
+  return (
+    <Sheet open={Boolean(chore)} onClose={onClose} title={chore ? (big ? t(`trophies.big.${chore}`) : t(`trophies.names.${chore}`)) : ''}>
+      {chore && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <Trophy chore={chore} size={170} />
+          </div>
+          {parts.map(({ month, win, list }) => {
+            const who = win ? person(win.winner) : undefined
+            return (
+              <section key={month}>
+                <Hand size={26} lineHeight={28}>
+                  {monthName(month, i18n.language)}
+                </Hand>
+                {win && (
+                  <div className="row" style={{ gap: 8, margin: '6px 0 10px' }}>
+                    {who && <Avatar avatar={who.avatar} label={who.display_name} size={28} />}
+                    <span style={{ fontWeight: 800, fontSize: 15 }}>
+                      {who?.display_name ?? t('common.someone')} · {t(chore === 'groceries' ? 'trophies.runs' : 'trophies.times', { count: win.count })}
+                    </span>
+                  </div>
+                )}
+                <span className="label">{t('trophies.counted')}</span>
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                  {list.map((e, i) => {
+                    const p = person(e.who)
+                    return (
+                      <div key={i} className="ln" style={{ alignItems: 'flex-start', gap: 10, padding: '8px 0' }}>
+                        <span className="cap" style={{ flex: '0 0 84px', fontWeight: 800, fontSize: 13, paddingTop: 3 }}>{day(e.at)}</span>
+                        <Avatar avatar={p?.avatar} label={p?.display_name} size={24} />
+                        <span style={{ flex: 1, minWidth: 0, fontSize: 15, lineHeight: '20px' }}>
+                          <b style={{ fontWeight: 800 }}>{p?.display_name ?? t('common.someone')}</b>{' '}
+                          {e.items ? t('trophies.bought', { items: e.items.join(', ') }) : e.title}
+                        </span>
+                      </div>
+                    )
+                  })}
+                </div>
+              </section>
+            )
+          })}
+        </div>
+      )}
+    </Sheet>
   )
 }

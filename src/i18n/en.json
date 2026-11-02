@@ -747,6 +747,8 @@
       "cooking": "Master Chef",
       "plants": "Plant Whisperer"
     },
-    "tile": "trophies"
+    "tile": "trophies",
+    "counted": "What counted",
+    "bought": "bought {{items}}"
   }
 }
