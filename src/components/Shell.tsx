@@ -265,35 +265,68 @@ export function useBarsAway(scrollRef: { current: HTMLElement | null }, on: bool
         bar.style.setProperty('--pill-y', String(5 / bar.offsetHeight))
       }
     }
-    const away = () => {
-      if (root.dataset.bars === 'away') return
+    // Every animation plays to its end, even after the shortest flick (Nora, 2 Nov): once the menu starts shrinking it
+    // finishes and rests a moment as the pill before it stretches back, and once it starts stretching back it finishes
+    // before it can shrink again. Times match the CSS (app.css, the pill): .6 s each way.
+    const SHRINK = 600
+    const STRETCH = 600
+    const REST = 250
+    const WAIT = 450
+    let awayAt = 0
+    let backAt = -Infinity
+    let scrolledAt = 0
+    let pendingAway = 0
+    let rest = 0
+    const isAway = () => root.dataset.bars === 'away'
+    const back = () => {
+      window.clearTimeout(pendingAway)
+      pendingAway = 0
+      if (!isAway()) return
+      delete root.dataset.bars
+      backAt = Date.now()
+    }
+    // Comes back once the page has been still for a moment and the shrink has finished and rested.
+    const scheduleBack = () => {
+      window.clearTimeout(rest)
+      const now = Date.now()
+      const delay = Math.max(scrolledAt + WAIT - now, awayAt + SHRINK + REST - now, 0)
+      rest = window.setTimeout(back, delay)
+    }
+    const goAway = () => {
       measure()
       root.dataset.bars = 'away'
+      awayAt = Date.now()
+      scheduleBack()
     }
-    // While the page moves (either way), the bars stay tucked away; a moment after it comes to rest, glide included,
-    // they come back (Nora, 2 Nov: not on scrolling up, but when you stop). At the very top they always show.
-    let rest = 0
+    const away = () => {
+      if (isAway() || pendingAway) return
+      const wait = backAt + STRETCH - Date.now()
+      if (wait > 0) {
+        pendingAway = window.setTimeout(() => {
+          pendingAway = 0
+          goAway()
+        }, wait)
+        return
+      }
+      goAway()
+    }
     const onScroll = () => {
       const y = el.scrollTop
       const fromTop = y
       const fromEnd = el.scrollHeight - el.clientHeight - y
       const home = toward === 'down' ? fromTop < 8 : fromEnd < 80
-      window.clearTimeout(rest)
-      if (home) {
-        delete root.dataset.bars
-        last = y
-        return
-      }
-      if (Math.abs(y - last) > 3) {
+      scrolledAt = Date.now()
+      if (!home && Math.abs(y - last) > 3) {
         away()
         last = y
-      }
-      rest = window.setTimeout(() => delete root.dataset.bars, 450)
+      } else if (home) last = y
+      scheduleBack()
     }
     el.addEventListener('scroll', onScroll, { passive: true })
     return () => {
       el.removeEventListener('scroll', onScroll)
       window.clearTimeout(rest)
+      window.clearTimeout(pendingAway)
       delete root.dataset.bars
     }
   }, [scrollRef, on, toward])
