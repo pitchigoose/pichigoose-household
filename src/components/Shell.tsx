@@ -15,10 +15,10 @@ import { useBack } from '../lib/back'
 /** Screens inside a household. On desktop they sit on the notebook page next to the sidebar. */
 export const Framed = createContext(false)
 
-type ScreenProps = { children: ReactNode; tabbar?: boolean; footer?: ReactNode; className?: string; wide?: boolean; center?: boolean; doodle?: DoodlePose }
+type ScreenProps = { children: ReactNode; tabbar?: boolean; footer?: ReactNode; className?: string; wide?: boolean; center?: boolean; doodle?: DoodlePose; /** Scrolling down slides the menu and the round + away (Home, phone). */ hideBarsOnScroll?: boolean }
 
 /** A screen of notebook paper with the red margin. */
-export function Screen({ children, tabbar, footer, className = '', wide, center, doodle }: ScreenProps) {
+export function Screen({ children, tabbar, footer, className = '', wide, center, doodle, hideBarsOnScroll }: ScreenProps) {
   // A doodle of Pichi in the empty paper at the bottom, when the page asks for one.
   const page = doodle ? (
     <div className="paper-col">
@@ -35,6 +35,7 @@ export function Screen({ children, tabbar, footer, className = '', wide, center,
   useBounce(scrollRef, inkRef, refresh)
   useSwipeBack(!desktop)
   useScrollMemory(scrollRef)
+  useBarsAway(scrollRef, Boolean(hideBarsOnScroll && !desktop))
   if (desktop && framed) {
     // Desktop: sidebar on the left, the notebook page fills the rest. Screens not laid out
     // for desktop yet keep a comfortable reading width instead of stretching.
@@ -234,4 +235,31 @@ function OfflineBadge() {
  *  so they stay put when the paper bounces at the ends. */
 export function Floating({ children }: { children: ReactNode }) {
   return createPortal(children, document.body)
+}
+
+/**
+ * Danko's idea (2 Nov): on Home, scrolling down slides the menu and the round + down out of the way, like a browser's
+ * address bar, so the notes get the whole screen; scrolling up a little brings them right back. Near the top they
+ * always show. It's a mark on the page (html[data-bars="away"]), so the + (which lives outside the paper) follows too.
+ */
+function useBarsAway(scrollRef: { current: HTMLDivElement | null }, on: boolean) {
+  useEffect(() => {
+    const el = scrollRef.current
+    const root = document.documentElement
+    if (!on || !el) return
+    let last = el.scrollTop
+    const onScroll = () => {
+      const y = el.scrollTop
+      const atEnd = y + el.clientHeight >= el.scrollHeight - 4
+      if (y < 60) delete root.dataset.bars
+      else if (y > last + 6 && !atEnd) root.dataset.bars = 'away'
+      else if (y < last - 6) delete root.dataset.bars
+      if (Math.abs(y - last) > 6 || y < 60) last = y
+    }
+    el.addEventListener('scroll', onScroll, { passive: true })
+    return () => {
+      el.removeEventListener('scroll', onScroll)
+      delete root.dataset.bars
+    }
+  }, [scrollRef, on])
 }

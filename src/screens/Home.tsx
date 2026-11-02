@@ -509,7 +509,7 @@ export function HomeScreen() {
   }
 
   return (
-    <Screen tabbar className="has-fab" doodle="honk">
+    <Screen tabbar hideBarsOnScroll className="has-fab" doodle="honk">
       <div style={{ padding: '10px 22px 0 40px', paddingTop: 'calc(var(--top) + 10px)', display: 'flex', flexDirection: 'column', gap: 22 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div style={{ minWidth: 0 }}>
