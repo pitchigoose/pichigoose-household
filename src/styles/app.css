@@ -755,29 +755,34 @@ html[data-kb="open"] body.adding .with-tabbar > .scroll {
 @media (prefers-reduced-motion: reduce) { .tug span { transition: none } }
 
 /* Scrolling tucks the floating bars away, and scrolling back brings them back (Danko and Nora, 2 Nov). The menu (on
-   Home) and the chat's message bar squeeze down into a small pill in the theme color at their bottom center, like
-   iPhone's own bar but shorter and thicker, and stretch back out with a springy bounce. Tapping the pill brings them
-   back too. The round + shrinks away. Every change takes the same time, however fast you scroll. */
-.tabbar, .chat-screen .typing-bar { clip-path: inset(0 0 0 0 round 31px); transition: clip-path .6s cubic-bezier(.34, 1.4, .64, 1) }
-.chat-screen .typing-bar { clip-path: inset(0 0 0 0 round 26px) }
-.tabbar::after, .chat-screen .typing-bar::after {
-  content: ''; position: absolute; inset: 0; z-index: 2; border-radius: inherit; background: var(--hero-dark); opacity: 0; pointer-events: none; transition: opacity .25s ease;
+   Home) shrinks, as one piece, into a thin pill in the theme color at their bottom center
+   (5 px tall, like iPhone's own bar but shorter), and spring back out. Scaling, not clipping, so the phone can run it
+   perfectly smoothly. Every change takes the same time, however fast you scroll. --pill-x and --pill-y are worked out
+   from each bar's real size (components/Shell.tsx). The round + shrinks away. */
+.tabbar {
+  transform-origin: 50% 100%;
+  transition: scale .6s cubic-bezier(.45, 0, .25, 1.32), border-radius .6s cubic-bezier(.45, 0, .25, 1.32), box-shadow .3s ease;
 }
-.tabbar > *, .chat-screen .typing-bar > * { transition: opacity .25s ease .1s }
-html[data-bars="away"] .tabbar,
-html[data-bars="away"] .chat-screen .typing-bar:not(.typing) {
-  clip-path: inset(calc(100% - 9px) calc(50% - 52px) 0 calc(50% - 52px) round 5px); pointer-events: none; transition: clip-path .55s var(--kinetic);
+.tabbar::after {
+  content: ''; position: absolute; inset: 0; z-index: 2; border-radius: inherit; background: var(--hero-dark); opacity: 0; pointer-events: none;
+  transition: opacity .3s ease .05s;
 }
-html[data-bars="away"] .tabbar::after, html[data-bars="away"] .chat-screen .typing-bar:not(.typing)::after { opacity: 1; transition-delay: .12s }
-html[data-bars="away"] .tabbar > *, html[data-bars="away"] .chat-screen .typing-bar:not(.typing) > * { opacity: 0; transition-delay: 0s }
-.fab { transition: transform .45s var(--kinetic, ease), box-shadow .3s ease, scale .5s cubic-bezier(.34, 1.56, .64, 1), opacity .35s ease, translate .5s cubic-bezier(.34, 1.56, .64, 1) }
-html[data-bars="away"] .fab { scale: .55; opacity: 0; translate: 0 18px; pointer-events: none; transform-origin: 50% 100%; transition: scale .55s var(--kinetic), opacity .3s ease .08s, translate .55s var(--kinetic) }
+.tabbar > * { transition: opacity .28s ease .18s }
+html[data-bars="away"] .tabbar {
+  scale: var(--pill-x, .3) var(--pill-y, .08); pointer-events: none; box-shadow: none;
+  /* Corners that come out perfectly round once it's shrunk (it shrinks more in height than in width). */
+  border-radius: calc(2.5px / var(--pill-x, .3)) / calc(2.5px / var(--pill-y, .08));
+  transition: scale .55s cubic-bezier(.45, 0, .25, 1.18), border-radius .55s cubic-bezier(.45, 0, .25, 1.18), box-shadow .2s ease;
+}
+html[data-bars="away"] .tabbar::after { opacity: 1; transition: opacity .22s ease .08s }
+html[data-bars="away"] .tabbar > * { opacity: 0; transition: opacity .12s ease }
+/* No fade at the bottom of the paper while the bars are away (Nora, 2 Nov). */
+html[data-bars="away"] .with-tabbar > .scroll { -webkit-mask-image: none; mask-image: none }
+.fab { transition: transform .45s var(--kinetic, ease), box-shadow .3s ease, scale .55s cubic-bezier(.45, 0, .25, 1.32), opacity .3s ease .05s }
+html[data-bars="away"] .fab { scale: .4; opacity: 0; pointer-events: none; transform-origin: 50% 100%; transition: scale .5s cubic-bezier(.45, 0, .25, 1.18), opacity .25s ease .1s }
 /* The pill is small, so an invisible, bigger tap area sits over it while the bars are away. */
 .bars-back { display: none }
 html[data-bars="away"] .bars-back {
   display: block; position: absolute; left: 50%; bottom: calc(var(--tabbar-gap) - 16px); width: 170px; height: 44px; translate: -50% 0; z-index: 8; -webkit-tap-highlight-color: transparent;
 }
-.chat-screen .bars-back { bottom: calc(var(--composer-at) - 16px) }
-@media (prefers-reduced-motion: reduce) { .tabbar, .fab, .chat-screen .typing-bar, .tabbar > *, .chat-screen .typing-bar > * { transition: none } }
-/* With the menu slid away, the paper only fades a little at its very bottom edge. */
-html[data-bars="away"] .with-tabbar > .scroll { --fade-from: 0px; --fade-to: 28px }
+@media (prefers-reduced-motion: reduce) { .tabbar, .fab, .tabbar > *, .tabbar::after { transition: none } }

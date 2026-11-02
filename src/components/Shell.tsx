@@ -257,16 +257,29 @@ export function useBarsAway(scrollRef: { current: HTMLElement | null }, on: bool
     const root = document.documentElement
     if (!on || !el) return
     let last = el.scrollTop
+    // How far each bar shrinks to become the pill: 104 × 5 px, whatever the bar's size on this phone.
+    const measure = () => {
+      for (const bar of document.querySelectorAll<HTMLElement>('.tabbar')) {
+        if (!bar.offsetWidth || !bar.offsetHeight) continue
+        bar.style.setProperty('--pill-x', String(104 / bar.offsetWidth))
+        bar.style.setProperty('--pill-y', String(5 / bar.offsetHeight))
+      }
+    }
+    const away = () => {
+      if (root.dataset.bars === 'away') return
+      measure()
+      root.dataset.bars = 'away'
+    }
     const onScroll = () => {
       const y = el.scrollTop
       const fromTop = y
       const fromEnd = el.scrollHeight - el.clientHeight - y
       const home = toward === 'down' ? fromTop < 60 : fromEnd < 80
       const far = toward === 'down' ? fromEnd < 4 : fromTop < 4
-      const away = toward === 'down' ? y > last + 6 : y < last - 6
+      const goingAway = toward === 'down' ? y > last + 6 : y < last - 6
       const back = toward === 'down' ? y < last - 6 : y > last + 6
       if (home) delete root.dataset.bars
-      else if (away && !far) root.dataset.bars = 'away'
+      else if (goingAway && !far) away()
       else if (back) delete root.dataset.bars
       if (Math.abs(y - last) > 6 || home) last = y
     }

@@ -8,7 +8,7 @@ import { StickerImage } from '../components/Stickers'
 import { TypingBar } from '../components/TypingBar'
 import { HeartBurst, HeartButton, HeartedBy, useDoubleTap, useHeartActions, useHeartsOn } from '../components/Hearts'
 import { useChats, useMarkRead, type Chat } from '../data/chats'
-import { BarsBack, Screen, useBarsAway } from '../components/Shell'
+import { Screen } from '../components/Shell'
 import { Avatar } from '../components/Avatar'
 import { Stamp, STAMP_COLORS } from '../components/Scrapbook'
 import { BackIcon, CloseIcon, HomeIcon, ReplyIcon } from '../components/Icons'
@@ -268,18 +268,6 @@ function Conversation({ chatKey, header, back }: { chatKey: string; header?: boo
     first.current = false
   }, [count])
 
-  // Scrolling up into older messages tucks the message bar away; scrolling back down brings it back (Danko, 2 Nov).
-  const desktop = useDesktop()
-  const scrollerRef = useRef<HTMLElement | null>(null)
-  const [scroller, setScroller] = useState<HTMLElement | null>(null)
-  useLayoutEffect(() => {
-    const bubbles = endRef.current?.parentElement ?? null
-    const el = bubbles && getComputedStyle(bubbles).overflowY !== 'visible' ? bubbles : ((endRef.current?.closest('.scroll') as HTMLElement | null) ?? null)
-    scrollerRef.current = el
-    setScroller(el)
-  }, [chat?.key])
-  useBarsAway(scrollerRef, Boolean(scroller) && !desktop, 'up')
-
   // On a phone the field floats over the messages: they get room at the bottom for it (its height, as
   // --composer-h), and while you're at the newest message, it stays in view as the keyboard or the field moves.
   useEffect(() => {
@@ -379,7 +367,6 @@ function Conversation({ chatKey, header, back }: { chatKey: string; header?: boo
         )}
         <div ref={endRef} />
       </div>
-      {!desktop && <BarsBack />}
       <TypingBar
         mentionable
         keepKeyboard
