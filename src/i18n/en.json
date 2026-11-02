@@ -714,7 +714,7 @@
     "case": "Trophies",
     "caseEmpty": "No trophies yet. Each month, whoever does the most of a chore wins it.",
     "empty": "No trophies yet this month. Tick off chores and Pichi keeps count.",
-    "how": "Pichi works out the chore from each to-do's name, and it counts for whoever it was given to. Grocery runs count the days things were bought from the main shopping list. A trophy takes at least 3 in a month.",
+    "how": "Pichi works out the chore from each to-do's name, and it counts for whoever it was given to. Grocery runs count the days food was bought from the main shopping list. A trophy takes at least 3 in a month.",
     "earlier": "Earlier month",
     "later": "Later month",
     "times_one": "{{count}} time",

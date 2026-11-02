@@ -1,6 +1,6 @@
 // Trophies (Danko and Nora, 29 Oct; see PRODUCT.md "Trophies, recaps and rewards"). Pichi guesses what kind of chore
 // a to-do is from its title, in English and Serbian, so nobody has to pick a type. Each month, whoever did the most
-// of a chore (at least 3) gets its trophy. Grocery runs count the days someone bought things from the main shopping list.
+// of a chore (at least 3) gets its trophy. Grocery runs count the days someone bought food from the main shopping list.
 // Nothing new is stored: everything is counted from what the to-dos and lists already remember.
 
 import type { Item, List, Todo } from '../data/hooks'
@@ -66,7 +66,36 @@ export const AT_LEAST = 3
  */
 export function groceryItems(lists: List[], items: Item[]) {
   const main = [...lists].filter((l) => !l.project_id).sort((a, b) => a.position - b.position || a.created_at.localeCompare(b.created_at))[0]
-  return main ? items.filter((x) => x.list_id === main.id) : []
+  return main ? items.filter((x) => x.list_id === main.id && isFood(x.name)) : []
+}
+
+// Groceries are food (Nora, 2 Nov: serums and a razor on the Groceries list made her the Fridge Filler). Pichi knows
+// what isn't food: cosmetics, hygiene, cleaning, the pharmacy and odds and ends. Everything else on the main list
+// counts. Matched without accents, so "šampon" and "sampon" are the same.
+const NOT_FOOD = [
+  // skin, hair and body
+  'serum', 'cream', 'krema', 'lotion', 'losion', 'mleko za telo', 'mleko za lice', 'micel', 'toner', 'maska za', 'mask', 'spf', 'sunscreen', 'krema za sunc',
+  'shampoo', 'sampon', 'conditioner', 'regenerator', 'balzam za kosu', 'boja za kosu', 'hair', 'soap', 'sapun', 'shower', 'gel za tus', 'kupk', 'body',
+  'deodorant', 'dezodorans', 'perfume', 'parfem', 'makeup', 'sminka', 'maskara', 'mascara', 'ruz', 'lipstick', 'puder', 'lak za nokte', 'nail', 'skidac',
+  'razor', 'brij', 'zilet', 'toothpaste', 'pasta za zube', 'toothbrush', 'cetkic', 'konac za zube', 'floss', 'vodica za usta', 'mouthwash',
+  // paper and hygiene
+  'toilet paper', 'toalet papir', 'wc papir', 'tissue', 'maramic', 'wipes', 'ulozak', 'ulosc', 'tampon', 'pelen', 'diaper', 'vata', 'stapic',
+  // cleaning and laundry
+  'detergent', 'deterdzent', 'softener', 'omeksivac', 'cleaner', 'sredstvo za', 'sundjer', 'sunder', 'sponge', 'kese za smece', 'trash bag', 'bin bag',
+  'izbeljivac', 'bleach', 'tablete za sudomas', 'dishwasher tab', 'so za sudomas', 'osvezivac', 'air freshener', 'krpa', 'krpe',
+  // pharmacy
+  'vitamin', 'lek ', 'lekov', 'tablet', 'pills', 'aspirin', 'brufen', 'paracetamol', 'kapi za', 'flaster', 'plaster', 'zavoj', 'kondom', 'condom', 'test za',
+  // odds and ends
+  'baterij', 'batter', 'sijalic', 'bulb', 'produzn', 'kabl', 'cable', 'punjac', 'charger', 'svec', 'candle', 'folija za', 'hrana za mac', 'hrana za pse', 'cat food', 'dog food', 'pesak za mac',
+]
+
+const plain = (text: string) =>
+  ` ${text.toLocaleLowerCase().replace(/đ/g, 'dj').normalize('NFD').replace(/[\u0300-\u036f]/g, '')} `
+
+/** Is this shopping item food? (Not cosmetics, cleaning, the pharmacy or odds and ends.) */
+export function isFood(name: string) {
+  const t = plain(name ?? '')
+  return !NOT_FOOD.some((w) => t.includes(w))
 }
 
 /** The month's trophies: one per chore, to whoever did the most, once they've done it at least AT_LEAST times. */
