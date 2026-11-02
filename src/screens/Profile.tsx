@@ -8,7 +8,7 @@ import { useHousehold, useMembers, useMyProfile, type Avatar as AvatarData } fro
 import { Screen } from '../components/Shell'
 import { ACCESSORIES, Avatar, CHARACTERS, COLORS, COLOR_HEX } from '../components/Avatar'
 import { Hand } from '../components/Scrapbook'
-import { BackIcon, PencilIcon } from '../components/Icons'
+import { BackIcon } from '../components/Icons'
 import { LangSwitch } from '../components/LangSwitch'
 import { useDesktop } from '../lib/desktop'
 import { THEMES } from '../lib/theme'
@@ -349,8 +349,8 @@ export function SettingsScreen() {
 
   return (
     <Screen center>
-      {/* Settings looks like your profile (Nora, 30 Oct): your character big, your name, a small pink Change character
-          button, and the settings underneath where the wish list would be. */}
+      {/* Settings looks like your profile (Nora, 30 Oct): your character big with its "Edit" slice, your name, and the
+          settings underneath where the wish list would be. */}
       <div style={{ padding: 'calc(var(--top) + 8px) 22px 32px 40px', display: 'flex', flexDirection: 'column', gap: 22 }}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 14 }}>
           <div className="row" style={{ alignSelf: 'stretch', marginLeft: -10 }}>
@@ -358,14 +358,16 @@ export function SettingsScreen() {
               <BackIcon />
             </button>
           </div>
-          <Avatar whole avatar={profile?.avatar} size={220} label={profile?.display_name} className="" style={{ marginTop: 18, filter: 'drop-shadow(2px 4px 0 rgba(30,26,48,.12))' }} />
+          {/* Like your profile: the picture opens Change character, with the "Edit" slice (Nora, 2 Nov). */}
+          <Link to="/profile" className="av-edit-wrap" aria-label={t('settings.changeCharacter')} style={{ marginTop: 18 }}>
+            <Avatar whole avatar={profile?.avatar} size={220} label={profile?.display_name} className="" style={{ display: 'block', filter: 'drop-shadow(2px 4px 0 rgba(30,26,48,.12))' }} />
+            <span className="av-edit" aria-hidden>
+              <span>{t('person.edit')}</span>
+            </span>
+          </Link>
           <Hand as="h1" size={48} lineHeight={52} style={{ margin: '22px 0 0', textAlign: 'center' }}>
             {profile?.display_name ?? ''}
           </Hand>
-          <Link to="/profile" className="stk prim sm" style={{ marginTop: 18, transform: 'rotate(-1.5deg)' }}>
-            <PencilIcon />
-            {t('settings.changeCharacter')}
-          </Link>
         </div>
 
         <section>
