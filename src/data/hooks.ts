@@ -26,6 +26,8 @@ export type Member = Row & {
   label: string | null
   home_layout: LayoutEntry[]
   joined_at: string
+  /** Your name in this household (Nora, 1 Nov). Empty: the name from your profile. */
+  display_name?: string | null
 }
 
 /** A shopping list. A project's list (project_id set) is a tab in Shopping while the project isn't finished. */
@@ -476,12 +478,16 @@ export function useHousehold() {
     const homes = households.rows.filter((h) => mine.some((m) => m.household_id === h.id))
     const household = homes.find((h) => h.id === saved) ?? homes[0] ?? null
     const membership = household ? mine.find((m) => m.household_id === household.id) ?? null : null
-    const people = household
-      ? members.rows
-          .filter((m) => m.household_id === household.id)
-          .map((m) => profiles.rows.find((p) => p.id === m.user_id))
-          .filter((p): p is Profile => Boolean(p))
-      : []
+    // Everyone as this household knows them: the name they picked for it, else their profile's (Nora, 1 Nov).
+    const inHousehold = (householdId: string) =>
+      members.rows
+        .filter((m) => m.household_id === householdId)
+        .map((m) => {
+          const p = profiles.rows.find((x) => x.id === m.user_id)
+          return p && m.display_name ? { ...p, display_name: m.display_name } : p
+        })
+        .filter((p): p is Profile => Boolean(p))
+    const people = household ? inHousehold(household.id) : []
     return {
       loaded: households.loaded && members.loaded,
       /** Everyone's membership in this household, with when they joined. */
@@ -496,11 +502,9 @@ export function useHousehold() {
         const m = mine.find((x) => x.household_id === h.id)
         return m?.label || h.name
       },
-      peopleIn: (householdId: string) =>
-        members.rows
-          .filter((m) => m.household_id === householdId)
-          .map((m) => profiles.rows.find((p) => p.id === m.user_id))
-          .filter((p): p is Profile => Boolean(p)),
+      peopleIn: inHousehold,
+      /** Your own name in this household. */
+      myName: membership?.display_name || profiles.rows.find((p) => p.id === me)?.display_name || '',
     }
   }, [me, saved, households.rows, households.loaded, members.rows, members.loaded, profiles.rows])
 }

@@ -18,7 +18,7 @@ export function MentionBanner() {
   const { t } = useTranslation()
   const navigate = useNavigate()
   const profile = useMyProfile()
-  const { household, people } = useHousehold()
+  const { household, people, myName } = useHousehold()
   const hid = household?.id ?? null
   const comments = useComments(hid)
   const messages = useMessages(hid)
@@ -30,7 +30,8 @@ export function MentionBanner() {
 
   const latest = useMemo(() => {
     const me = profile?.id
-    const name = profile?.display_name ?? ''
+    // Tagged by the name you go by in this household.
+    const name = myName
     if (!me || !name) return null
     const seen = new Set([...seenMentions(), ...closed])
     const fresh = (iso: string) => Date.now() - new Date(iso).getTime() < TWO_WEEKS
@@ -50,7 +51,7 @@ export function MentionBanner() {
       found.push({ id: m.id, by: m.author_id, body: m.body, at: m.created_at, where: t('mentions.inMessages'), to: m.to_user ? `/messages/${m.author_id}` : '/messages' })
     }
     return found.sort((a, b) => b.at.localeCompare(a.at))[0] ?? null
-  }, [profile, comments.rows, messages.rows, todos.rows, items.rows, notes.rows, closed, t])
+  }, [profile, myName, comments.rows, messages.rows, todos.rows, items.rows, notes.rows, closed, t])
 
   if (!latest) return null
   const who = people.find((p) => p.id === latest.by)

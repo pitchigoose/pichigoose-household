@@ -27,8 +27,10 @@ export function PersonScreen() {
   const { id } = useParams()
   const me = useMe()
   const back = useBackInApp()
-  const person = useProfiles().rows.find((p) => p.id === id)
   const { household, people } = useHousehold()
+  // As this household knows them (their name here, if they picked one), else from their profile.
+  const profile = useProfiles().rows.find((p) => p.id === id)
+  const person = people.find((p) => p.id === id) ?? profile
   // The household's admin (whoever created it) can take someone out of it, like someone added by accident (Nora, 31 Oct).
   const [removing, setRemoving] = useState(false)
   const canRemove = Boolean(household && household.created_by === me && id !== me && people.some((p) => p.id === id))

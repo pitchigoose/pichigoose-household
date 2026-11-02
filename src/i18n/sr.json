@@ -330,8 +330,11 @@
       "brown": "Tost",
       "black": "Onigiri"
     },
-    "name": "Tvoje ime",
-    "nameHint": "Ovo ime vide svi u svim tvojim domaćinstvima."
+    "name": "Ime za prikaz",
+    "nameHint": "Ovo ime vide svi u tvom domaćinstvu.",
+    "nameHintMany": "Tvoje ime u svim domaćinstvima, osim ako ispod izabereš drugo za neko domaćinstvo.",
+    "perHousehold": "Ime za prikaz u svakom domaćinstvu",
+    "perHouseholdHint": "Ostavi polje prazno i tamo ćeš biti {{name}}."
   },
   "invite": {
     "title": "Pozovi nekoga",

@@ -14,7 +14,7 @@ import { useUnreadTotal } from '../data/chats'
 export function Sidebar() {
   const { t } = useTranslation()
   const profile = useMyProfile()
-  const { household, people, name } = useHousehold()
+  const { household, people, name, myName } = useHousehold()
   const [adding, setAdding] = useState(false)
   // "Our home ›" opens the hub as a side panel (Nora, 29 Oct).
   const [hub, setHub] = useState(false)
@@ -79,7 +79,7 @@ export function Sidebar() {
       <Link to={profile ? `/people/${profile.id}` : '/settings'} className="row" style={{ gap: 12, padding: '6px 4px' }}>
         <Avatar avatar={profile?.avatar} size={40} />
         <span style={{ fontSize: 15, fontWeight: 800, color: '#1E1A30', lineHeight: '19px' }}>
-          {profile?.display_name}
+          {myName}
           <span className="cap" style={{ display: 'block', fontWeight: 600 }}>
             {t('home.profile')}
           </span>
