@@ -164,6 +164,7 @@ The order Nora chose: gamification first, then the iPhone wrap (Capacitor, built
 **To do in the app**
 - [ ] **Find the Pichi talk again.** After "Not now" it's only reachable from Pichi's face at the top of a pantry room (that room only) and "Teach Pichi" on Pichi's page, and neither says what it does. Make it easy to find, so everyday things can be tracked any time [Nora].
 - [ ] **Gamification** (trophies, see the ideas below), before anything else on this list [Nora].
+- [ ] **Scan a receipt** [Danko, 2 Nov]. Scan the QR code on a Serbian fiscal receipt and Pichi reads every item from the tax office's page (on the server). Every scan helps right away: what you bought is ticked off the list and filled back up on the shelves. Over several receipts he learns how often things are bought, on top of his guesses and your corrections, so nobody waits for him to learn. Store names like "PAVLAKA 20% 180G IMLEK": Pichi asks once ("Is this your sour cream?") and remembers. Prices stay out (money is personal). Works in the web app already; native makes the camera smoother. Countries without these codes would need a photo of the receipt instead.
 - [ ] **Delete your account inside the app.** Apple requires it for any app you can sign up for.
 - [ ] **Report and block** for the chat and comments. Apple requires it wherever people write to each other, even in a private family app.
 - [ ] **A privacy policy and a support page** on pichigoose.com, linked from Settings and from the App Store listing. Claude drafts, Nora edits.
