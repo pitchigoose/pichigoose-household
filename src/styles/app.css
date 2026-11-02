@@ -515,9 +515,18 @@ body.adding .offline { bottom: calc(max(var(--tabbar), var(--kb)) + 96px) }
 .sticker-tray {
   position: absolute; left: 0; right: 0; bottom: calc(100% + 8px); z-index: 5; display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; padding: 10px;
   background: #FFFDF8 url("../../assets/paper-white.png") 0 0 / 512px 512px; border-radius: 14px 18px 16px 14px;
-  box-shadow: 0 0 0 1px rgba(30, 26, 48, .06), 0 8px 24px -6px rgba(30, 26, 48, .25); animation: tray-in .22s var(--ease-out);
+  box-shadow: 0 0 0 1px rgba(30, 26, 48, .06), 0 8px 24px -6px rgba(30, 26, 48, .25);
 }
-@keyframes tray-in { from { opacity: 0; transform: translateY(8px) scale(.98) } }
+/* The tray springs out of the sticker button and glides back into it, the same motion as the menu's pill (Nora,
+   2 Nov): .6 s each way, a springy finish coming out, a smooth one going back. The stickers pop in one after another. */
+.sticker-tray.measuring { visibility: hidden }
+.sticker-tray.in { animation: tray-out-of-button .6s cubic-bezier(.45, 0, .25, 1.32) both }
+.sticker-tray.out { animation: tray-into-button .6s cubic-bezier(.3, .3, .55, 1) both; pointer-events: none }
+@keyframes tray-out-of-button { from { scale: .1; opacity: 0 } 35% { opacity: 1 } to { scale: 1; opacity: 1 } }
+@keyframes tray-into-button { from { scale: 1; opacity: 1 } 65% { opacity: 1 } to { scale: .1; opacity: 0 } }
+.sticker-tray.in .sticker-pick { animation: sticker-pop-in .45s cubic-bezier(.45, 0, .25, 1.32) both; animation-delay: calc(110ms + var(--i, 0) * 22ms) }
+@keyframes sticker-pop-in { from { scale: .4; opacity: 0 } to { scale: 1; opacity: 1 } }
+@media (prefers-reduced-motion: reduce) { .sticker-tray.in, .sticker-tray.out, .sticker-tray.in .sticker-pick { animation-duration: .01s; animation-delay: 0s } }
 .sticker-pick { display: grid; place-items: center; padding: 4px; border-radius: 12px; transition: background .15s, transform .15s }
 .sticker-pick:active { background: rgba(132, 102, 184, .12); transform: scale(.94) }
 @media (hover: hover) { .sticker-pick:hover { background: rgba(132, 102, 184, .08) } }

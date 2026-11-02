@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useMyProfile } from '../data/hooks'
 
@@ -35,8 +35,38 @@ export function StickerButton({ onSend }: { onSend: (name: string) => void }) {
   const { t } = useTranslation()
   const me = useMyProfile()
   const pack = packFor(me?.avatar?.character)
-  const [open, setOpen] = useState(false)
+  const [open, setOpenState] = useState(false)
+  // The tray stays on screen while it shrinks back into the button, then goes (Nora, 2 Nov: the same motion as the
+  // menu's pill: it springs out of the button, and glides back into it).
+  const [mounted, setMounted] = useState(false)
+  const closing = useRef<number | undefined>(undefined)
+  const setOpen = (next: boolean | ((o: boolean) => boolean)) => {
+    const value = typeof next === 'function' ? next(open) : next
+    window.clearTimeout(closing.current)
+    if (value) setMounted(true)
+    else closing.current = window.setTimeout(() => setMounted(false), 600)
+    setOpenState(value)
+  }
+  useEffect(() => () => window.clearTimeout(closing.current), [])
   const box = useRef<HTMLSpanElement>(null)
+  const btn = useRef<HTMLButtonElement>(null)
+  const tray = useRef<HTMLSpanElement>(null)
+  // It grows from the sticker button itself, wherever the button sits under it. Measured before the animation starts
+  // (a tray that's already shrunk would give the wrong spot), then the animation is switched on.
+  const [measured, setMeasured] = useState(false)
+  useLayoutEffect(() => {
+    const t = tray.current
+    const b = btn.current
+    if (!mounted) {
+      setMeasured(false)
+      return
+    }
+    if (measured || !t || !b) return
+    const tr = t.getBoundingClientRect()
+    const br = b.getBoundingClientRect()
+    t.style.transformOrigin = `${Math.round(br.left + br.width / 2 - tr.left)}px ${Math.round(br.top + br.height / 2 - tr.top)}px`
+    setMeasured(true)
+  }, [mounted, measured])
 
   // A tap anywhere else, or Escape, closes the tray.
   useEffect(() => {
@@ -54,6 +84,7 @@ export function StickerButton({ onSend }: { onSend: (name: string) => void }) {
   return (
     <span ref={box} className="sticker-box">
       <button
+        ref={btn}
         type="button"
         className={`sticker-btn${open ? ' on' : ''}`}
         aria-label={t('stickers.title')}
@@ -75,12 +106,14 @@ export function StickerButton({ onSend }: { onSend: (name: string) => void }) {
           <path d="M34 22h-5.5a6.5 6.5 0 0 0-6.5 6.5V34" />
         </svg>
       </button>
-      {open && (
-        <span className="sticker-tray" role="dialog" aria-label={t('stickers.title')}>
-          {STICKERS.map((s) => (
+      {mounted && (
+        <span ref={tray} className={`sticker-tray ${!measured ? 'measuring' : open ? 'in' : 'out'}`} role="dialog" aria-label={t('stickers.title')} aria-hidden={!open || undefined}>
+          {STICKERS.map((s, i) => (
             <button
               key={s}
               type="button"
+              tabIndex={open ? undefined : -1}
+              style={{ ['--i' as string]: i }}
               className="sticker-pick"
               aria-label={t(`stickers.names.${s}`)}
               title={t(`stickers.names.${s}`)}
