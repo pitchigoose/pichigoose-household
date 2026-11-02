@@ -238,11 +238,13 @@ export function Floating({ children }: { children: ReactNode }) {
 }
 
 /**
- * Danko's idea (2 Nov): on Home, scrolling down slides the menu and the round + down out of the way, like a browser's
- * address bar, so the notes get the whole screen; scrolling up a little brings them right back. Near the top they
- * always show. It's a mark on the page (html[data-bars="away"]), so the + (which lives outside the paper) follows too.
+ * Danko's idea (2 Nov): scrolling slides the floating things out of the way, like a browser's address bar, so the page
+ * gets the whole screen; scrolling back a little brings them right back. On Home, scrolling down hides the menu and
+ * the round +, and near the top they always show. In the chat (`toward: 'up'`), scrolling up into older messages hides
+ * the message bar, and near the newest message it always shows. It's a mark on the page (html[data-bars="away"]), so
+ * the + (which lives outside the paper) follows too.
  */
-function useBarsAway(scrollRef: { current: HTMLDivElement | null }, on: boolean) {
+export function useBarsAway(scrollRef: { current: HTMLElement | null }, on: boolean, toward: 'down' | 'up' = 'down') {
   useEffect(() => {
     const el = scrollRef.current
     const root = document.documentElement
@@ -250,16 +252,21 @@ function useBarsAway(scrollRef: { current: HTMLDivElement | null }, on: boolean)
     let last = el.scrollTop
     const onScroll = () => {
       const y = el.scrollTop
-      const atEnd = y + el.clientHeight >= el.scrollHeight - 4
-      if (y < 60) delete root.dataset.bars
-      else if (y > last + 6 && !atEnd) root.dataset.bars = 'away'
-      else if (y < last - 6) delete root.dataset.bars
-      if (Math.abs(y - last) > 6 || y < 60) last = y
+      const fromTop = y
+      const fromEnd = el.scrollHeight - el.clientHeight - y
+      const home = toward === 'down' ? fromTop < 60 : fromEnd < 80
+      const far = toward === 'down' ? fromEnd < 4 : fromTop < 4
+      const away = toward === 'down' ? y > last + 6 : y < last - 6
+      const back = toward === 'down' ? y < last - 6 : y > last + 6
+      if (home) delete root.dataset.bars
+      else if (away && !far) root.dataset.bars = 'away'
+      else if (back) delete root.dataset.bars
+      if (Math.abs(y - last) > 6 || home) last = y
     }
     el.addEventListener('scroll', onScroll, { passive: true })
     return () => {
       el.removeEventListener('scroll', onScroll)
       delete root.dataset.bars
     }
-  }, [scrollRef, on])
+  }, [scrollRef, on, toward])
 }

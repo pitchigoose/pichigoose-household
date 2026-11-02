@@ -754,12 +754,19 @@ html[data-kb="open"] body.adding .with-tabbar > .scroll {
 .tug-who b { font-weight: 800; color: #1E1A30 }
 @media (prefers-reduced-motion: reduce) { .tug span { transition: none } }
 
-/* Scrolling down on Home slides the menu and the round + away; scrolling up brings them back (Danko, 2 Nov). The menu
-   tucks under the bottom of the paper, the + slides off the bottom of the screen. */
-.tabbar { transition: translate .38s cubic-bezier(.2, .8, .2, 1) }
-.fab { transition: transform .45s var(--kinetic, ease), box-shadow .3s ease, scale .45s cubic-bezier(.34, 1.56, .64, 1), translate .38s cubic-bezier(.2, .8, .2, 1) }
-html[data-bars="away"] .tabbar { translate: 0 calc(100% + var(--tabbar-gap) + 12px) }
-html[data-bars="away"] .fab { translate: 0 calc(var(--tabbar) + 90px) }
-@media (prefers-reduced-motion: reduce) { .tabbar, .fab { transition: none } }
+/* Scrolling tucks the floating things away, and scrolling back brings them back (Danko, 2 Nov): they shrink toward
+   their bottom center and fade, with the app's kinetic ease, and spring back up with a little bounce. On Home the
+   menu and the round +; in the chat, the message bar (never while you're typing in it). */
+.tabbar { transform-origin: 50% 100%; transition: scale .5s cubic-bezier(.34, 1.56, .64, 1), opacity .35s ease, translate .5s cubic-bezier(.34, 1.56, .64, 1) }
+.fab { transition: transform .45s var(--kinetic, ease), box-shadow .3s ease, scale .5s cubic-bezier(.34, 1.56, .64, 1), opacity .35s ease, translate .5s cubic-bezier(.34, 1.56, .64, 1) }
+.chat-screen .typing-bar { transform-origin: 50% 100%; transition: scale .5s cubic-bezier(.34, 1.56, .64, 1), opacity .35s ease, translate .5s cubic-bezier(.34, 1.56, .64, 1) }
+html[data-bars="away"] .tabbar,
+html[data-bars="away"] .fab,
+html[data-bars="away"] .chat-screen .typing-bar:not(.typing) {
+  scale: .55; opacity: 0; translate: 0 18px; pointer-events: none;
+  transition: scale .55s var(--kinetic), opacity .3s ease .08s, translate .55s var(--kinetic);
+}
+html[data-bars="away"] .fab { transform-origin: 50% 100% }
+@media (prefers-reduced-motion: reduce) { .tabbar, .fab, .chat-screen .typing-bar { transition: none } }
 /* With the menu slid away, the paper only fades a little at its very bottom edge. */
 html[data-bars="away"] .with-tabbar > .scroll { --fade-from: 0px; --fade-to: 28px }
