@@ -53,12 +53,17 @@ export function TypingBar({ value, onChange, onSend, placeholder, onSticker, mul
     if (fieldRef) fieldRef.current = el
   }
 
-  // The chat's field grows with the text, up to five lines.
+  // The chat's field grows with the text, up to five lines. Its border counts too, or the text is a hair taller than
+  // the field and Android shows a scrollbar in it (Danko, 2 Nov). It only scrolls once it's at five lines.
   useLayoutEffect(() => {
     const el = own.current
     if (!el || !multiline) return
     el.style.height = 'auto'
-    el.style.height = `${Math.min(el.scrollHeight, 128)}px`
+    const cs = getComputedStyle(el)
+    const borders = parseFloat(cs.borderTopWidth) + parseFloat(cs.borderBottomWidth)
+    const full = el.scrollHeight + borders
+    el.style.height = `${Math.min(full, 128)}px`
+    el.style.overflowY = full > 128 ? 'auto' : 'hidden'
   }, [value, multiline])
 
   // The text as it is in the field right now. On iPhone the last word (and dictation) can still be held by the

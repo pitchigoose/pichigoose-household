@@ -616,6 +616,9 @@ html[data-kb="open"] body.adding .with-tabbar > .scroll {
    1.5px higher: mostly small letters, so true center reads low by eye. */
 .typing-bar .input { flex: 1; height: auto; min-height: 40px; padding: 6.5px 15px 9.5px; resize: none; line-height: 22px; border-radius: 22px; border-color: color-mix(in srgb, var(--hero) 35%, #FFFDF8) }
 .typing-bar .input:focus { border-color: var(--hero) }
+/* The growing chat field: 1 px less inside at the top and bottom, so one line plus its border is exactly 40 px, like
+   the buttons, with the text where it was. (It used to be 2 px too tall inside, so Android drew a scrollbar, Danko.) */
+.typing-bar textarea.input { padding-top: 5.5px; padding-bottom: 8.5px }
 .typing-bar.quoting { flex-wrap: wrap; border-radius: 22px }
 .typing-bar .sticker-box { align-self: flex-end }
 .typing-bar .sticker-tray { left: 0; right: 0 }
