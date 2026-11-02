@@ -20,11 +20,11 @@ Each item says who it came from. ✅ means built, ⏳ means built but waiting fo
 
 ## 1. Built, waiting for Nora
 
-- ⏳ **A display name for each household** [Nora, 1 Nov]. In Settings, only for people in more than one household. Needs one new column on the members table: say "Add the household name column to the live database and push it". Branch `household-names`.
+- ✅ **A display name for each household** [Nora, 1 Nov]. In Settings, only for people in more than one household. Live 2 Nov.
 - ⏳ **Settings that look like your profile** [Nora]. Big character, your name, a small pink "Change character", settings underneath. Say "push it live". Branch `settings-profile-look`.
 - ⏳ **Trophies, first version** [Danko and Nora]. Pichi guesses the chore from each to-do's name in English and Serbian, one trophy per chore each month, the rosette for three months in a row, a monthly recap, a trophy case on profiles. No database changes. Branch `trophies`, waiting for Nora's review (see section 2).
 - ⬜ **Pichi is a he** [Nora, 1 Nov]. A few older Serbian lines still say "she" ("Pichi je provirila", "Stavila sam"). Needs Nora's yes to switch them.
-- ⬜ **Tidy-up:** the shopping items' old note column, no longer used, gets dropped from the database (a reminder is set for 2 Nov).
+- ✅ **Tidy-up:** the shopping items' old note column is gone from the database (2 Nov).
 
 ## 2. Gamification [Danko and Nora]
 

@@ -105,7 +105,6 @@ The things to buy (S1, S2, S3).
 | id | uuid, primary key | |
 | list_id | uuid, references lists | |
 | name | text | "rice" |
-| note | text, nullable | "the big bag" [Claude] |
 | added_by | uuid, references profiles | shown as the avatar and "added by Danko" (S3) |
 | created_at | timestamptz | shown as "2 hours ago" |
 | checked_by | uuid, nullable | who bought it (S2) |
