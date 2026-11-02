@@ -9,7 +9,7 @@ Each item says who it came from. ✅ means built, ⏳ means built but waiting fo
 1. **Finish what's waiting.** Things already built that need Nora's yes.
 2. **Gamification.** Trophies, recaps and the game slider.
 3. **Pichi gets smarter.** Finding his talk again, then scanning receipts.
-4. **Decide the rest of the plan.** Money, events, photos and the calendar: before launch or after.
+4. **The rest of the plan.** Money, events, photos in chat and the calendar, all before launch.
 5. **What Apple requires.** Account deletion, report and block, privacy pages, automated checks.
 6. **Sign in with Apple, Google and Facebook.** Right before the move to native.
 7. **The iPhone app.** The same app wrapped for iPhone, built on Nora's Mac.
@@ -55,15 +55,15 @@ Still to decide (Nora):
   - Prices stay out, because money is personal.
   - Works in the web app already; native makes the camera smoother.
 
-## 4. Decide: before launch or after (Nora)
+## 4. The rest of the plan, all before launch [Nora, 2 Nov]
 
-These are in the product plan but not built yet. Each one is either built before launch or kept hidden until after.
+Each one gets planned with Nora first, then built.
 
-- ⬜ **Money, who owes who** (M1 to M8). Hidden in the app for now.
-- ⬜ **Events** (E1 to E3). A simple temporary household for a picnic or a trip.
+- ⬜ **Money, who owes who** (M1 to M8). Hidden in the app for now. Open question in PRODUCT.md: what money looks like in version 2.
+- ⬜ **Events** (E1 to E3). A simple temporary household for a picnic or a trip. Open question in PRODUCT.md: how simple is "simpler than a household"?
+- ⬜ **Photos in chat** [Nora]. Needs a private storage space and one new column on messages (a table change, so Nora's OK first).
+- ⬜ **Calendar.** Planning not started: what goes on it (to-dos with dates, events, chores) and where it lives.
 - ⬜ **Notifications** (X1, X2, P3). The real push comes with the iPhone app (section 7).
-- ⬜ **Photos in chat** [Nora]. Needs a storage space and one new column on messages.
-- ⬜ **Calendar.** Planning not started.
 
 ## 5. What Apple requires
 
@@ -104,5 +104,5 @@ The same app, wrapped for iPhone with Capacitor and built on Nora's Mac in Xcode
 
 ## Questions only Nora can answer
 
-1. Money, events, photos in chat and the calendar: before launch or after?
-2. The gamification decisions in section 2.
+1. The gamification decisions in section 2.
+2. For money, events, photos and the calendar: the questions in section 4, when we plan each one.
