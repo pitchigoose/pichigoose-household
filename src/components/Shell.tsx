@@ -245,8 +245,8 @@ export function Floating({ children }: { children: ReactNode }) {
 }
 
 /**
- * Danko's idea (2 Nov): scrolling slides the floating things out of the way, like a browser's address bar, so the page
- * gets the whole screen; scrolling back a little brings them right back. On Home, scrolling down hides the menu and
+ * Danko's idea (2 Nov): scrolling tucks the floating things out of the way, so the page gets the whole screen; when
+ * the page stops moving, they come right back. On Home, scrolling down hides the menu and
  * the round +, and near the top they always show. In the chat (`toward: 'up'`), scrolling up into older messages hides
  * the message bar, and near the newest message it always shows. It's a mark on the page (html[data-bars="away"]), so
  * the + (which lives outside the paper) follows too.
@@ -270,23 +270,30 @@ export function useBarsAway(scrollRef: { current: HTMLElement | null }, on: bool
       measure()
       root.dataset.bars = 'away'
     }
+    // While the page moves (either way), the bars stay tucked away; a moment after it comes to rest, glide included,
+    // they come back (Nora, 2 Nov: not on scrolling up, but when you stop). At the very top they always show.
+    let rest = 0
     const onScroll = () => {
       const y = el.scrollTop
       const fromTop = y
       const fromEnd = el.scrollHeight - el.clientHeight - y
-      // Reacts to the first few pixels of a scroll, not after a run-up (Nora, 2 Nov: it felt late).
       const home = toward === 'down' ? fromTop < 8 : fromEnd < 80
-      const far = toward === 'down' ? fromEnd < 4 : fromTop < 4
-      const goingAway = toward === 'down' ? y > last + 3 : y < last - 3
-      const back = toward === 'down' ? y < last - 6 : y > last + 6
-      if (home) delete root.dataset.bars
-      else if (goingAway && !far) away()
-      else if (back) delete root.dataset.bars
-      if (Math.abs(y - last) > 3 || home) last = y
+      window.clearTimeout(rest)
+      if (home) {
+        delete root.dataset.bars
+        last = y
+        return
+      }
+      if (Math.abs(y - last) > 3) {
+        away()
+        last = y
+      }
+      rest = window.setTimeout(() => delete root.dataset.bars, 450)
     }
     el.addEventListener('scroll', onScroll, { passive: true })
     return () => {
       el.removeEventListener('scroll', onScroll)
+      window.clearTimeout(rest)
       delete root.dataset.bars
     }
   }, [scrollRef, on, toward])
