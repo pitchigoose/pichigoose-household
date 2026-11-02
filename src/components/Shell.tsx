@@ -74,9 +74,16 @@ export function Screen({ children, tabbar, footer, className = '', wide, center,
       <div className="scroll scr" ref={scrollRef}>{page}</div>
       {footer}
       {tabbar && <TabBar />}
+      {hideBarsOnScroll && <BarsBack />}
       <OfflineBadge />
     </div>
   )
+}
+
+/** While the bars are tucked into their pill, tapping the pill brings them back. */
+export function BarsBack() {
+  const { t } = useTranslation()
+  return <button type="button" className="bars-back" aria-label={t('common.showBars')} onClick={() => delete document.documentElement.dataset.bars} />
 }
 
 /** From the left edge to the right goes back on every screen but Home, by the same rule as every back button:

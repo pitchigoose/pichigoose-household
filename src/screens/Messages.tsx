@@ -8,7 +8,7 @@ import { StickerImage } from '../components/Stickers'
 import { TypingBar } from '../components/TypingBar'
 import { HeartBurst, HeartButton, HeartedBy, useDoubleTap, useHeartActions, useHeartsOn } from '../components/Hearts'
 import { useChats, useMarkRead, type Chat } from '../data/chats'
-import { Screen, useBarsAway } from '../components/Shell'
+import { BarsBack, Screen, useBarsAway } from '../components/Shell'
 import { Avatar } from '../components/Avatar'
 import { Stamp, STAMP_COLORS } from '../components/Scrapbook'
 import { BackIcon, CloseIcon, HomeIcon, ReplyIcon } from '../components/Icons'
@@ -379,6 +379,7 @@ function Conversation({ chatKey, header, back }: { chatKey: string; header?: boo
         )}
         <div ref={endRef} />
       </div>
+      {!desktop && <BarsBack />}
       <TypingBar
         mentionable
         keepKeyboard

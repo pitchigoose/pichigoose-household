@@ -20,7 +20,8 @@
     "seeAll": "sve",
     "someone": "Neko",
     "undo": "Vrati",
-    "add": "Dodaj"
+    "add": "Dodaj",
+    "showBars": "Prikaži meni"
   },
   "auth": {
     "tagline": "Planiraj domaćinstvo sa ljudima s kojima živiš, da svi budu organizovani.",
