@@ -353,7 +353,8 @@ export function SettingsScreen() {
           settings underneath where the wish list would be. */}
       <div style={{ padding: 'calc(var(--top) + 8px) 22px 32px 40px', display: 'flex', flexDirection: 'column', gap: 22 }}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 14 }}>
-          <div className="row" style={{ alignSelf: 'stretch', marginLeft: -10 }}>
+          {/* As tall as the profile's top row with its gear, so going from your profile to Settings nothing moves. */}
+          <div className="row" style={{ alignSelf: 'stretch', marginLeft: -10, minHeight: 38 }}>
             <button type="button" aria-label={t('common.back')} onClick={back} style={{ display: 'flex', color: '#1E1A30' }}>
               <BackIcon />
             </button>
