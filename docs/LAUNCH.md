@@ -28,9 +28,11 @@ Each item says who it came from. ✅ means built, ⏳ means built but waiting fo
 
 ## 2. Gamification [Danko and Nora]
 
-The full idea is in PRODUCT.md under "Trophies, recaps and rewards". The first version is built on the `trophies` branch.
+The full idea is in PRODUCT.md under "Trophies, recaps and rewards".
 
 - ✅ The first version is live (2 Nov).
+- ✅ Tap a trophy for the details, the tug of war, and Share with its own picture (2 Nov).
+- ⬜ **The trophy share picture** [Nora, 2 Nov]: make the gold medal behind the trophy bigger, so it doesn't look so small next to it.
 - ⬜ **The game slider:** each household picks how much game it wants, from Off to God mode.
 - ⬜ **Monthly recap** and **Year in the home**.
 - ⬜ **Points and rewards for children**, with their own accounts.
