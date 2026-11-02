@@ -7,7 +7,7 @@ import { Avatar } from '../components/Avatar'
 import { BackIcon } from '../components/Icons'
 import { Trophy } from '../components/Trophy'
 import { useBackInApp } from '../lib/back'
-import { monthOf, monthsWithActivity, streakOf, trophies, type Chore, type Month, type Win } from '../lib/chores'
+import { groceryItems, monthOf, monthsWithActivity, streakOf, trophies, type Chore, type Month, type Win } from '../lib/chores'
 
 const NOTES = ['n-butter', 'n-mint', 'n-blush', 'n-mist', 'n-sage', 'n-peach', 'n-lilac', 'n-sand']
 
@@ -18,7 +18,7 @@ export function useTrophyData() {
   const todos = useTodos(hid)
   const lists = useLists(hid)
   const items = useItemsIn(lists.rows.map((l) => l.id))
-  return { people, todos: todos.rows as Todo[], items: items.rows as Item[] }
+  return { people, todos: todos.rows as Todo[], items: groceryItems(lists.rows, items.rows as Item[]) }
 }
 
 export function monthName(month: Month, lang: string) {

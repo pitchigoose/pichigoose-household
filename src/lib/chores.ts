@@ -1,9 +1,9 @@
 // Trophies (Danko and Nora, 29 Oct; see PRODUCT.md "Trophies, recaps and rewards"). Pichi guesses what kind of chore
 // a to-do is from its title, in English and Serbian, so nobody has to pick a type. Each month, whoever did the most
-// of a chore gets its trophy. Grocery runs count the days someone bought things from the shopping list.
+// of a chore (at least 3) gets its trophy. Grocery runs count the days someone bought things from the main shopping list.
 // Nothing new is stored: everything is counted from what the to-dos and lists already remember.
 
-import type { Item, Todo } from '../data/hooks'
+import type { Item, List, Todo } from '../data/hooks'
 
 export const CHORES = ['dishes', 'laundry', 'hanging-laundry', 'ironing', 'groceries', 'trash', 'cleaning', 'cooking', 'plants'] as const
 export type Chore = (typeof CHORES)[number]
@@ -11,7 +11,8 @@ export type Chore = (typeof CHORES)[number]
 // Words Pichi listens for. Checked in this order, so "hang the laundry" is hanging laundry, not laundry.
 // Serbian words are cut to their stem so every ending matches ("sudove", "sudova", "sudovi").
 const WORDS: [Chore, string[]][] = [
-  ['hanging-laundry', [' hang', 'pegs', 'clothesline', 'okači', 'okaci', 'kači', 'kaci', 'prostr', 'štipal', 'stipal']],
+  // "Raširiti veš" (hang it out), "skupiti veš sa štrika" (take it off the line) (Nora, 2 Nov).
+  ['hanging-laundry', [' hang', 'pegs', 'clothesline', 'okači', 'okaci', 'kači', 'kaci', 'prostr', 'štipal', 'stipal', 'raširi', 'rasiri', 'štrik', 'strik', 'skupi veš', 'skupiti veš', 'skupi ves', 'skupiti ves']],
   ['ironing', ['iron', 'pegla', 'pegl']],
   ['dishes', ['dish', 'plates', 'sudov', 'sudo', 'sudopera', 'sudomaš', 'sudomas']],
   ['laundry', ['laundry', 'washing machine', 'wash clothes', 'veš', ' ves ', 'mašin', 'masin']],
@@ -41,7 +42,8 @@ export function tally(todos: Todo[], items: Item[], month: Month) {
   for (const x of todos) {
     if (!x.done_at || !x.done_by || monthOf(x.done_at) !== month) continue
     const chore = guessChore(x.title)
-    if (chore) add(chore, x.done_by)
+    // It counts for the person it was given to, even when someone else ticked it (Nora, 2 Nov).
+    if (chore) add(chore, x.assignee_id ?? x.done_by)
   }
   // Grocery runs: one per person per day they bought something.
   const runs = new Set<string>()
@@ -55,7 +57,19 @@ export function tally(todos: Todo[], items: Item[], month: Month) {
 
 export type Win = { chore: Chore; month: Month; winner: string; count: number; counts: Record<string, number> }
 
-/** The month's trophies: one per chore, to whoever did the most. A tie goes to nobody (shown as shared). */
+/** A trophy takes at least this many of a chore in the month: one vacuum doesn't make a Dust Slayer (Nora, 2 Nov). */
+export const AT_LEAST = 3
+
+/**
+ * Grocery runs only count the household's main shopping list (the first one, usually Groceries), never a project's
+ * list or a list like "Kuća" (Nora, 2 Nov: pillows and an extension cord made her the Fridge Filler).
+ */
+export function groceryItems(lists: List[], items: Item[]) {
+  const main = [...lists].filter((l) => !l.project_id).sort((a, b) => a.position - b.position || a.created_at.localeCompare(b.created_at))[0]
+  return main ? items.filter((x) => x.list_id === main.id) : []
+}
+
+/** The month's trophies: one per chore, to whoever did the most, once they've done it at least AT_LEAST times. */
 export function trophies(todos: Todo[], items: Item[], month: Month): Win[] {
   const t = tally(todos, items, month)
   const wins: Win[] = []
@@ -63,7 +77,7 @@ export function trophies(todos: Todo[], items: Item[], month: Month): Win[] {
     const counts = t[chore]
     if (!counts) continue
     const ranked = Object.entries(counts).sort((a, b) => b[1] - a[1])
-    if (!ranked.length) continue
+    if (!ranked.length || ranked[0][1] < AT_LEAST) continue
     wins.push({ chore, month, winner: ranked[0][0], count: ranked[0][1], counts })
   }
   return wins

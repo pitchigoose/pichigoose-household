@@ -731,7 +731,7 @@
     "case": "Trofeji",
     "caseEmpty": "Još nema trofeja. Svakog meseca, ko najviše radi neki posao, osvaja ga.",
     "empty": "Ovog meseca još nema trofeja. Štikliraj poslove i Pichi broji.",
-    "how": "Pichi po imenu zadatka zna koji je posao u pitanju. Odlasci u prodavnicu se broje po danima kad si nešto kupio.",
+    "how": "Pichi po imenu zadatka zna koji je posao u pitanju, a računa se onome kome je zadatak dodeljen. Odlasci u prodavnicu se broje po danima kad je nešto kupljeno sa glavnog spiska. Za trofej treba bar 3 puta u mesecu.",
     "earlier": "Prethodni mesec",
     "later": "Sledeći mesec",
     "times_one": "{{count}} put",
