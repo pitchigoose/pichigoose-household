@@ -795,5 +795,11 @@
     "pantryFine": "The shelves look good",
     "shelves": "On the shelves",
     "openShelves": "Open the shelves"
+  },
+  "pichiChat": {
+    "open": "Talk to Pichi",
+    "sub": "Your house goose",
+    "hi": "Honk! Hi {{name}}.",
+    "low": "Running low: {{items}}."
   }
 }

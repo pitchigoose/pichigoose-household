@@ -33,6 +33,7 @@ import { PersonLink } from './Person'
 import { NotePanel, colorOf } from './Notes'
 import { AskName, madeFromEmail } from './AskName'
 import { MeetPichi, useMeetPichiOnce } from './MeetPichi'
+import { PichiChat } from '../components/PichiChat'
 import { ago, daysFromToday, dueLabel, fromDateString } from '../lib/time'
 import { useDesktop } from '../lib/desktop'
 import { DragBoard } from '../components/DragBoard'
@@ -137,6 +138,12 @@ export function HomeScreen() {
   // Desktop: a note opened from the board, in the side panel.
   const [openNote, setOpenNote] = useState<string | null>(null)
   const [adding, setAdding] = useState(false)
+  const [chatting, setChatting] = useState(false)
+  const [hops, setHops] = useState(0)
+  const talk = () => {
+    setHops((n) => n + 1)
+    window.setTimeout(() => setChatting(true), 260)
+  }
   // Still called by the name made from the email? Ask once, the same way joining does now.
   const email = useAuth().session?.user.email ?? ''
   const [askedName, setAskedName] = useState(false)
@@ -502,12 +509,26 @@ export function HomeScreen() {
       : toBuy.length
         ? { headline: t('v2.toBuy', { count: toBuy.length }), link: t('v2.seeList'), to: '/shopping', pose: 'stand-right' }
         : { headline: t('v2.calm'), link: t('v2.addSomething'), pose: 'stand-right' }
+  // What Pichi says when you tap him: hello, the one thing that matters most, what's new, and what's running low.
+  const lows = shelf.filter((g) => groupLow(g.rows)).map((g) => g.name)
+  const pichiLines = [
+    t('pichiChat.hi', { name: myName }),
+    message.headline,
+    news !== message.headline ? news : '',
+    lows.length ? t('pichiChat.low', { items: lows.slice(0, 3).join(', ') }) : '',
+  ].filter(Boolean)
+  const pichiChips = [
+    { label: t('tabs.todos'), to: '/todos' },
+    { label: t('tabs.shopping'), to: '/shopping' },
+    { label: t('meet.teach'), onClick: meet.show },
+    { label: t('pichi.whoTitle'), to: '/pichi' },
+  ]
   const activeProjects = projects.rows.filter((p) => !p.done_at).sort((a, b) => a.position - b.position || a.created_at.localeCompare(b.created_at))
   const quick = [
-    { key: 'buy', label: t('v2.qBuy'), icon: <BasketIcon size={30} />, to: '/shopping?add=1' },
-    { key: 'todo', label: t('v2.qTodo'), icon: <TodoIcon size={30} />, to: '/todos?add=1' },
-    { key: 'note', label: t('v2.qNote'), icon: <PencilIcon size={28} />, to: '/notes/new' },
-    { key: 'chat', label: t('v2.qChat'), icon: <MessagesIcon size={30} />, to: '/messages' },
+    { key: 'buy', label: t('v2.qBuy'), icon: <BasketIcon size={28} />, to: '/shopping?add=1' },
+    { key: 'todo', label: t('v2.qTodo'), icon: <TodoIcon size={28} />, to: '/todos' },
+    { key: 'note', label: t('v2.qNote'), icon: <PencilIcon size={26} />, to: '/notes/new' },
+    { key: 'chat', label: t('v2.qChat'), icon: <MessagesIcon size={28} />, to: '/messages' },
   ]
   const cards = [
     {
@@ -572,19 +593,20 @@ export function HomeScreen() {
             <Avatar avatar={profile?.avatar} size={44} className="" />
           </Link>
         </div>
-        <div className="v2-scene" aria-hidden>
-          <i className="v2-cloud c1" />
-          <i className="v2-cloud c2" />
-          <i className="v2-cloud c3" />
-          <i className="v2-hill" />
-          <Link to="/pichi" className="v2-pichi" aria-label={t('pichi.title')} tabIndex={-1}>
-            <img src={POSES[message.pose]} alt="" draggable={false} />
-          </Link>
-          <span className="v2-bubble">
+        <div className="v2-scene">
+          <i className="v2-cloud c1" aria-hidden />
+          <i className="v2-cloud c2" aria-hidden />
+          <i className="v2-cloud c3" aria-hidden />
+          <i className="v2-hill" aria-hidden />
+          {/* Tap him (or his bubble): he hops, and tells you what's going on. */}
+          <button type="button" className="v2-pichi" aria-label={t('pichiChat.open')} onClick={talk}>
+            <img key={hops} className={hops ? 'hop' : undefined} src={POSES[message.pose]} alt="" draggable={false} />
+          </button>
+          <button type="button" className="v2-bubble" aria-hidden tabIndex={-1} onClick={talk}>
             <b />
             <b />
             <b />
-          </span>
+          </button>
         </div>
         <div className="v2-message">
           <div className="v2-hi">{t('home.hi', { name: myName })}</div>
@@ -638,6 +660,7 @@ export function HomeScreen() {
       <MentionBanner />
       <AskName save open={needsName && !askedName} onClose={() => setAskedName(true)} onJoin={() => {}} />
       <MeetPichi open={meet.open && !(needsName && !askedName)} onClose={meet.close} />
+      <PichiChat open={chatting} onClose={() => setChatting(false)} lines={pichiLines} chips={pichiChips} />
     </Screen>
   )
 }

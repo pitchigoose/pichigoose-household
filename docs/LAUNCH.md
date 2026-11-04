@@ -63,6 +63,8 @@ Each one gets planned with Nora first, then built.
 
 - ⬜ **A calmer menu, first** [Nora, 2 Nov]. The menu is getting cluttered, and money, the calendar and events would each want a place in it. Rethink where everything lives before adding more, so it never feels like too much at once.
 - ⬜ **Money, who owes who** (M1 to M8). Hidden in the app for now. Waits for the menu rethink; then the open question in PRODUCT.md: what money looks like in version 2.
+  - **The look** [Nora, 4 Nov]: a ring like Flo's sleep score, colored in by where the money goes (food, home, fun), on its own panel on Home under the shelves. Only your own money, and gone completely when money is off.
+- ⬜ **Calendar on Home** [Nora, 4 Nov]: a panel under the shelves, like the money ring.
 - ⬜ **Events** (E1 to E3). A simple temporary household for a picnic or a trip. To discuss later [Nora, 2 Nov]. Open question in PRODUCT.md: how simple is "simpler than a household"?
 - ⬜ **Photos in chat** [Nora]. Needs a private storage space and one new column on messages (a table change, so Nora's OK first).
 - ⬜ **Calendar.** Planning not started: what goes on it (to-dos with dates, events, chores) and where it lives.

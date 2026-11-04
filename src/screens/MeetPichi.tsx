@@ -50,7 +50,9 @@ export function useMeetPichiOnce() {
       // Fine: it just may ask again.
     }
   }
-  return { open, close }
+  // Tap Pichi on Home, then "Teach Pichi": the same talk, on purpose.
+  const show = () => setOpen(true)
+  return { open, close, show }
 }
 
 /** `room`: the room it was opened from in the pantry. Then Pichi only asks about that room (Nora, 1 Nov: from the

@@ -376,6 +376,7 @@ export function ShoppingScreen() {
           <ListTabs lists={sortedLists} current={list?.id ?? null} onPick={pick} onReorder={reorderLists} />
           <button
             type="button"
+            className="add-pill"
             onClick={() => setNewList('')}
             style={{ display: 'inline-flex', alignItems: 'center', height: 28, padding: '0 12px', fontSize: 14, fontWeight: 700, color: 'var(--ink-soft)', border: '2px dashed #B6ABBE', borderRadius: 4 }}
           >

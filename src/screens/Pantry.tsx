@@ -229,6 +229,7 @@ export function PantryScreen() {
           })}
           <button
             type="button"
+            className="add-pill"
             onClick={() => setRoomEdit({ id: null, name: '', kind: 'other' })}
             style={{ display: 'inline-flex', alignItems: 'center', height: 28, padding: '0 12px', fontSize: 14, fontWeight: 700, color: 'var(--ink-soft)', border: '2px dashed #B6ABBE', borderRadius: 4 }}
           >
@@ -266,6 +267,7 @@ export function PantryScreen() {
         {room && (
           <button
             type="button"
+            className="add-pill"
             onClick={() => setSpotEdit({ id: null, name: '' })}
             style={{ display: 'inline-flex', alignItems: 'center', height: 30, padding: '0 14px', fontSize: 14, fontWeight: 700, color: 'var(--ink-soft)', border: '2px dashed #B6ABBE', borderRadius: 4, marginTop: 4 }}
           >

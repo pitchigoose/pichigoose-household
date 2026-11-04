@@ -197,3 +197,103 @@ button.tdots[aria-pressed="true"], button.tblocks[aria-pressed="true"], button.t
 .v2-house > span { -webkit-mask-image: none !important; mask-image: none !important }
 .v2-house svg { filter: none !important }
 .v2-house svg path { stroke: rgba(255, 255, 255, .85); stroke-width: 3 }
+
+/* ========================================================================================================
+   Sleek (Nora, 4 Nov): the clean, current finish. Tonal buttons, no underlines, filled fields, softer layered
+   depth, and a frosted-glass menu. The scrapbook stays in Pichi, the logo, the shelf and the doodles.
+   ======================================================================================================== */
+:root {
+  --lift-1: 0 0 0 .5px rgba(30, 26, 48, .08), 0 1px 2px rgba(30, 26, 48, .05), 0 6px 18px -10px rgba(30, 26, 48, .22);
+  --lift-2: 0 0 0 .5px rgba(30, 26, 48, .07), 0 2px 6px rgba(30, 26, 48, .05), 0 16px 36px -18px rgba(30, 26, 48, .32);
+  --tone: color-mix(in srgb, var(--hero) 11%, #FFFFFF);
+  --fill: rgba(30, 26, 48, .05);
+}
+
+/* Buttons: solid for the main action with a soft glow of its own color, tonal for the rest. */
+.stk { height: 50px; padding: 0 24px; font-weight: 700; letter-spacing: -.1px; box-shadow: none }
+.stk.prim { background: var(--hero); color: #FFFFFF; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .2), 0 8px 18px -10px color-mix(in srgb, var(--hero) 85%, transparent) }
+.stk.violet { box-shadow: inset 0 1px 0 rgba(255, 255, 255, .2), 0 8px 18px -10px rgba(132, 102, 184, .85) }
+.stk.sec { background: var(--tone); color: var(--hero-dark); box-shadow: none }
+.stk.sm { height: 36px; padding: 0 15px; font-size: 14px }
+.stk:disabled, .stk.off { background: var(--fill); color: var(--ink-ghost); box-shadow: none }
+.stk.round.fab { width: 56px; height: 56px; background: var(--hero); color: #FFFFFF; box-shadow: inset 0 1px 0 rgba(255, 255, 255, .22), 0 12px 26px -10px color-mix(in srgb, var(--hero) 80%, transparent) }
+.fab svg { width: 26px; height: 26px }
+
+/* Clickable labels: no underline, just the theme color and a little weight. */
+.link { text-decoration: none; font-weight: 700; color: var(--hero-dark) }
+.link:active { opacity: .6 }
+.bubble.mine .mention { text-decoration: none; font-weight: 800 }
+
+/* Fields: filled, no outline until you're typing in them. */
+.input { background: var(--fill); border: 1.5px solid transparent !important; box-shadow: none; transition: background .2s ease, border-color .2s ease }
+.input:focus { background: #FFFFFF; border-color: color-mix(in srgb, var(--hero) 55%, transparent) !important }
+
+/* Pills (lists, rooms, filters): tonal when off, the theme color when on. */
+button.tp, button.ty, button.tm, button.tb, button.tdots, button.tblocks, button.ttri, button.tcheck { background: var(--fill) !important; box-shadow: none !important }
+.v2-chip { background: var(--fill); box-shadow: none }
+
+/* Depth: one soft, layered shadow family instead of outlines. */
+.note, .v2-panel, .v2-q-circle { box-shadow: var(--lift-1) }
+.v2-panel { box-shadow: var(--lift-2) }
+.v2-panel-btn { background: var(--tone) }
+.box { border-width: 1.75px; border-color: #C3B9C9 }
+.stamp { background: transparent; padding: 0; font-size: 12px; letter-spacing: .06em; color: var(--ink-faint) }
+
+/* Pop-ups: a bigger, softer top. */
+.sheet { border-radius: 28px 28px 0 0 }
+
+/* The arrow after a household's name. */
+.chev { color: inherit; opacity: .75 }
+
+/* The menu: frosted glass, docked. Clean icons, the chosen one filled on a soft pill. */
+.tabbar { background: rgba(255, 251, 248, .8) !important; -webkit-backdrop-filter: blur(24px) saturate(1.8); backdrop-filter: blur(24px) saturate(1.8) }
+.tab svg { width: 26px; height: 26px; margin: 0 0 3px }
+.tab { font-size: 11px; line-height: 13px; font-weight: 600 }
+.tab .tab-icon::before { width: 58px; height: 32px; margin: -17.5px 0 0 -29px }
+.tab.on .tab-icon > svg:first-child { animation: none }
+/* Typing bars and the sticker tray: clean white glass, no paper grain. */
+.typing-bar, .sticker-tray { background: rgba(255, 255, 255, .92) !important; background-image: none !important; -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); box-shadow: var(--lift-2) !important }
+.typing-bar .input { border-color: transparent !important }
+.typing-bar .input:focus { border-color: color-mix(in srgb, var(--hero) 45%, transparent) !important }
+/* The chat's wallpaper: tiny household doodles, like WhatsApp's (chat-doodles.css). */
+.chat-screen .bubbles, .chat-split .bubbles { background-image: var(--chat-doodles); background-size: 300px 300px; background-attachment: local }
+.chat-header { background: rgba(255, 255, 255, .88) !important; background-image: none !important; -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); box-shadow: var(--lift-1) !important }
+
+/* Tap Pichi: a happy hop, with a squash as he lands. */
+.v2-pichi { padding: 0; background: none; border: 0; cursor: pointer; -webkit-tap-highlight-color: transparent }
+.v2-bubble { border: 0; cursor: pointer }
+.v2-pichi img.hop { animation: v2-hop .62s cubic-bezier(.3, .7, .4, 1) both, v2-breathe 3.4s ease-in-out .62s infinite }
+@keyframes v2-hop {
+  0% { scale: 1 1; translate: 0 0 } 18% { scale: 1.06 .92; translate: 0 0 } 45% { scale: .96 1.05; translate: 0 -26px }
+  72% { scale: 1.05 .94; translate: 0 0 } 86% { scale: .99 1.02 } 100% { scale: 1 1; translate: 0 0 }
+}
+
+/* The chat with Pichi: his bubbles arrive one by one, then the replies you can tap. */
+.pichi-chat { padding: 4px 2px 8px }
+.pichi-chat-head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px }
+.pichi-chat-name { font-size: 18px; line-height: 22px; font-weight: 800; color: var(--ink) }
+.pichi-chat-sub { font-size: 13px; line-height: 17px; font-weight: 600; color: var(--ink-faint) }
+.pichi-chat-lines { display: flex; flex-direction: column; align-items: flex-start; gap: 6px }
+.pichi-line {
+  max-width: 86%; padding: 9px 14px 10px; border-radius: 20px 20px 20px 6px; background: var(--fill); color: var(--ink2);
+  font-size: 16px; line-height: 22px; font-weight: 600; animation: pichi-say .42s cubic-bezier(.34, 1.4, .64, 1) calc(var(--i) * .55s + .15s) both; transform-origin: 0 100%;
+}
+.pichi-chips { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; margin-top: 18px; animation: pichi-say .42s cubic-bezier(.34, 1.4, .64, 1) calc(var(--i) * .55s + .3s) both; transform-origin: 100% 100% }
+.pichi-chip { height: 38px; padding: 0 16px; border-radius: 999px; background: var(--tone); color: var(--hero-dark); font-size: 15px; font-weight: 700 }
+.pichi-chip:active { scale: .95 }
+@keyframes pichi-say { from { opacity: 0; scale: .7; translate: 0 8px } to { opacity: 1; scale: 1; translate: 0 0 } }
+@media (prefers-reduced-motion: reduce) { .pichi-line, .pichi-chips, .v2-pichi img.hop { animation: none } }
+/* "+ list", "+ room", "+ storage spot": soft tonal pills instead of dashed outlines. */
+.add-pill { border: none !important; background: var(--fill) !important; border-radius: 999px !important; height: 34px !important; padding: 0 14px !important; color: var(--ink3) !important; transform: none !important }
+.comments { border-top: 1px solid rgba(30, 26, 48, .08) }
+html[data-mode="dark"] .comments { border-top-color: var(--line) }
+
+/* Desktop in the new look: a plain warm page, the sidebar a clean white panel beside it, no ruled lines or desk. */
+@media (min-width: 1024px) {
+  .desk { padding: 0; background: #FFF8F2 }
+  .desk:not(.solo)::before { inset: 0; border-radius: 0; background: #FFF8F2 !important; background-image: none !important; box-shadow: none }
+  .side { margin: 0; border-radius: 0; background-color: #FFFFFF; background-image: none; box-shadow: .5px 0 0 rgba(30, 26, 48, .1) }
+  .side .tape { display: none }
+  .nav { border-radius: 12px }
+  .note-panel { background-image: none !important; background-color: #FFFBF7 !important }
+}

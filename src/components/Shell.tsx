@@ -124,8 +124,8 @@ function useScrollMemory(ref: React.RefObject<HTMLDivElement | null>) {
 }
 
 // The bottom menu, floating like WhatsApp's: a frosted paper pill with the lists scrolling behind it.
-const ICON = 34
-const STROKE = (2 * 26) / ICON // the same 2 px line as every other icon, at the bigger size
+const ICON = 26
+const STROKE = 2
 let lastTab = -1
 const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
 

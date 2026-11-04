@@ -23,7 +23,7 @@ html[data-mode="dark"] .screen.home-v2,
 html[data-mode="dark"] .screen.home-v2 > .scroll { background: var(--bg) !important; background-image: none !important }
 
 /* Surfaces: pills, inputs, sheets, menus, chat bubbles, the bars */
-html[data-mode="dark"] :is(.stk.sec, .input, .menu, .mention-pick, .mention-card, .under-bubble, .chat-event, .thing-pick button[aria-pressed="true"], .undo button, .swipe-btn, .tug, .project-row.lifted) {
+html[data-mode="dark"] :is(.input, .menu, .mention-pick, .mention-card, .under-bubble, .chat-event, .thing-pick button[aria-pressed="true"], .undo button, .swipe-btn, .tug, .project-row.lifted) {
   background: var(--surface) !important; background-image: none !important; color: var(--ink);
 }
 html[data-mode="dark"] .input { border-color: var(--line) !important; color: var(--ink) }
@@ -38,7 +38,8 @@ html[data-mode="dark"] .tabbar {
   box-shadow: 0 -1px 0 var(--line), 0 -8px 20px -14px rgba(0, 0, 0, .6) !important;
 }
 html[data-mode="dark"] .tab-icon::before { background: color-mix(in srgb, var(--hero) 28%, transparent) !important }
-html[data-mode="dark"] .bubble:not(.mine) { background: var(--surface-2); color: var(--ink2) }
+html[data-mode="dark"] .msg:not(.mine) .bubble:not(.sticker) { background: var(--surface-2); color: var(--ink2) }
+html[data-mode="dark"] .msg:not(.mine) .bubble::after { color: var(--surface-2) }
 html[data-mode="dark"] .bubble.sticker .bubble-quote { background: var(--surface) }
 html[data-mode="dark"] .toggle { background: var(--surface) !important; box-shadow: inset 0 0 0 1.5px var(--line) !important }
 
@@ -66,3 +67,28 @@ html[data-mode="dark"] [stroke="#2E2638"] { stroke: var(--ink2) }
 
 /* Hairlines and dividers */
 html[data-mode="dark"] hr, html[data-mode="dark"] .divider { border-color: var(--line) !important }
+
+/* Sleek finish, dark */
+html[data-mode="dark"] {
+  --lift-1: 0 0 0 .5px rgba(255, 236, 242, .1), 0 8px 20px -12px rgba(0, 0, 0, .6);
+  --lift-2: 0 0 0 .5px rgba(255, 236, 242, .1), 0 18px 36px -18px rgba(0, 0, 0, .7);
+  --tone: color-mix(in srgb, var(--hero) 22%, var(--surface));
+  --fill: rgba(255, 236, 242, .08);
+}
+html[data-mode="dark"] .stk.sec { background: var(--tone) !important; color: var(--ink) !important }
+html[data-mode="dark"] .link { color: color-mix(in srgb, var(--hero) 55%, #FFFFFF) }
+html[data-mode="dark"] .input { background: var(--fill) !important }
+html[data-mode="dark"] .input:focus { background: var(--surface) !important }
+html[data-mode="dark"] :is(button.tp, button.ty, button.tm, button.tb, button.tdots, button.tblocks, button.ttri, button.tcheck):not([aria-pressed="true"]) { background: var(--fill) !important; box-shadow: none !important }
+html[data-mode="dark"] .v2-chip:not([aria-selected="true"]) { background: var(--fill); box-shadow: none }
+html[data-mode="dark"] .v2-panel-btn { background: var(--tone); color: var(--ink) }
+html[data-mode="dark"] .tabbar { background: color-mix(in srgb, var(--surface) 82%, transparent) !important }
+html[data-mode="dark"] .box { border-color: var(--ink-ghost) }
+html[data-mode="dark"] .pichi-chip { color: var(--ink) }
+@media (min-width: 1024px) {
+  html[data-mode="dark"] .desk, html[data-mode="dark"] .desk:not(.solo)::before { background: var(--bg) !important }
+  html[data-mode="dark"] .side { background-color: var(--surface); box-shadow: .5px 0 0 var(--line) }
+  html[data-mode="dark"] .note-panel { background-color: var(--surface) !important }
+}
+/* Nora's hand-lettered logo in white on dark (the sidebar, sign in). */
+html[data-mode="dark"] img[alt="Pichigoose"] { filter: brightness(0) invert(.95) }

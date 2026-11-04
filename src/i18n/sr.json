@@ -818,5 +818,11 @@
     "pantryFine": "Police su u redu",
     "shelves": "Na policama",
     "openShelves": "Otvori police"
+  },
+  "pichiChat": {
+    "open": "Pričaj sa Pičijem",
+    "sub": "Tvoja kućna guska",
+    "hi": "Ga-ga! Ćao {{name}}.",
+    "low": "Ponestaje: {{items}}."
   }
 }
