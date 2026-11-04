@@ -350,3 +350,43 @@ html[data-mode="dark"] .comments { border-top-color: var(--line) }
   .news-row .postage { scale: .78; transform-origin: 0 0; margin-right: -14px; margin-bottom: -16px }
   .news-row > div:last-child { border-radius: 16px !important; box-shadow: none !important }
 }
+
+/* Home on desktop (Nora, 4 Nov): the same Home as the phone, laid out for a wide screen. Pichi's scene is a wide
+   rounded panel with his message beside him; under it the quick actions, then the cards as a grid on the left
+   and the shelves on the right. The sidebar already has the household, the logo and you, so the top row goes. */
+@media (min-width: 1024px) {
+  .desk .home-v2 > .scroll { background: #FFF8F2 }
+  .desk .home-v2 .desk-content {
+    display: grid; grid-template-columns: minmax(0, 1fr) 360px; grid-template-areas: "hero hero" "invites invites" "quick shelf" "h shelf" "cards shelf" "end end";
+    gap: 0 28px; align-content: start; padding: 22px 28px 32px 32px; max-width: 1180px;
+  }
+  .home-v2 .v2-top { display: none }
+  .v2-hero { grid-area: hero; display: grid; grid-template-columns: 340px minmax(0, 1fr); align-items: center; gap: 12px; padding: 0 44px 0 12px; min-height: 290px; border-radius: 28px; box-shadow: var(--lift-2) }
+  .v2-scene { height: 250px; margin: 0 }
+  .v2-pichi img { height: 210px }
+  .v2-bubble { left: 66%; top: 40px }
+  .v2-cloud.c1 { top: 18px; left: -40px } .v2-cloud.c3 { top: 150px; left: 54%; width: 150px }
+  .v2-message { text-align: left; padding: 0 }
+  .v2-hi { font-size: 14px }
+  .v2-headline { font-size: 32px; line-height: 38px; max-width: 520px }
+  .v2-link { font-size: 14px; margin-top: 10px }
+  .v2-news { font-size: 13px; max-width: 520px }
+  .home-v2 .pending { grid-area: invites; margin: 18px 0 0 }
+  .home-v2 .pending:empty { display: none }
+  .v2-quick { grid-area: quick; display: flex; gap: 22px; padding: 26px 0 0 6px }
+  .v2-q { gap: 7px }
+  .v2-q-circle { width: 54px; height: 54px }
+  .v2-q-circle svg { width: 24px; height: 24px }
+  .v2-q-label { font-size: 13px }
+  .home-v2 .v2-h { grid-area: h; margin: 28px 0 12px 6px; font-size: 20px; line-height: 26px }
+  .v2-cards { grid-area: cards; display: grid; grid-template-columns: repeat(auto-fill, minmax(164px, 1fr)); gap: 14px; overflow: visible; padding: 4px 6px 6px; scroll-snap-type: none }
+  .v2-card { flex: none; height: 176px; padding: 13px 13px 11px; border-radius: 20px; outline-width: 2px; outline-offset: 2.5px }
+  .v2-card-title { font-size: 14px; line-height: 18px }
+  .v2-card-big { font-size: 34px; line-height: 38px }
+  .v2-card-lines { font-size: 12.5px; line-height: 16px }
+  .v2-panel { grid-area: shelf; align-self: start; margin: 26px 0 0; padding: 18px 18px 16px; border-radius: 24px }
+  .v2-panel .v2-h { margin: 0 0 10px; font-size: 18px; line-height: 24px }
+  .v2-panel-btn { height: 42px; font-size: 14px; margin-top: 12px }
+  .v2-end { grid-area: end; height: 8px }
+  /* The chat with Pichi opens as a dialog in the middle, like the other small sheets. */
+}
