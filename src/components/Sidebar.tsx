@@ -41,7 +41,7 @@ export function Sidebar() {
         <img src={logo} alt="Pichigoose" style={{ width: 150, height: 'auto', display: 'block', margin: '6px 0 0 6px' }} />
       </Link>
       <button type="button" className="hhbox" onClick={() => setHub(true)} aria-label={t('home.switch')}>
-        <span style={{ display: 'flex', alignItems: 'center', gap: 2, color: '#1E1A30', minWidth: 0 }}>
+        <span style={{ display: 'flex', alignItems: 'center', gap: 2, color: 'var(--ink)', minWidth: 0 }}>
           <Hand size={34} lineHeight={36}>
             {household ? name(household) : ''}
           </Hand>
@@ -78,7 +78,7 @@ export function Sidebar() {
       <div style={{ flex: 1 }} />
       <Link to={profile ? `/people/${profile.id}` : '/settings'} className="row" style={{ gap: 12, padding: '6px 4px' }}>
         <Avatar avatar={profile?.avatar} size={40} />
-        <span style={{ fontSize: 15, fontWeight: 800, color: '#1E1A30', lineHeight: '19px' }}>
+        <span style={{ fontSize: 15, fontWeight: 800, color: 'var(--ink)', lineHeight: '19px' }}>
           {myName}
           <span className="cap" style={{ display: 'block', fontWeight: 600 }}>
             {t('home.profile')}

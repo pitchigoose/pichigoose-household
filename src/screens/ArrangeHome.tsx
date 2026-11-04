@@ -161,7 +161,7 @@ export function ArrangeHomeScreen() {
           {/* The broom: a fresh start for the household, top right. */}
           <div style={{ display: 'flex', alignItems: 'flex-start', gap: 6, marginLeft: -10 }}>
             {/* Back without saving, like on Notes (Nora, 30 Oct). */}
-            <button type="button" aria-label={t('common.back')} onClick={back} style={{ display: 'flex', color: '#1E1A30', marginTop: 10 }}>
+            <button type="button" aria-label={t('common.back')} onClick={back} style={{ display: 'flex', color: 'var(--ink)', marginTop: 10 }}>
               <BackIcon />
             </button>
             <Hand as="h1" style={{ margin: 0, flex: 1 }}>
@@ -218,7 +218,7 @@ export function ArrangeHomeScreen() {
                   aria-checked={s.visible}
                   aria-label={label}
                   onClick={() => toggle(s.section)}
-                  style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 700, color: '#63586B', padding: '8px 0', margin: '-8px 0' }}
+                  style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, fontWeight: 700, color: 'var(--ink-soft)', padding: '8px 0', margin: '-8px 0' }}
                 >
                   {s.visible ? t('arrange.shown') : t('arrange.hidden')}
                   <Box checked={s.visible} rotate={2} />
@@ -253,7 +253,7 @@ function ArrangeBoard({ lookOf, order, toggle, onReset, onDone, onBack }: BoardP
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 26, padding: 'var(--top) 22px 0 40px' }}>
       <div style={{ display: 'flex', alignItems: 'flex-start', gap: 16 }}>
-        <button type="button" aria-label={t('common.back')} onClick={onBack} style={{ display: 'flex', color: '#1E1A30', marginTop: 14, marginLeft: -10 }}>
+        <button type="button" aria-label={t('common.back')} onClick={onBack} style={{ display: 'flex', color: 'var(--ink)', marginTop: 14, marginLeft: -10 }}>
           <BackIcon />
         </button>
         <div style={{ flex: 1 }}>
@@ -300,7 +300,7 @@ function ArrangeBoard({ lookOf, order, toggle, onReset, onDone, onBack }: BoardP
               <Hand size={34} lineHeight={36}>
                 {look.label}
               </Hand>
-              <span style={{ alignSelf: 'flex-end', display: 'flex', alignItems: 'center', gap: 10, fontSize: 14, fontWeight: 700, color: '#63586B' }}>
+              <span style={{ alignSelf: 'flex-end', display: 'flex', alignItems: 'center', gap: 10, fontSize: 14, fontWeight: 700, color: 'var(--ink-soft)' }}>
                 {s.visible ? t('arrange.shown') : t('arrange.hidden')}
                 <Box checked={s.visible} rotate={2} />
               </span>

@@ -65,7 +65,7 @@ export function MentionBanner() {
       <div style={{ flex: 1, minWidth: 0 }}>
         <div style={{ fontWeight: 800, fontSize: 15 }}>
           {t('mentions.tagged', { name: who?.display_name ?? t('common.someone') })}
-          {latest.where && <span style={{ fontWeight: 600, color: '#63586B' }}> · {latest.where}</span>}
+          {latest.where && <span style={{ fontWeight: 600, color: 'var(--ink-soft)' }}> · {latest.where}</span>}
         </div>
         <div className="cap" style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
           {latest.body}
@@ -82,7 +82,7 @@ export function MentionBanner() {
       >
         {t('mentions.go')}
       </button>
-      <button type="button" aria-label={t('common.close')} onClick={close} style={{ flex: 'none', display: 'flex', padding: 4, color: '#857A8C' }}>
+      <button type="button" aria-label={t('common.close')} onClick={close} style={{ flex: 'none', display: 'flex', padding: 4, color: 'var(--ink-faint)' }}>
         <CloseIcon />
       </button>
     </div>,

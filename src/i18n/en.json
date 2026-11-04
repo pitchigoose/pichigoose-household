@@ -329,7 +329,11 @@
     "nameHint": "Everyone in your household sees this name.",
     "nameHintMany": "Your name in every household, unless you pick a different one for a household below.",
     "perHousehold": "Display name in each household",
-    "perHouseholdHint": "Leave one empty to be {{name}} there."
+    "perHouseholdHint": "Leave one empty to be {{name}} there.",
+    "mode": "Light or dark",
+    "modeAuto": "Auto",
+    "modeLight": "Light",
+    "modeDark": "Dark"
   },
   "invite": {
     "title": "Invite someone",

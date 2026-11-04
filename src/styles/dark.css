@@ -1,0 +1,64 @@
+/* Dark mode (Nora, 4 Nov): a really dark red for the pichigoose theme. Every other theme gets the same treatment from
+   its own deep color, so blue goes navy-dark, green forest-dark, and so on.
+   Turned on by html[data-mode="dark"] (see src/lib/theme.ts: Auto follows the phone, or Light / Dark in Settings). */
+
+html[data-mode="dark"] {
+  --bg: color-mix(in srgb, var(--deep) 50%, #0E0609);
+  --surface: color-mix(in srgb, var(--deep) 72%, #120A0E);
+  --surface-2: color-mix(in srgb, var(--deep) 88%, #2A1A22);
+  --line: rgba(255, 236, 242, .12);
+  --ink: #FBF1F4; --ink2: #F4E7EC; --ink3: #E2D0D7; --ink-soft: #C6AEB9; --ink-faint: #A08894; --ink-ghost: #7C6571;
+}
+html[data-mode="dark"][data-theme="pichigoose"] { --bg: #220C15; --surface: #33141F; --surface-2: #43202C }
+
+/* Things that keep their light color in dark mode (pastel notes and cards, the goose's bubble) keep dark text too. */
+html[data-mode="dark"] :is(.note, .v2-card, .v2-bubble, [class*="n-"], .says-bubble, .postage, .shelf-label, .toggle-thumb) {
+  --ink: #1E1A30; --ink2: #2E2638; --ink3: #463D50; --ink-soft: #63586B; --ink-faint: #857A8C; --ink-ghost: #A79DAD;
+}
+
+/* Pages */
+html[data-mode="dark"], html[data-mode="dark"] body { background: var(--bg) !important }
+html[data-mode="dark"] .scr,
+html[data-mode="dark"] .screen.home-v2,
+html[data-mode="dark"] .screen.home-v2 > .scroll { background: var(--bg) !important; background-image: none !important }
+
+/* Surfaces: pills, inputs, sheets, menus, chat bubbles, the bars */
+html[data-mode="dark"] :is(.stk.sec, .input, .menu, .mention-pick, .mention-card, .under-bubble, .chat-event, .thing-pick button[aria-pressed="true"], .undo button, .swipe-btn, .tug, .project-row.lifted) {
+  background: var(--surface) !important; background-image: none !important; color: var(--ink);
+}
+html[data-mode="dark"] .input { border-color: var(--line) !important; color: var(--ink) }
+html[data-mode="dark"] .input::placeholder { color: var(--ink-faint) }
+html[data-mode="dark"] .menu button:active { background: var(--surface-2) }
+html[data-mode="dark"] :is(.sheet, .sheet-actions, .sticker-tray, .typing-bar, .chat-header, .pull-ink) {
+  background-color: var(--surface) !important; background-image: none !important;
+}
+html[data-mode="dark"] .sheet { box-shadow: 0 -1px 0 var(--line) }
+html[data-mode="dark"] .tabbar {
+  background: var(--surface) !important; background-image: none !important;
+  box-shadow: 0 -1px 0 var(--line), 0 -8px 20px -14px rgba(0, 0, 0, .6) !important;
+}
+html[data-mode="dark"] .tab-icon::before { background: color-mix(in srgb, var(--hero) 28%, transparent) !important }
+html[data-mode="dark"] .bubble:not(.mine) { background: var(--surface-2); color: var(--ink2) }
+html[data-mode="dark"] .bubble.sticker .bubble-quote { background: var(--surface) }
+html[data-mode="dark"] .toggle { background: var(--surface) !important; box-shadow: inset 0 0 0 1.5px var(--line) !important }
+
+/* Tab-style pills (lists, rooms, filters): unselected ones go dark. */
+html[data-mode="dark"] :is(button.tp, button.ty, button.tm, button.tb, button.tdots, button.tblocks, button.ttri, button.tcheck):not([aria-pressed="true"]) {
+  background: var(--surface) !important; color: var(--ink3) !important; box-shadow: 0 0 0 1.5px var(--line) !important;
+}
+html[data-mode="dark"] .box { background: transparent; border-color: var(--ink-ghost) }
+
+/* Home */
+html[data-mode="dark"] .v2-quick a, html[data-mode="dark"] .v2-quick button { color: var(--ink) }
+html[data-mode="dark"] .v2-q:not(.main) .v2-q-circle { background: var(--surface-2) !important }
+html[data-mode="dark"] .v2-card { outline-color: var(--hero) }
+html[data-mode="dark"] .v2-hero { box-shadow: 0 1px 0 var(--line) }
+
+/* Line icons and drawings drawn in dark ink switch to light ink. */
+html[data-mode="dark"] [stroke="#1E1A30"] { stroke: var(--ink) }
+html[data-mode="dark"] [fill="#1E1A30"] { fill: var(--ink) }
+html[data-mode="dark"] [stroke="#63586B"] { stroke: var(--ink-soft) }
+html[data-mode="dark"] [stroke="#2E2638"] { stroke: var(--ink2) }
+
+/* Hairlines and dividers */
+html[data-mode="dark"] hr, html[data-mode="dark"] .divider { border-color: var(--line) !important }

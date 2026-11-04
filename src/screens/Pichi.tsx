@@ -35,7 +35,7 @@ export function PichiProfileScreen() {
     <Screen center>
       <div style={{ padding: 'calc(var(--top) + 8px) 22px 32px 40px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <div className="row" style={{ alignSelf: 'stretch', marginLeft: -10 }}>
-          <button type="button" aria-label={t('common.back')} onClick={back} style={{ display: 'flex', color: '#1E1A30' }}>
+          <button type="button" aria-label={t('common.back')} onClick={back} style={{ display: 'flex', color: 'var(--ink)' }}>
             <BackIcon />
           </button>
         </div>
@@ -91,7 +91,7 @@ export function AboutScreen() {
     <Screen>
       <div style={{ padding: 'calc(var(--top) + 8px) 22px 28px 40px', maxWidth: 640 }}>
         <div className="row" style={{ gap: 6, marginLeft: -10 }}>
-          <button type="button" aria-label={t('common.back')} onClick={back} style={{ display: 'flex', color: '#1E1A30' }}>
+          <button type="button" aria-label={t('common.back')} onClick={back} style={{ display: 'flex', color: 'var(--ink)' }}>
             <BackIcon />
           </button>
           <Hand as="h1" style={{ margin: 0 }}>

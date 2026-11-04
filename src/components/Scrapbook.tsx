@@ -559,7 +559,7 @@ export function Menu({ label, items, children }: { label: string; items: { label
 
   return (
     <div ref={ref} style={{ position: 'relative' }}>
-      <button type="button" aria-label={label} aria-expanded={open} onClick={() => setOpen((o) => !o)} style={{ padding: 8, margin: -8, display: 'flex', color: '#63586B' }}>
+      <button type="button" aria-label={label} aria-expanded={open} onClick={() => setOpen((o) => !o)} style={{ padding: 8, margin: -8, display: 'flex', color: 'var(--ink-soft)' }}>
         {children}
       </button>
       {open &&

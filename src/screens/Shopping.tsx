@@ -360,7 +360,7 @@ export function ShoppingScreen() {
       <div style={{ padding: 'calc(var(--top) + 8px) 22px 0 40px', display: 'flex', flexDirection: 'column', gap: desktop ? 18 : 14 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginLeft: desktop ? 0 : -10 }}>
           {!desktop && (
-            <button type="button" aria-label={t('common.back')} onClick={back} style={{ color: '#1E1A30', display: 'flex' }}>
+            <button type="button" aria-label={t('common.back')} onClick={back} style={{ color: 'var(--ink)', display: 'flex' }}>
               <BackIcon />
             </button>
           )}
@@ -377,7 +377,7 @@ export function ShoppingScreen() {
           <button
             type="button"
             onClick={() => setNewList('')}
-            style={{ display: 'inline-flex', alignItems: 'center', height: 28, padding: '0 12px', fontSize: 14, fontWeight: 700, color: '#63586B', border: '2px dashed #B6ABBE', borderRadius: 4 }}
+            style={{ display: 'inline-flex', alignItems: 'center', height: 28, padding: '0 12px', fontSize: 14, fontWeight: 700, color: 'var(--ink-soft)', border: '2px dashed #B6ABBE', borderRadius: 4 }}
           >
             {t('shopping.addList')}
           </button>

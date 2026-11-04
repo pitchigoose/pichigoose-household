@@ -129,7 +129,7 @@ function CommentRow({ c, hearts, fresh }: { c: Comment; hearts: Heart[]; fresh?:
       </PersonLink>
       <div style={{ flex: 1, minWidth: 0 }}>
         <div className="cap" style={{ fontSize: 13 }}>
-          <b style={{ color: '#1E1A30', fontWeight: 800 }}>{who?.display_name ?? t('common.someone')}</b> · {ago(c.created_at, i18n.language)}
+          <b style={{ color: 'var(--ink)', fontWeight: 800 }}>{who?.display_name ?? t('common.someone')}</b> · {ago(c.created_at, i18n.language)}
         </div>
         {c.sticker ? <StickerImage name={c.sticker} size={96} /> : <div className="comment-body"><Linkify text={c.body} /></div>}
         <HeartedBy hearts={hearts} className="under-comment" />

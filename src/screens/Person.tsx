@@ -68,7 +68,7 @@ export function PersonScreen() {
       <div style={{ padding: 'calc(var(--top) + 8px) 22px 32px 40px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         {/* The same height with or without the gear, so Settings lines up exactly (Nora, 2 Nov). */}
         <div className="row" style={{ alignSelf: 'stretch', marginLeft: -10, minHeight: 38 }}>
-          <button type="button" aria-label={t('common.back')} onClick={back} style={{ display: 'flex', color: '#1E1A30' }}>
+          <button type="button" aria-label={t('common.back')} onClick={back} style={{ display: 'flex', color: 'var(--ink)' }}>
             <BackIcon />
           </button>
           {/* Your own profile is the way in from your picture; Settings is the gear (Nora, 29 Oct). */}

@@ -211,7 +211,7 @@ export function TodosScreen() {
                       key: 'pin',
                       label: x.pinned ? t('todos.unpin') : t('todos.pin'),
                       icon: <PinIcon />,
-                      color: '#63586B',
+                      color: 'var(--ink-soft)',
                       fill: '#857A8C',
                       onClick: () => db.update('todos', x.id, { pinned: !x.pinned }),
                     },

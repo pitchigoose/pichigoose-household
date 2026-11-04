@@ -389,7 +389,7 @@ export function ProjectScreen() {
     <Screen>
       <div style={{ padding: 'calc(var(--top) + 8px) 22px 24px 40px' }}>
         <div className="row" style={{ gap: 6, marginLeft: -10 }}>
-          <button type="button" aria-label={t('common.back')} onClick={goBack} style={{ display: 'flex', color: '#1E1A30' }}>
+          <button type="button" aria-label={t('common.back')} onClick={goBack} style={{ display: 'flex', color: 'var(--ink)' }}>
             <BackIcon />
           </button>
           <Hand as="h1" size={38} lineHeight={42} style={{ margin: 0, flex: 1, minWidth: 0 }}>

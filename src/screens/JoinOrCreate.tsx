@@ -181,7 +181,7 @@ export function JoinOrCreateScreen() {
     <Screen wide={desktop}>
       <div className="pad top" style={{ paddingBottom: 40, ...(desktop ? { padding: '24px 0 40px', textAlign: 'center' } : {}) }}>
         {households.length > 0 && (
-          <button type="button" aria-label={t('common.back')} onClick={back} style={{ display: 'flex', marginLeft: -10, marginBottom: 4, color: '#1E1A30' }}>
+          <button type="button" aria-label={t('common.back')} onClick={back} style={{ display: 'flex', marginLeft: -10, marginBottom: 4, color: 'var(--ink)' }}>
             <BackIcon />
           </button>
         )}

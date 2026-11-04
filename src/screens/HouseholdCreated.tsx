@@ -32,13 +32,13 @@ export function HouseholdCreatedScreen() {
           <div className="cap" style={{ textTransform: 'uppercase', letterSpacing: '.08em', fontWeight: 800 }}>
             {t('created.addressLabel')}
           </div>
-          <div style={{ fontSize: 24, lineHeight: '32px', fontWeight: 800, color: '#1E1A30', margin: '6px 0 14px', wordBreak: 'break-word' }}>
+          <div style={{ fontSize: 24, lineHeight: '32px', fontWeight: 800, color: 'var(--ink)', margin: '6px 0 14px', wordBreak: 'break-word' }}>
             {household?.address ?? '...'}
           </div>
           <div className="cap" style={{ textTransform: 'uppercase', letterSpacing: '.08em', fontWeight: 800 }}>
             {t('created.secretLabel')}
           </div>
-          <div style={{ fontSize: 20, lineHeight: '28px', fontWeight: 800, color: '#1E1A30', margin: '4px 0 14px', wordBreak: 'break-word' }}>
+          <div style={{ fontSize: 20, lineHeight: '28px', fontWeight: 800, color: 'var(--ink)', margin: '4px 0 14px', wordBreak: 'break-word' }}>
             {household?.secret ?? '...'}
           </div>
           <div className="row" style={{ gap: 12, position: 'relative', zIndex: 1 }}>

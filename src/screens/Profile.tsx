@@ -11,7 +11,8 @@ import { Hand } from '../components/Scrapbook'
 import { BackIcon } from '../components/Icons'
 import { LangSwitch } from '../components/LangSwitch'
 import { useDesktop } from '../lib/desktop'
-import { THEMES } from '../lib/theme'
+import { THEMES, savedMode, setMode, type Mode } from '../lib/theme'
+import { Toggle } from '../components/Toggle'
 import { dropTheme } from '../lib/themeDrop'
 import { useBack, useBackInApp } from '../lib/back'
 
@@ -85,7 +86,7 @@ export function ProfileScreen() {
       <Screen wide>
         <div style={{ padding: 'var(--top) 22px 32px 40px' }}>
           <div className="row" style={{ gap: 6, marginLeft: -10 }}>
-            <button type="button" aria-label={t('common.back')} onClick={back} style={{ display: 'flex', color: '#1E1A30' }}>
+            <button type="button" aria-label={t('common.back')} onClick={back} style={{ display: 'flex', color: 'var(--ink)' }}>
               <BackIcon />
             </button>
             <Hand as="h1" style={{ margin: 0 }}>
@@ -99,7 +100,7 @@ export function ProfileScreen() {
                 <Avatar full avatar={avatar} size={240} label={caption} className="" style={{ filter: 'drop-shadow(2px 4px 0 rgba(30,26,48,.12))' }} />
                 {step !== 'color' && <Arrow dir={1} onClick={() => cycle(1)} label={t('profile.nextOne')} />}
               </div>
-              <div style={{ marginTop: 16, fontSize: 24, lineHeight: '30px', fontWeight: 800, color: '#1E1A30' }}>{caption}</div>
+              <div style={{ marginTop: 16, fontSize: 24, lineHeight: '30px', fontWeight: 800, color: 'var(--ink)' }}>{caption}</div>
               {count > 0 && (
                 <div className="row" style={{ justifyContent: 'center', gap: 6, marginTop: 10 }} aria-hidden>
                   {Array.from({ length: count }, (_, i) => (
@@ -175,7 +176,7 @@ export function ProfileScreen() {
                       }}
                     >
                       <Avatar full avatar={o.preview} size={56} className="" />
-                      <span style={{ fontSize: 14, fontWeight: 800, color: '#1E1A30' }}>{o.label}</span>
+                      <span style={{ fontSize: 14, fontWeight: 800, color: 'var(--ink)' }}>{o.label}</span>
                     </button>
                   ))}
                 </div>
@@ -247,7 +248,7 @@ export function ProfileScreen() {
     >
       <div style={{ padding: 'calc(var(--top) + 8px) 22px 0 40px' }}>
         <div className="row" style={{ gap: 6, marginLeft: -10 }}>
-          <button type="button" aria-label={t('common.back')} onClick={back} style={{ display: 'flex', color: '#1E1A30' }}>
+          <button type="button" aria-label={t('common.back')} onClick={back} style={{ display: 'flex', color: 'var(--ink)' }}>
             <BackIcon />
           </button>
           <Hand as="h1" style={{ margin: 0 }}>
@@ -285,7 +286,7 @@ export function ProfileScreen() {
           <Avatar full avatar={avatar} size={190} label={caption} className="" style={{ filter: 'drop-shadow(2px 4px 0 rgba(30,26,48,.12))' }} />
           {step !== 'color' && <Arrow dir={1} onClick={() => cycle(1)} label={t('profile.nextOne')} />}
         </div>
-        <div style={{ textAlign: 'center', marginTop: 14, fontSize: 22, lineHeight: '28px', fontWeight: 800, color: '#1E1A30' }}>{caption}</div>
+        <div style={{ textAlign: 'center', marginTop: 14, fontSize: 22, lineHeight: '28px', fontWeight: 800, color: 'var(--ink)' }}>{caption}</div>
 
         {count > 0 && (
           <div className="row" style={{ justifyContent: 'center', gap: 6, marginTop: 10 }} aria-hidden>
@@ -355,7 +356,7 @@ export function SettingsScreen() {
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: 14 }}>
           {/* As tall as the profile's top row with its gear, so going from your profile to Settings nothing moves. */}
           <div className="row" style={{ alignSelf: 'stretch', marginLeft: -10, minHeight: 38 }}>
-            <button type="button" aria-label={t('common.back')} onClick={back} style={{ display: 'flex', color: '#1E1A30' }}>
+            <button type="button" aria-label={t('common.back')} onClick={back} style={{ display: 'flex', color: 'var(--ink)' }}>
               <BackIcon />
             </button>
           </div>
@@ -457,6 +458,10 @@ export function SettingsScreen() {
               })}
             </div>
           </div>
+          <div className="row" style={{ justifyContent: 'space-between', marginTop: 16 }}>
+            <span className="body">{t('settings.mode')}</span>
+            <ModeSwitch />
+          </div>
         </section>
 
 
@@ -515,5 +520,26 @@ function HouseholdName({ householdId, label, main }: { householdId: string; labe
         }}
       />
     </div>
+  )
+}
+
+/** Auto (the phone's setting), Light or Dark. */
+function ModeSwitch() {
+  const { t } = useTranslation()
+  const [mode, set] = useState<Mode>(savedMode)
+  return (
+    <Toggle
+      label={t('settings.mode')}
+      value={mode}
+      onChange={(m) => {
+        set(m)
+        setMode(m)
+      }}
+      options={[
+        { value: 'auto', label: t('settings.modeAuto') },
+        { value: 'light', label: t('settings.modeLight') },
+        { value: 'dark', label: t('settings.modeDark') },
+      ]}
+    />
   )
 }

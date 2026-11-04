@@ -203,13 +203,13 @@ export function MyHouseholds({ open, onClose, page }: { open: boolean; onClose: 
                 >
                   <div className="row" style={{ gap: 8, alignItems: 'flex-start' }}>
                     <button type="button" className="grow" onClick={() => pick(h)} style={{ minWidth: 0 }}>
-                      <div style={{ fontSize: 20, lineHeight: '26px', fontWeight: 800, color: '#1E1A30' }}>{name(h)}</div>
+                      <div style={{ fontSize: 20, lineHeight: '26px', fontWeight: 800, color: 'var(--ink)' }}>{name(h)}</div>
                       <div className="cap" style={{ fontSize: 14, marginTop: 2 }}>
                         {people.map((p) => p.display_name).join(', ')}
                       </div>
                     </button>
                     {isCurrent && (
-                      <span style={{ color: '#1E1A30', display: 'flex' }} aria-label="✓">
+                      <span style={{ color: 'var(--ink)', display: 'flex' }} aria-label="✓">
                         <SmallCheck />
                       </span>
                     )}
@@ -287,7 +287,7 @@ export function MyHouseholds({ open, onClose, page }: { open: boolean; onClose: 
                     <Hand size={34} lineHeight={36} style={{ display: 'block' }}>
                       {String(x.count)}
                     </Hand>
-                    <span style={{ display: 'block', fontSize: 15, lineHeight: '19px', fontWeight: 700, color: '#1E1A30' }}>{t(x.key, { count: x.count })}</span>
+                    <span style={{ display: 'block', fontSize: 15, lineHeight: '19px', fontWeight: 700, color: 'var(--ink)' }}>{t(x.key, { count: x.count })}</span>
                   </span>
                 </button>
               ))}
@@ -318,7 +318,7 @@ export function MyHouseholds({ open, onClose, page }: { open: boolean; onClose: 
                 }}
               >
                 <button type="button" className="grow" onClick={() => pick(h)} style={{ minWidth: 0 }}>
-                  <div style={{ fontSize: 18, lineHeight: '24px', fontWeight: 800, color: '#1E1A30' }}>{name(h)}</div>
+                  <div style={{ fontSize: 18, lineHeight: '24px', fontWeight: 800, color: 'var(--ink)' }}>{name(h)}</div>
                   <div className="cap" style={{ fontSize: 13, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     {people.map((p) => p.display_name).join(', ')}
                   </div>
@@ -329,7 +329,7 @@ export function MyHouseholds({ open, onClose, page }: { open: boolean; onClose: 
                   ))}
                 </div>
                 {isCurrent && (
-                  <span style={{ color: '#1E1A30', display: 'flex' }} aria-label="✓">
+                  <span style={{ color: 'var(--ink)', display: 'flex' }} aria-label="✓">
                     <SmallCheck />
                   </span>
                 )}

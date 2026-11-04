@@ -86,13 +86,13 @@ export function NotesScreen() {
         }}
       >
         {n.pinned && <Tape kind={PIN_TAPES[i % PIN_TAPES.length]} style={{ top: -10, left: '50%', marginLeft: -30, width: 60, height: 18, transform: `rotate(${tilt(n.id, 5)}deg)` }} />}
-        <div style={{ fontSize: 17, lineHeight: '22px', fontWeight: 800, color: '#1E1A30', overflowWrap: 'break-word', hyphens: 'auto' }}>{n.title || t('notes.untitled')}</div>
+        <div style={{ fontSize: 17, lineHeight: '22px', fontWeight: 800, color: 'var(--ink)', overflowWrap: 'break-word', hyphens: 'auto' }}>{n.title || t('notes.untitled')}</div>
         <div
           style={{
             fontSize: 14,
             lineHeight: '20px',
             fontWeight: 600,
-            color: '#463D50',
+            color: 'var(--ink3)',
             marginTop: 4,
             display: '-webkit-box',
             WebkitLineClamp: 3,
@@ -118,7 +118,7 @@ export function NotesScreen() {
         <div className="row" style={{ justifyContent: 'space-between', gap: 10 }}>
           <div className="row" style={{ gap: 6, marginLeft: desktop ? 0 : -10, minWidth: 0 }}>
             {!desktop && (
-              <button type="button" aria-label={t('common.back')} onClick={back} style={{ display: 'flex', color: '#1E1A30' }}>
+              <button type="button" aria-label={t('common.back')} onClick={back} style={{ display: 'flex', color: 'var(--ink)' }}>
                 <BackIcon />
               </button>
             )}
@@ -130,7 +130,7 @@ export function NotesScreen() {
           {desktop && (
             <div className="row" style={{ gap: 14 }}>
             <div style={{ position: 'relative', width: 280 }}>
-              <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#857A8C', display: 'flex', pointerEvents: 'none' }}>
+              <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'var(--ink-faint)', display: 'flex', pointerEvents: 'none' }}>
                 <SearchIcon />
               </span>
               <input className="input" type="search" style={{ paddingLeft: 42 }} placeholder={t('notes.search')} aria-label={t('notes.search')} value={query} onChange={(e) => setQuery(e.target.value)} />
@@ -150,7 +150,7 @@ export function NotesScreen() {
           </button>
         </div>
         <div className="phone-only" style={{ position: 'relative', marginTop: 16 }}>
-          <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: '#857A8C', display: 'flex', pointerEvents: 'none' }}>
+          <span style={{ position: 'absolute', left: 14, top: '50%', transform: 'translateY(-50%)', color: 'var(--ink-faint)', display: 'flex', pointerEvents: 'none' }}>
             <SearchIcon />
           </span>
           <input className="input" type="search" style={{ paddingLeft: 42 }} placeholder={t('notes.search')} aria-label={t('notes.search')} value={query} onChange={(e) => setQuery(e.target.value)} />
@@ -310,7 +310,7 @@ function NoteEditor({ panel, noteId, onClose }: { panel?: boolean; noteId?: stri
       <div style={{ padding: panel ? 0 : 'calc(var(--top) + 8px) 22px 24px 40px', display: 'flex', flexDirection: 'column', minHeight: '100%' }}>
         <div className="row" style={{ gap: 10 }}>
           {!panel && (
-            <button type="button" onClick={leave} className="row" style={{ marginLeft: -10, color: '#463D50', fontWeight: 700, fontSize: 16, gap: 2 }}>
+            <button type="button" onClick={leave} className="row" style={{ marginLeft: -10, color: 'var(--ink3)', fontWeight: 700, fontSize: 16, gap: 2 }}>
               <BackIcon />
               {t('notes.title')}
             </button>
@@ -336,7 +336,7 @@ function NoteEditor({ panel, noteId, onClose }: { panel?: boolean; noteId?: stri
             </Menu>
           )}
           {panel && (
-            <button type="button" aria-label={t('common.close')} onClick={leave} style={{ display: 'flex', color: '#463D50' }}>
+            <button type="button" aria-label={t('common.close')} onClick={leave} style={{ display: 'flex', color: 'var(--ink3)' }}>
               <CloseIcon />
             </button>
           )}
@@ -351,7 +351,7 @@ function NoteEditor({ panel, noteId, onClose }: { panel?: boolean; noteId?: stri
             onChange={(e) => setTitle(e.target.value)}
             placeholder={t('notes.titlePlaceholder')}
             aria-label={t('notes.titlePlaceholder')}
-            style={{ position: 'relative', zIndex: 1, background: 'transparent', border: 0, outline: 'none', font: '800 24px/32px Nunito, sans-serif', color: '#1E1A30', padding: 0, width: '100%' }}
+            style={{ position: 'relative', zIndex: 1, background: 'transparent', border: 0, outline: 'none', font: '800 24px/32px var(--font)', color: 'var(--ink)', padding: 0, width: '100%' }}
           />
           <textarea
             ref={bodyRef}
@@ -371,8 +371,8 @@ function NoteEditor({ panel, noteId, onClose }: { panel?: boolean; noteId?: stri
               border: 0,
               outline: 'none',
               resize: 'none',
-              font: '600 17px/26px Nunito, sans-serif',
-              color: '#2E2638',
+              font: '600 17px/26px var(--font)',
+              color: 'var(--ink2)',
               // Three empty lines under the text, ready to keep writing.
               padding: '0 0 78px',
             }}

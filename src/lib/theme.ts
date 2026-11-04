@@ -22,7 +22,7 @@ export function applyTheme(theme: string | null | undefined) {
   // The phone's own bars (Safari, the status bar) take the desk color too.
   const desk = THEMES.find((x) => x.id === id)?.desk
   const meta = document.querySelector('meta[name="theme-color"]')
-  if (meta && desk) meta.setAttribute('content', desk)
+  if (meta && desk && document.documentElement.dataset.mode !== 'dark') meta.setAttribute('content', desk)
   try {
     localStorage.setItem(KEY, id)
   } catch {
@@ -37,4 +37,48 @@ export function applySavedTheme() {
   } catch {
     applyTheme(null)
   }
+}
+
+// Light or dark (Nora, 4 Nov). Auto follows the phone's own setting. Saved on this device only, like the theme above.
+export type Mode = 'auto' | 'light' | 'dark'
+const MODE_KEY = 'pichigoose.mode'
+const darkQuery = typeof matchMedia === 'function' ? matchMedia('(prefers-color-scheme: dark)') : null
+
+export function savedMode(): Mode {
+  try {
+    const m = localStorage.getItem(MODE_KEY)
+    return m === 'light' || m === 'dark' ? m : 'auto'
+  } catch {
+    return 'auto'
+  }
+}
+
+function resolveMode() {
+  const m = savedMode()
+  const dark = m === 'dark' || (m === 'auto' && Boolean(darkQuery?.matches))
+  document.documentElement.dataset.mode = dark ? 'dark' : 'light'
+  document.documentElement.style.colorScheme = dark ? 'dark' : 'light'
+  // The phone's own bars take the page color.
+  const meta = document.querySelector('meta[name="theme-color"]')
+  if (meta && dark) meta.setAttribute('content', getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#24101A')
+  else if (meta) {
+    const desk = THEMES.find((x) => x.id === document.documentElement.dataset.theme)?.desk
+    if (desk) meta.setAttribute('content', desk)
+  }
+}
+
+export function setMode(mode: Mode) {
+  try {
+    if (mode === 'auto') localStorage.removeItem(MODE_KEY)
+    else localStorage.setItem(MODE_KEY, mode)
+  } catch {
+    // ignore
+  }
+  resolveMode()
+}
+
+/** On start: the saved choice, and from then on the phone's setting while on Auto. */
+export function applySavedMode() {
+  resolveMode()
+  darkQuery?.addEventListener('change', resolveMode)
 }

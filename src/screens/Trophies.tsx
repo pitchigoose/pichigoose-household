@@ -81,7 +81,7 @@ export function TrophiesScreen() {
     <Screen>
       <div style={{ padding: 'calc(var(--top) + 8px) 22px 32px 40px', maxWidth: 720 }}>
         <div className="row" style={{ gap: 6, marginLeft: -10 }}>
-          <button type="button" aria-label={t('common.back')} onClick={back} style={{ display: 'flex', color: '#1E1A30' }}>
+          <button type="button" aria-label={t('common.back')} onClick={back} style={{ display: 'flex', color: 'var(--ink)' }}>
             <BackIcon />
           </button>
           <Hand as="h1" style={{ margin: 0 }}>
@@ -105,7 +105,7 @@ export function TrophiesScreen() {
         {wins.length ? (
           <div style={{ display: 'flex', flexDirection: 'column', gap: 22 }}>{wins.map(card)}</div>
         ) : (
-          <p className="body" style={{ textAlign: 'center', color: '#63586B' }}>{t('trophies.empty')}</p>
+          <p className="body" style={{ textAlign: 'center', color: 'var(--ink-soft)' }}>{t('trophies.empty')}</p>
         )}
         <p className="cap" style={{ marginTop: 26, textAlign: 'center' }}>
           {t('trophies.how')}

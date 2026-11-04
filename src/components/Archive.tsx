@@ -56,7 +56,7 @@ export function ArchiveLink({ rows, people, onAgain, title }: { rows: Archived[]
               return (
                 <div key={r.id} className="ln" style={{ minHeight: 48, gap: 10 }}>
                   {who && <Avatar avatar={who.avatar} label={who.display_name} size={28} />}
-                  <span style={{ flex: 1, minWidth: 0, fontSize: 16, color: '#63586B' }}>
+                  <span style={{ flex: 1, minWidth: 0, fontSize: 16, color: 'var(--ink-soft)' }}>
                     {r.name}
                     {r.times > 1 && <span className="cap" style={{ marginLeft: 6, fontWeight: 700 }}>×{r.times}</span>}
                   </span>

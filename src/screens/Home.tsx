@@ -436,7 +436,7 @@ export function HomeScreen() {
                   style={{ display: 'block', width: '100%', textAlign: 'left', padding: '16px 18px 30px', minHeight: 104, transform: `rotate(${MINI_TILT[i % MINI_TILT.length]}deg)`, boxShadow: '1px 2px 0 rgba(30,26,48,.14)', minWidth: 0 }}
                 >
                   {col === 0 ? <PaperClip side="left" /> : col === noteCols - 1 ? <PaperClip side="right" /> : <Tape kind={i % 2 ? 'ty' : 'tb'} style={{ top: -9, right: 12, width: 54, height: 18, transform: 'rotate(5deg)' }} />}
-                  <div style={{ fontSize: 17, lineHeight: '22px', fontWeight: 800, color: '#1E1A30', overflowWrap: 'break-word', hyphens: 'auto' }}>{n.title || t('notes.untitled')}</div>
+                  <div style={{ fontSize: 17, lineHeight: '22px', fontWeight: 800, color: 'var(--ink)', overflowWrap: 'break-word', hyphens: 'auto' }}>{n.title || t('notes.untitled')}</div>
                   <div className="cap" style={{ marginTop: 4 }}>
                     {n.pinned ? t('notes.pinned') : `${by?.display_name ?? ''} · ${ago(n.updated_at, i18n.language)}`}
                   </div>

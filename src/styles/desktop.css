@@ -25,9 +25,9 @@
   /* Everything else in the sidebar scrolls if the window is short. */
   .side-inner { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 22px; padding: 30px 20px 22px; overflow-y: auto; overflow-x: hidden }
   .hhbox { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; padding: 4px 4px 0; text-align: left }
-  .nav { position: relative; display: flex; align-items: center; gap: 14px; height: 44px; padding: 0 12px; font-size: 16px; font-weight: 700; color: #63586B; border-radius: 8px }
+  .nav { position: relative; display: flex; align-items: center; gap: 14px; height: 44px; padding: 0 12px; font-size: 16px; font-weight: 700; color: var(--ink-soft); border-radius: 8px }
   .nav svg { width: 24px; height: 24px; flex: none }
-  .nav:hover { color: #1E1A30 }
+  .nav:hover { color: var(--ink) }
   .nav.on { color: var(--hero-dark) }
   .nav .tab-icon { position: relative; display: flex }
   .nav .tab-circle { position: absolute; left: 50%; top: 50%; width: 44px; height: 36px; margin: -18px 0 0 -22px; overflow: visible; pointer-events: none; filter: url(#dry-ink) }

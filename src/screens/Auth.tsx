@@ -206,7 +206,7 @@ export function AuthScreen({ mode }: { mode: Mode }) {
         <div className="auth-side">
           <PichiPolaroid width={150} rotate={-4} />
           <img src={logo} alt="Pichigoose" style={{ width: 200, marginTop: 24 }} />
-          <p className="body" style={{ textAlign: 'center', margin: '14px 0 0', color: '#463D50', maxWidth: 360, fontSize: 17, lineHeight: '24px', textWrap: 'balance' }}>
+          <p className="body" style={{ textAlign: 'center', margin: '14px 0 0', color: 'var(--ink3)', maxWidth: 360, fontSize: 17, lineHeight: '24px', textWrap: 'balance' }}>
             {t('auth.tagline')}
           </p>
         </div>
@@ -248,7 +248,7 @@ export function AuthScreen({ mode }: { mode: Mode }) {
           <PichiPolaroid width={112} rotate={-4} />
           <img src={logo} alt="Pichigoose" style={{ width: 150, marginTop: 18 }} />
           {/* Same two-line height in every language, so switching EN and SR doesn't move the form. */}
-          <p className="body" style={{ textAlign: 'center', margin: '10px 0 0', color: '#463D50', minHeight: 44, textWrap: 'balance' }}>
+          <p className="body" style={{ textAlign: 'center', margin: '10px 0 0', color: 'var(--ink3)', minHeight: 44, textWrap: 'balance' }}>
             {t('auth.tagline')}
           </p>
         </div>

@@ -64,9 +64,9 @@ html[data-theme="black"] { --deep: #1D1A22 }
 
 /* Quick actions: big round buttons; the first one in the theme color. */
 .v2-quick { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; padding: 22px 14px 4px }
-.v2-q { display: flex; flex-direction: column; align-items: center; gap: 8px; color: #2E2638; -webkit-tap-highlight-color: transparent }
+.v2-q { display: flex; flex-direction: column; align-items: center; gap: 8px; color: var(--ink2); -webkit-tap-highlight-color: transparent }
 .v2-q-circle {
-  display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; background: #FFFFFF; color: #1E1A30;
+  display: grid; place-items: center; width: 64px; height: 64px; border-radius: 50%; background: #FFFFFF; color: var(--ink);
   box-shadow: 0 0 0 1px rgba(30, 26, 48, .06), 0 6px 16px -6px rgba(30, 26, 48, .28); transition: scale .35s cubic-bezier(.34, 1.56, .64, 1);
 }
 .v2-q.main .v2-q-circle { background: var(--hero); color: #FFFFFF }
@@ -74,12 +74,12 @@ html[data-theme="black"] { --deep: #1D1A22 }
 .v2-q-label { font-size: 14px; line-height: 18px; font-weight: 700; text-align: center }
 
 /* Today's cards: bold colors, a strong edge in the theme color, swiping sideways and settling card by card. */
-.v2-h { margin: 24px 22px 12px; font-size: 22px; line-height: 28px; font-weight: 800; color: #1E1A30 }
+.v2-h { margin: 24px 22px 12px; font-size: 22px; line-height: 28px; font-weight: 800; color: var(--ink) }
 .v2-cards { display: flex; gap: 18px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 8px 26px 12px; scroll-padding: 26px; scrollbar-width: none; -webkit-overflow-scrolling: touch }
 .v2-cards::-webkit-scrollbar { display: none }
 .v2-card {
   flex: 0 0 168px; height: 200px; scroll-snap-align: start; box-sizing: border-box; display: flex; flex-direction: column; padding: 14px 14px 12px;
-  border-radius: 22px; color: #1E1A30; outline: 2.5px solid var(--deep); outline-offset: 3px; transition: scale .35s cubic-bezier(.34, 1.56, .64, 1); -webkit-tap-highlight-color: transparent;
+  border-radius: 22px; color: var(--ink); outline: 2.5px solid var(--deep); outline-offset: 3px; transition: scale .35s cubic-bezier(.34, 1.56, .64, 1); -webkit-tap-highlight-color: transparent;
 }
 .v2-card:active { scale: .96; transition-duration: .12s }
 .v2-card.butter { background: #FBEAB0 }
@@ -89,7 +89,7 @@ html[data-theme="black"] { --deep: #1D1A22 }
 .v2-card.peach { background: #FADCC0 }
 .v2-card-title { font-size: 16px; line-height: 20px; font-weight: 800 }
 .v2-card-big { margin-top: 4px; font-size: 42px; line-height: 46px; font-weight: 800 }
-.v2-card-lines { margin-top: auto; display: flex; flex-direction: column; gap: 2px; font-size: 13px; line-height: 17px; font-weight: 600; color: #463D50; min-width: 0 }
+.v2-card-lines { margin-top: auto; display: flex; flex-direction: column; gap: 2px; font-size: 13px; line-height: 17px; font-weight: 600; color: var(--ink3); min-width: 0 }
 .v2-card-lines > span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
 .v2-card-empty { white-space: normal !important }
 
@@ -111,7 +111,7 @@ html[data-theme="black"] { --deep: #1D1A22 }
 :root { --hand-scale: .68 }
 @media (max-width: 374px) { :root { --hand-scale: .6 } }
 .hand {
-  font-family: Nunito, sans-serif; font-weight: 800; letter-spacing: -.3px; filter: none;
+  font-family: var(--font); font-weight: 800; letter-spacing: -.3px; filter: none;
   -webkit-mask-image: none; mask-image: none;
 }
 
@@ -133,7 +133,7 @@ html[data-theme="black"] { --deep: #1D1A22 }
 
 /* Tabs that were washi tape (shopping lists, rooms): solid pills. The open one is in the theme color. */
 button.tp, button.ty, button.tm, button.tb, button.tdots, button.tblocks, button.ttri, button.tcheck {
-  background: #FFFFFF !important; border-radius: 999px; transform: none !important; opacity: 1 !important; color: #463D50 !important;
+  background: #FFFFFF !important; border-radius: 999px; transform: none !important; opacity: 1 !important; color: var(--ink3) !important;
   box-shadow: 0 0 0 1.5px rgba(30, 26, 48, .1) !important; height: 34px !important; padding: 0 16px !important; font-weight: 700 !important;
 }
 button.tp[aria-pressed="true"], button.ty[aria-pressed="true"], button.tm[aria-pressed="true"], button.tb[aria-pressed="true"],
