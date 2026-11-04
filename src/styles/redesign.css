@@ -93,6 +93,16 @@ html[data-theme="black"] { --deep: #1D1A22 }
 .v2-card-lines > span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
 .v2-card-empty { white-space: normal !important }
 
+/* Big panels under the cards (the shelves now; the calendar and money later), like Flo's sleep card. */
+.v2-panel { margin: 26px 16px 0; padding: 20px 18px 18px; border-radius: 28px; background: #FFFFFF; box-shadow: 0 0 0 1px rgba(30, 26, 48, .05), 0 10px 26px -14px rgba(30, 26, 48, .3) }
+.v2-chips { display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; margin: 0 -18px 4px; padding: 0 18px 4px }
+.v2-chips::-webkit-scrollbar { display: none }
+.v2-chip { flex: none; height: 34px; padding: 0 15px; border-radius: 999px; font-size: 14px; font-weight: 700; color: var(--ink3); box-shadow: inset 0 0 0 1.5px rgba(30, 26, 48, .12) }
+.v2-chip[aria-selected="true"] { background: var(--hero); color: #FFFFFF; box-shadow: none }
+.v2-shelf { padding: 14px 4px 4px }
+.v2-panel-btn { display: grid; place-items: center; height: 50px; margin-top: 16px; border-radius: 999px; background: color-mix(in srgb, var(--hero) 12%, #FFFFFF); color: var(--hero-dark); font-size: 16px; font-weight: 800 }
+.v2-panel-btn:active { scale: .97 }
+
 @media (prefers-reduced-motion: reduce) {
   .v2-cloud, .v2-pichi img, .v2-bubble, .v2-bubble b { animation: none }
 }

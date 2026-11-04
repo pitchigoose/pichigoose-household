@@ -792,6 +792,8 @@
     "cardProjects": "Projects",
     "cardPantry": "Running low",
     "cardNotes": "Notes",
-    "pantryFine": "The shelves look good"
+    "pantryFine": "The shelves look good",
+    "shelves": "On the shelves",
+    "openShelves": "Open the shelves"
   }
 }

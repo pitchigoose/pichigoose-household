@@ -16,6 +16,7 @@ import {
   useRooms,
   useSpots,
   type Room,
+  type Spot,
   useTodos,
   type Section,
 } from '../data/hooks'
@@ -626,6 +627,10 @@ export function HomeScreen() {
           </Link>
         ))}
       </div>
+
+      {/* Big panels under the cards, like Flo's sleep card (Nora, 4 Nov). First the shelves, always in sight, as on the
+          scrapbook Home. The calendar and money can come in as panels like this one later. */}
+      <ShelfPanel rooms={rooms.rows} spots={spots.rows} shelf={shelf} />
       <div style={{ height: 24 }} />
 
       <MyHouseholds open={switching} onClose={() => setSwitching(false)} />
@@ -637,6 +642,40 @@ export function HomeScreen() {
   )
 }
 
+
+/** The shelves on Home: one room at a time, picked with the pills on top, and what's in it, running out first. */
+function ShelfPanel({ rooms, spots, shelf }: { rooms: Room[]; spots: Spot[]; shelf: Group[] }) {
+  const { t } = useTranslation()
+  const navigate = useNavigate()
+  const box = useShelfWidth()
+  const roomOf = (g: Group) => spots.find((x) => x.id === spotOf(g.rows[0], rooms, spots))?.room_id
+  const withThings = rooms.filter((r) => shelf.some((g) => roomOf(g) === r.id))
+  const [picked, setPicked] = useState<string | null>(null)
+  const room = withThings.find((r) => r.id === picked) ?? withThings[0]
+  if (!room) return null
+  const groups = shelf
+    .filter((g) => roomOf(g) === room.id)
+    .sort((a, b) => Number(groupLow(b.rows)) - Number(groupLow(a.rows)))
+  const to = `/pantry?room=${room.id}`
+  return (
+    <section className="v2-panel">
+      <h2 className="v2-h" style={{ margin: '0 0 12px' }}>{t('v2.shelves')}</h2>
+      {withThings.length > 1 && (
+        <div className="v2-chips" role="tablist">
+          {withThings.map((r) => (
+            <button key={r.id} type="button" role="tab" aria-selected={r.id === room.id} className="v2-chip" onClick={() => setPicked(r.id)}>
+              {r.name}
+            </button>
+          ))}
+        </div>
+      )}
+      <div ref={box.ref} className="v2-shelf">
+        <ShelfRows groups={groups} width={box.width} height={64} maxRows={2} compact onOpen={() => navigate(to)} />
+      </div>
+      <Link to={to} className="v2-panel-btn">{t('v2.openShelves')}</Link>
+    </section>
+  )
+}
 
 /** On Home, the browser's own top bar (Safari's) takes the deep color of the scene, so it runs edge to edge. */
 function DeepTopBar() {

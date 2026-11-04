@@ -54,6 +54,10 @@ html[data-mode="dark"] .v2-q:not(.main) .v2-q-circle { background: var(--surface
 html[data-mode="dark"] .v2-card { outline-color: var(--hero) }
 html[data-mode="dark"] .v2-hero { box-shadow: 0 1px 0 var(--line) }
 
+html[data-mode="dark"] .v2-panel { background: var(--surface); box-shadow: 0 0 0 1px var(--line) }
+html[data-mode="dark"] .v2-chip:not([aria-selected="true"]) { box-shadow: inset 0 0 0 1.5px var(--line) }
+html[data-mode="dark"] .v2-panel-btn { background: var(--surface-2); color: var(--ink) }
+
 /* Line icons and drawings drawn in dark ink switch to light ink. */
 html[data-mode="dark"] [stroke="#1E1A30"] { stroke: var(--ink) }
 html[data-mode="dark"] [fill="#1E1A30"] { fill: var(--ink) }
