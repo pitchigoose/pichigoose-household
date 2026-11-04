@@ -20,8 +20,10 @@ html[data-theme="black"] { --deep: #1D1A22 }
 /* The scene */
 .v2-hero { position: relative; overflow: hidden; background: var(--deep); color: #FFFFFF; border-radius: 0 0 34px 34px; padding-bottom: 24px }
 .v2-top { position: relative; z-index: 2; display: flex; align-items: center; justify-content: space-between; padding: 0 20px 0 22px }
-.v2-house { display: flex; align-items: center; gap: 4px; min-width: 0; color: #FFFFFF }
-.v2-house-name { font-size: 22px; line-height: 28px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
+.v2-house { display: flex; align-items: center; gap: 4px; min-width: 0; max-width: calc(50% - 36px); color: #FFFFFF }
+/* The logo at the top, in the middle, like Flo's (Nora, 4 Nov). Nora's own hand-lettered logo, turned white for the deep scene. */
+.v2-logo { position: absolute; left: 50%; bottom: -4px; translate: -50% 0; width: 58px; height: auto; filter: brightness(0) invert(1); pointer-events: none }
+.v2-house-name { font-size: 19px; line-height: 26px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis }
 .v2-house svg { color: rgba(255, 255, 255, .8) }
 .v2-me { display: flex; border-radius: 50%; box-shadow: 0 0 0 2.5px rgba(255, 255, 255, .85) }
 
@@ -73,11 +75,11 @@ html[data-theme="black"] { --deep: #1D1A22 }
 
 /* Today's cards: bold colors, a strong edge in the theme color, swiping sideways and settling card by card. */
 .v2-h { margin: 24px 22px 12px; font-size: 22px; line-height: 28px; font-weight: 800; color: #1E1A30 }
-.v2-cards { display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 4px 20px 10px; scroll-padding: 20px; scrollbar-width: none; -webkit-overflow-scrolling: touch }
+.v2-cards { display: flex; gap: 18px; overflow-x: auto; scroll-snap-type: x mandatory; padding: 8px 26px 12px; scroll-padding: 26px; scrollbar-width: none; -webkit-overflow-scrolling: touch }
 .v2-cards::-webkit-scrollbar { display: none }
 .v2-card {
   flex: 0 0 168px; height: 200px; scroll-snap-align: start; box-sizing: border-box; display: flex; flex-direction: column; padding: 14px 14px 12px;
-  border-radius: 24px; border: 3px solid var(--hero); color: #1E1A30; transition: scale .35s cubic-bezier(.34, 1.56, .64, 1); -webkit-tap-highlight-color: transparent;
+  border-radius: 22px; color: #1E1A30; outline: 2.5px solid var(--deep); outline-offset: 3px; transition: scale .35s cubic-bezier(.34, 1.56, .64, 1); -webkit-tap-highlight-color: transparent;
 }
 .v2-card:active { scale: .96; transition-duration: .12s }
 .v2-card.butter { background: #FBEAB0 }
@@ -181,3 +183,7 @@ button.tdots[aria-pressed="true"], button.tblocks[aria-pressed="true"], button.t
     box-shadow: 0 -1px 0 rgba(30, 26, 48, .07), 0 -8px 20px -14px rgba(30, 26, 48, .25);
   }
 }
+/* The household chevron on the deep scene: white and clean, no ink. */
+.v2-house > span { -webkit-mask-image: none !important; mask-image: none !important }
+.v2-house svg { filter: none !important }
+.v2-house svg path { stroke: rgba(255, 255, 255, .85); stroke-width: 3 }

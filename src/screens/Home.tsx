@@ -1,3 +1,4 @@
+import logo from '../../assets/logo-pichigoose.png'
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -565,6 +566,7 @@ export function HomeScreen() {
             <span className="v2-house-name">{name(household)}</span>
             <InkChevron />
           </button>
+          <img className="v2-logo" src={logo} alt="Pichigoose" draggable={false} />
           <Link to={`/people/${me}`} aria-label={t('home.profile')} className="v2-me">
             <Avatar avatar={profile?.avatar} size={44} className="" />
           </Link>
