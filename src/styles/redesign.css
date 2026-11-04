@@ -297,3 +297,56 @@ html[data-mode="dark"] .comments { border-top-color: var(--line) }
   .nav { border-radius: 12px }
   .note-panel { background-image: none !important; background-color: #FFFBF7 !important }
 }
+
+/* Daintier desktop (Nora, 4 Nov): the phone sizes read big on a wide screen, so everything steps down. Smaller, lighter
+   type, a slimmer sidebar, tighter cards, finer lines. The phone is untouched. */
+@media (min-width: 1024px) {
+  :root { --hand-scale: .52 }
+  .desk h1.hand { font-size: 44px !important; line-height: 46px !important; letter-spacing: -.6px }
+  .body { font-size: 14px; line-height: 20px }
+  .cap { font-size: 11.5px; line-height: 15px }
+  .ln { font-size: 14px; line-height: 20px; gap: 10px }
+  .desk .note .ln { font-size: 13.5px; line-height: 19px }
+  .desk .note { padding: 16px 18px 14px; border-radius: 18px }
+  .stk { height: 40px; padding: 0 18px; font-size: 14px }
+  .stk.sm { height: 32px; padding: 0 13px; font-size: 13px }
+  .input { height: 38px; font-size: 14px; border-radius: 12px }
+  .box { width: 20px; height: 20px; border-width: 1.5px }
+  .box svg { width: 17px; height: 17px }
+  button.tp, button.ty, button.tm, button.tb, button.tdots, button.tblocks, button.ttri, button.tcheck { height: 30px !important; padding: 0 13px !important; font-size: 13px !important }
+  .add-pill { height: 30px !important; font-size: 13px !important }
+  .stamp { font-size: 11px }
+  .v2-chip { height: 30px; font-size: 13px }
+
+  /* The sidebar: slimmer, quieter. */
+  .side { width: 232px }
+  .side-inner { gap: 18px; padding: 24px 16px 18px }
+  .side img[alt="Pichigoose"] { width: 118px !important }
+  .nav { height: 38px; gap: 11px; padding: 0 10px; font-size: 14px; font-weight: 600 }
+  .nav svg { width: 20px; height: 20px }
+  .nav.on { background: var(--tone) }
+  .nav .tab-circle { display: none }
+  .hhbox .hand { font-size: 18px !important; line-height: 22px !important }
+
+  /* The board on Home: tighter, with more notes across. */
+  .board-grid { gap: 20px; grid-template-columns: repeat(auto-fit, minmax(max(220px, calc((100% - 40px) / 3)), 1fr)) }
+  .desk-content { padding: 6px 22px 28px 40px; max-width: 900px }
+  .desk-footer { padding-left: 24px }
+
+  /* Side panels and dialogs: narrower, with finer corners. */
+  .sheet { width: 380px; max-width: 380px; padding: 22px 22px; border-radius: 20px !important }
+  .sheet-back { padding: 14px 14px 14px 0 }
+  .sheet-actions { bottom: -22px; margin: 0 -22px -22px; padding: 10px 22px 22px }
+  .note-panel { width: 380px; top: 14px; right: 14px; bottom: 14px; padding: 22px; border-radius: 20px }
+  .sheet-back.small .sheet { min-width: 400px; border-radius: 20px !important }
+
+  /* Avatars in rows stay 2 px lines but sit smaller. */
+  .ln .av, .note .av { width: 28px; height: 28px }
+  .chat-split-list { width: 272px }
+  .bubble { font-size: 14px; line-height: 20px }
+}
+@media (min-width: 1024px) {
+  /* The greeting on the board: a smaller stamp and bubble, with clean corners. */
+  .news-row .postage { scale: .78; transform-origin: 0 0; margin-right: -14px; margin-bottom: -16px }
+  .news-row > div:last-child { border-radius: 16px !important; box-shadow: none !important }
+}

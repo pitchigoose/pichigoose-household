@@ -250,7 +250,7 @@ export function HomeScreen() {
     const look = LOOK[s] ?? LOOK.pantry
     if (s === 'news') {
       return (
-        <div key="news" style={{ display: 'flex', gap: desktop ? 16 : 12, alignItems: 'flex-start', marginTop: desktop ? 0 : -4 }}>
+        <div key="news" className="news-row" style={{ display: 'flex', gap: desktop ? 16 : 12, alignItems: 'flex-start', marginTop: desktop ? 0 : -4 }}>
           {/* Tap Pichi to meet her. */}
           <Link to="/pichi" aria-label={t('pichi.title')} style={{ display: 'block' }}>
             <PichiStamp />
@@ -263,16 +263,16 @@ export function HomeScreen() {
               // Pichi's speech bubble in the theme color (Nora, 29 Oct), so each theme shows up on Home too.
               background: 'var(--hero)',
               borderRadius: '14px 16px 14px 4px',
-              padding: desktop ? '14px 18px' : '12px 14px',
+              padding: desktop ? '10px 16px' : '12px 14px',
               boxShadow: '2px 3px 0 rgba(30,26,48,.10)',
               marginTop: desktop ? 10 : 6,
             }}
           >
             {/* The greeting leads; the news sits a step smaller under it. */}
-            <Hand size={desktop ? 31 : 27} lineHeight={desktop ? 34 : 30} color="#FFFFFF">
+            <Hand size={desktop ? 24 : 27} lineHeight={desktop ? 28 : 30} color="#FFFFFF">
               {t('home.hi', { name: myName })}
             </Hand>
-            <div style={{ fontSize: desktop ? 16 : 14, lineHeight: desktop ? '22px' : '20px', fontWeight: 600, marginTop: 2, color: 'rgba(255, 255, 255, .82)' }}>{news}</div>
+            <div style={{ fontSize: desktop ? 13.5 : 14, lineHeight: desktop ? '19px' : '20px', fontWeight: 600, marginTop: 2, color: 'rgba(255, 255, 255, .82)' }}>{news}</div>
           </div>
         </div>
       )
