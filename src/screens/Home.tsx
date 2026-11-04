@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useAuth, useMe } from '../auth'
@@ -556,7 +556,8 @@ export function HomeScreen() {
   ]
 
   return (
-    <Screen tabbar hideBarsOnScroll className="home-v2">
+    <Screen tabbar className="home-v2">
+      <DeepTopBar />
       {/* The scene: deep color, soft clouds drifting, Pichi breathing, his bubble, and his one message. */}
       <section className="v2-hero">
         <div className="v2-top" style={{ paddingTop: 'calc(var(--top) + 12px)' }}>
@@ -634,3 +635,18 @@ export function HomeScreen() {
   )
 }
 
+
+/** On Home, the browser's own top bar (Safari's) takes the deep color of the scene, so it runs edge to edge. */
+function DeepTopBar() {
+  useEffect(() => {
+    const meta = document.querySelector('meta[name="theme-color"]')
+    if (!meta) return
+    const before = meta.getAttribute('content')
+    const deep = getComputedStyle(document.documentElement).getPropertyValue('--deep').trim()
+    if (deep) meta.setAttribute('content', deep)
+    return () => {
+      if (before) meta.setAttribute('content', before)
+    }
+  }, [])
+  return null
+}

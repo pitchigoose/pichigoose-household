@@ -165,3 +165,19 @@ button.tdots[aria-pressed="true"], button.tblocks[aria-pressed="true"], button.t
 .tab .tab-icon { isolation: isolate }
 .tab.on .tab-icon::before { scale: 1; opacity: 1 }
 .tab.on { color: var(--hero-dark) }
+
+/* Edge to edge, like Flo (Nora, 4 Nov): on a phone the app fills the screen instead of sitting on a colored desk as
+   a sheet of paper, and the menu is docked flat along the bottom, always there, instead of floating. */
+@media (max-width: 1023px) {
+  :root { --frame: 0px; --tabbar-gap: 0px; --paper-radius: 0px; --tabbar: calc(60px + var(--bottom)) }
+  html, body { background: #FFF8F2 }
+  .screen:not(.page) { border-radius: 0; box-shadow: none; margin: var(--status) 0 0 }
+  /* Home's deep scene reaches up under the status bar. */
+  .screen.home-v2 { margin-top: 0; height: calc(100dvh - var(--kb)) }
+  .home-v2 .v2-top { padding-top: calc(var(--status) + 14px) !important }
+  body:has(.screen.home-v2) { background: var(--deep) }
+  .tabbar {
+    left: 0; right: 0; bottom: 0; height: calc(60px + var(--bottom)); padding: 4px 8px var(--bottom); border-radius: 0;
+    box-shadow: 0 -1px 0 rgba(30, 26, 48, .07), 0 -8px 20px -14px rgba(30, 26, 48, .25);
+  }
+}
