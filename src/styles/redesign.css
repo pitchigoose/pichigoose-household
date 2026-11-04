@@ -94,3 +94,74 @@ html[data-theme="black"] { --deep: #1D1A22 }
 @media (prefers-reduced-motion: reduce) {
   .v2-cloud, .v2-pichi img, .v2-bubble, .v2-bubble b { animation: none }
 }
+
+/* ========================================================================================================
+   The whole app in the new look (Nora, 4 Nov): the shared building blocks change once, so every screen follows.
+   Plain warm pages instead of notebook paper, bold clean headings, round buttons and pills, no tape, no tilt.
+   ======================================================================================================== */
+
+/* Pages: warm and plain. No ruled lines, no red margin, no paper grain, no washi tape holding the page. */
+.scr { background-image: none; background-color: #FFF8F2 }
+.margin { display: none }
+#root::before { display: none }
+
+/* Headings: the app's own bold font instead of the marker. Same sizes in the code, scaled to read the same. */
+:root { --hand-scale: .68 }
+@media (max-width: 374px) { :root { --hand-scale: .6 } }
+.hand {
+  font-family: Nunito, sans-serif; font-weight: 800; letter-spacing: -.3px; filter: none;
+  -webkit-mask-image: none; mask-image: none;
+}
+
+/* Buttons: round, flat and friendly, no sticker edge, no tilt. */
+.stk {
+  border: none; border-radius: 999px; box-shadow: 0 0 0 1px rgba(30, 26, 48, .06), 0 4px 12px -6px rgba(30, 26, 48, .3);
+  transition: scale .3s cubic-bezier(.34, 1.56, .64, 1), background .2s ease;
+}
+.stk:not(.add-fab) { transform: none !important }
+.stk:active:not(:disabled) { translate: none; scale: .95; transition-duration: .1s }
+.stk.sec { background: #FFFFFF }
+.stk.sm { height: 38px; padding: 0 16px }
+.stk.round { border-radius: 50% }
+
+/* Notes and tiles: soft rounded cards, flat color, no paper grain, no tape, no tilt. */
+.note { transform: none !important; border-radius: 22px; box-shadow: 0 0 0 1px rgba(30, 26, 48, .05), 0 8px 20px -12px rgba(30, 26, 48, .35) }
+.note::after { display: none }
+.tape { display: none }
+
+/* Tabs that were washi tape (shopping lists, rooms): solid pills. The open one is in the theme color. */
+button.tp, button.ty, button.tm, button.tb, button.tdots, button.tblocks, button.ttri, button.tcheck {
+  background: #FFFFFF !important; border-radius: 999px; transform: none !important; opacity: 1 !important; color: #463D50 !important;
+  box-shadow: 0 0 0 1.5px rgba(30, 26, 48, .1) !important; height: 34px !important; padding: 0 16px !important; font-weight: 700 !important;
+}
+button.tp[aria-pressed="true"], button.ty[aria-pressed="true"], button.tm[aria-pressed="true"], button.tb[aria-pressed="true"],
+button.tdots[aria-pressed="true"], button.tblocks[aria-pressed="true"], button.ttri[aria-pressed="true"], button.tcheck[aria-pressed="true"] {
+  background: var(--hero) !important; color: #FFFFFF !important; box-shadow: none !important;
+}
+
+/* Checkboxes: round, clean circles; ticked ones fill with the theme color and a white tick. */
+.box { width: 24px; height: 24px; border-radius: 50%; border: 2px solid #B6ABBE; background: #FFFFFF; transform: none !important; transition: background .2s ease, border-color .2s ease }
+.check-btn[aria-checked="true"] .box { background: var(--hero); border-color: var(--hero) }
+.box svg { left: 0; top: 0; width: 20px; height: 20px }
+.check-btn[aria-checked="true"] .box .check-mark path { stroke: #FFFFFF !important }
+
+/* Labels like TODAY and NO DATE: soft pills instead of rubber stamps. */
+.stamp { -webkit-mask-image: none; mask-image: none; border: none; border-radius: 999px; padding: 3px 10px; background: rgba(30, 26, 48, .06); letter-spacing: .04em; transform: none !important }
+
+/* Fields: rounder and lighter. */
+.input { border-radius: 16px; background: #FFFFFF }
+
+/* Pop-ups: plain warm paper. */
+.sheet { background-image: none; background-color: #FFFBF7 }
+.sheet-actions { background-image: none; background-color: #FFFBF7 }
+
+/* The menu: solid warm white with a soft shadow; the open tab sits on a soft pill in the theme color. */
+.tabbar { background: #FFFFFF; box-shadow: 0 0 0 1px rgba(30, 26, 48, .05), 0 10px 26px -10px rgba(30, 26, 48, .35) }
+.tab .tab-circle { display: none }
+.tab .tab-icon::before {
+  content: ''; position: absolute; left: 50%; top: 50%; width: 54px; height: 34px; margin: -17px 0 0 -27px; border-radius: 999px; z-index: -1;
+  background: color-mix(in srgb, var(--hero) 15%, #FFFFFF); scale: .4; opacity: 0; transition: scale .45s cubic-bezier(.34, 1.56, .64, 1), opacity .2s ease;
+}
+.tab .tab-icon { isolation: isolate }
+.tab.on .tab-icon::before { scale: 1; opacity: 1 }
+.tab.on { color: var(--hero-dark) }
