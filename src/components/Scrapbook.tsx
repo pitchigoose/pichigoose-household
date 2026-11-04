@@ -236,7 +236,7 @@ export function PichiStamp({ width = 58, height = 70, rotate = -5 }: { width?: n
 }
 
 /** Nora's poses of Pichi (her paintings, never redrawn), with see-through backgrounds. */
-const POSES = {
+export const POSES = {
   'stand-left': poseStandLeft,
   'stand-right': poseStandRight,
   honk: poseHonk,

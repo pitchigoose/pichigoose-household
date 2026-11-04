@@ -788,5 +788,29 @@
     },
     "showDetails": "Prikaži detalje",
     "hideDetails": "Sakrij detalje"
+  },
+  "v2": {
+    "todosToday_one": "{{count}} zadatak za danas",
+    "todosToday_few": "{{count}} zadatka za danas",
+    "todosToday_other": "{{count}} zadataka za danas",
+    "runningLow": "{{item}} je pri kraju",
+    "toBuy_one": "{{count}} stvar za kupovinu",
+    "toBuy_few": "{{count}} stvari za kupovinu",
+    "toBuy_other": "{{count}} stvari za kupovinu",
+    "calm": "Kod kuće je sve mirno",
+    "seeTodos": "Pogledaj zadatke",
+    "seeList": "Pogledaj spisak",
+    "addSomething": "Dodaj nešto",
+    "qBuy": "Kupovina",
+    "qTodo": "Zadatak",
+    "qNote": "Beleška",
+    "qChat": "Poruka",
+    "today": "Danas kod kuće",
+    "cardBuy": "Za kupovinu",
+    "cardTodos": "Zadaci",
+    "cardProjects": "Projekti",
+    "cardPantry": "Pri kraju",
+    "cardNotes": "Beleške",
+    "pantryFine": "Police su u redu"
   }
 }

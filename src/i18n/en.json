@@ -767,5 +767,27 @@
     },
     "showDetails": "Show details",
     "hideDetails": "Hide details"
+  },
+  "v2": {
+    "todosToday_one": "{{count}} to-do for today",
+    "todosToday_other": "{{count}} to-dos for today",
+    "runningLow": "{{item}} is running low",
+    "toBuy_one": "{{count}} thing to buy",
+    "toBuy_other": "{{count}} things to buy",
+    "calm": "All calm at home",
+    "seeTodos": "See your to-dos",
+    "seeList": "See the shopping list",
+    "addSomething": "Add something",
+    "qBuy": "To buy",
+    "qTodo": "To-do",
+    "qNote": "Note",
+    "qChat": "Message",
+    "today": "Today at home",
+    "cardBuy": "To buy",
+    "cardTodos": "To-dos",
+    "cardProjects": "Projects",
+    "cardPantry": "Running low",
+    "cardNotes": "Notes",
+    "pantryFine": "The shelves look good"
   }
 }

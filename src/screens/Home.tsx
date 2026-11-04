@@ -19,10 +19,10 @@ import {
   type Section,
 } from '../data/hooks'
 import { byTodoOrder, isNewTodo, recentlyDone, toggleItem, toggleTodo } from '../data/actions'
-import { Floating, Screen } from '../components/Shell'
+import { Screen } from '../components/Shell'
 import { Avatar, NobodyAvatar } from '../components/Avatar'
-import { Check, Hand, NewTag, PaperClip, PichiAvatar, Struck, Tick, PichiStamp, Tape, tilt, type TapeKind } from '../components/Scrapbook'
-import { InkChevron, PlusIcon, PinIcon } from '../components/Icons'
+import { Check, Hand, NewTag, PaperClip, PichiAvatar, POSES, Struck, Tick, PichiStamp, Tape, tilt, type Pose, type TapeKind } from '../components/Scrapbook'
+import { BasketIcon, InkChevron, MessagesIcon, PencilIcon, PinIcon, TodoIcon } from '../components/Icons'
 import { MyHouseholds } from './MyHouseholds'
 import { PendingInvites } from './Invite'
 import { AddSheet } from './AddSheet'
@@ -218,26 +218,6 @@ export function HomeScreen() {
     return completeLayout(membership?.home_layout, rooms.rows)
   }, [membership, rooms.rows])
   const layout = useMemo(() => fullLayout.filter((s) => s.visible && s.section !== 'money'), [fullLayout])
-  // Where each hidden section lives, for its label at the bottom of Home (phone).
-  const hiddenLinks = fullLayout
-    .filter((s) => !s.visible)
-    .flatMap(({ section: s }): { to: string; label: string }[] => {
-      if (s.startsWith('room:')) {
-        const room = rooms.rows.find((r) => `room:${r.id}` === s)
-        return room ? [{ to: `/pantry?room=${room.id}`, label: room.name.toLocaleLowerCase() }] : []
-      }
-      const at: Partial<Record<Section, { to: string; label: string }>> = {
-        shopping: { to: '/shopping', label: t('home.toBuy') },
-        todos: { to: '/todos', label: t('home.todos') },
-        projects: { to: '/projects', label: t('home.projects') },
-        notes: { to: '/notes', label: t('home.notes') },
-        pantry: { to: '/pantry', label: t('home.shelf.pantry') },
-        bathroom: { to: '/pantry', label: t('home.shelf.bathroom') },
-      }
-      const link = at[s]
-      return link ? [link] : []
-    })
-
   // Desktop: notes moved on the board keep their new order. Hidden sections, money and Pichi's news
   // keep their places; only the board's own slots are reshuffled.
   function saveBoard(keys: Section[]) {
@@ -508,64 +488,148 @@ export function HomeScreen() {
     )
   }
 
-  return (
-    <Screen tabbar hideBarsOnScroll className="has-fab" doodle="honk">
-      <div style={{ padding: '10px 22px 0 40px', paddingTop: 'calc(var(--top) + 10px)', display: 'flex', flexDirection: 'column', gap: 22 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ minWidth: 0 }}>
-            <button type="button" onClick={() => setSwitching(true)} aria-label={t('home.switch')} style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#1E1A30' }}>
-              <Hand size={42} lineHeight={44} style={{ whiteSpace: 'nowrap' }}>
-                {name(household)}
-              </Hand>
-              {/* Sits low, by the bottom of the letters. */}
-              <span style={{ display: 'flex', alignSelf: 'flex-end', marginBottom: 4, marginLeft: 2 }}>
-                <InkChevron />
-              </span>
-            </button>
-            <div className="cap" style={{ marginTop: 2, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-              {household?.address} · {t('common.people', { count: people.length })}
-            </div>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, flex: 'none' }}>
-            {/* Arrange your home moved into the "Our home" hub (Nora, 29 Oct). */}
-            {/* Your picture opens your profile; Settings is the gear there (Nora, 29 Oct). */}
-            <Link to={`/people/${me}`} aria-label={t('home.profile')} style={{ display: 'block' }}>
-              <Avatar avatar={profile?.avatar} size={40} className="" />
-            </Link>
-          </div>
-        </div>
-        <PendingInvites />
-        {layout.map((s) => section(s.section))}
-        {/* Hidden from Home, still one tap away (Nora, 29 Oct): small labels at the bottom. Notes isn't in the menu,
-            so this is how you reach it if you hide its note. */}
-        {hiddenLinks.length > 0 && (
-          <div className="row" style={{ flexWrap: 'wrap', gap: 10, paddingBottom: 6 }}>
-            {hiddenLinks.map((h, i) => (
-              <Link key={h.to} to={h.to} className="stk sec sm" style={{ transform: `rotate(${i % 2 ? 1.5 : -1.5}deg)` }}>
-                {h.label}
-              </Link>
-            ))}
-          </div>
-        )}
-      </div>
+  // The redesign (Nora, 4 Nov): bold and simple, like the apps she loves. Pichi stands big in a deep scene in the
+  // theme's color and says the one thing that matters most right now; under him, quick actions, then today's cards
+  // that swipe sideways. Everything else is one tap away.
+  const lowGroup = shelf.find((g) => groupLow(g.rows))
+  const mineToday = todos.rows.filter((x) => !x.done_at && x.assignee_id === me && x.due_date && daysFromToday(fromDateString(x.due_date)) <= 0).length
+  const message: { headline: string; link: string; to?: string; pose: Pose } = mineToday
+    ? { headline: t('v2.todosToday', { count: mineToday }), link: t('v2.seeTodos'), to: '/todos', pose: 'walk' }
+    : lowGroup
+      ? { headline: t('v2.runningLow', { item: lowGroup.name }), link: t('v2.seeList'), to: '/shopping', pose: 'honk' }
+      : toBuy.length
+        ? { headline: t('v2.toBuy', { count: toBuy.length }), link: t('v2.seeList'), to: '/shopping', pose: 'stand-right' }
+        : { headline: t('v2.calm'), link: t('v2.addSomething'), pose: 'stand-right' }
+  const activeProjects = projects.rows.filter((p) => !p.done_at).sort((a, b) => a.position - b.position || a.created_at.localeCompare(b.created_at))
+  const quick = [
+    { key: 'buy', label: t('v2.qBuy'), icon: <BasketIcon size={30} />, to: '/shopping?add=1' },
+    { key: 'todo', label: t('v2.qTodo'), icon: <TodoIcon size={30} />, to: '/todos?add=1' },
+    { key: 'note', label: t('v2.qNote'), icon: <PencilIcon size={28} />, to: '/notes/new' },
+    { key: 'chat', label: t('v2.qChat'), icon: <MessagesIcon size={30} />, to: '/messages' },
+  ]
+  const cards = [
+    {
+      key: 'buy',
+      to: '/shopping',
+      tone: 'butter',
+      title: t('v2.cardBuy'),
+      big: String(toBuy.length),
+      lines: toBuy.slice(0, 3).map((x) => x.name),
+      empty: t('home.noItems'),
+    },
+    {
+      key: 'todos',
+      to: '/todos',
+      tone: 'blush',
+      title: t('v2.cardTodos'),
+      big: String(openTodos.length),
+      lines: openTodos.slice(0, 3).map((x) => x.title),
+      empty: t('home.noTodos'),
+    },
+    {
+      key: 'projects',
+      to: '/projects',
+      tone: 'mint',
+      title: t('v2.cardProjects'),
+      big: String(activeProjects.length),
+      lines: activeProjects.slice(0, 3).map((p) => p.name),
+      empty: t('home.noProjects'),
+    },
+    {
+      key: 'pantry',
+      to: '/pantry',
+      tone: 'lilac',
+      title: t('v2.cardPantry'),
+      big: String(shelf.filter((g) => groupLow(g.rows)).length),
+      lines: shelf.filter((g) => groupLow(g.rows)).slice(0, 3).map((g) => g.name),
+      empty: t('v2.pantryFine'),
+    },
+    {
+      key: 'notes',
+      to: '/notes',
+      tone: 'peach',
+      title: t('v2.cardNotes'),
+      big: String(notes.rows.length),
+      lines: pinnedNotes.slice(0, 3).map((n) => n.title || t('notes.untitled')),
+      empty: t('home.noNotes'),
+    },
+  ]
 
-      <Floating>
-      <button
-        type="button"
-        className="stk prim round fab"
-        aria-label={t('home.add')}
-        onClick={() => setAdding(true)}
-        style={{ transform: 'rotate(-4deg)' }}
-      >
-        <PlusIcon />
-      </button>
-      </Floating>
+  return (
+    <Screen tabbar hideBarsOnScroll className="home-v2">
+      {/* The scene: deep color, soft clouds drifting, Pichi breathing, his bubble, and his one message. */}
+      <section className="v2-hero">
+        <div className="v2-top" style={{ paddingTop: 'calc(var(--top) + 12px)' }}>
+          <button type="button" className="v2-house" onClick={() => setSwitching(true)} aria-label={t('home.switch')}>
+            <span className="v2-house-name">{name(household)}</span>
+            <InkChevron />
+          </button>
+          <Link to={`/people/${me}`} aria-label={t('home.profile')} className="v2-me">
+            <Avatar avatar={profile?.avatar} size={44} className="" />
+          </Link>
+        </div>
+        <div className="v2-scene" aria-hidden>
+          <i className="v2-cloud c1" />
+          <i className="v2-cloud c2" />
+          <i className="v2-cloud c3" />
+          <i className="v2-hill" />
+          <Link to="/pichi" className="v2-pichi" aria-label={t('pichi.title')} tabIndex={-1}>
+            <img src={POSES[message.pose]} alt="" draggable={false} />
+          </Link>
+          <span className="v2-bubble">
+            <b />
+            <b />
+            <b />
+          </span>
+        </div>
+        <div className="v2-message">
+          <div className="v2-hi">{t('home.hi', { name: myName })}</div>
+          <h1 className="v2-headline">{message.headline}</h1>
+          {message.to ? (
+            <Link to={message.to} className="v2-link">
+              {message.link} <span aria-hidden>›</span>
+            </Link>
+          ) : (
+            <button type="button" className="v2-link" onClick={() => setAdding(true)}>
+              {message.link} <span aria-hidden>›</span>
+            </button>
+          )}
+          <div className="v2-news">{news}</div>
+        </div>
+      </section>
+
+      {/* Quick actions: big round buttons, one tap to add. */}
+      <nav className="v2-quick" aria-label={t('home.addWhat')}>
+        {quick.map((q, i) => (
+          <Link key={q.key} to={q.to} className={`v2-q${i === 0 ? ' main' : ''}`}>
+            <span className="v2-q-circle">{q.icon}</span>
+            <span className="v2-q-label">{q.label}</span>
+          </Link>
+        ))}
+      </nav>
+
+      <PendingInvites style={{ margin: '0 20px' }} />
+
+      {/* Today's cards, swiping sideways. */}
+      <h2 className="v2-h">{t('v2.today')}</h2>
+      <div className="v2-cards" data-noswipe>
+        {cards.map((c) => (
+          <Link key={c.key} to={c.to} className={`v2-card ${c.tone}`}>
+            <span className="v2-card-title">{c.title}</span>
+            <span className="v2-card-big">{c.big}</span>
+            <span className="v2-card-lines">
+              {c.lines.length ? c.lines.map((l, i) => <span key={i}>{l}</span>) : <span className="v2-card-empty">{c.empty}</span>}
+            </span>
+          </Link>
+        ))}
+      </div>
+      <div style={{ height: 24 }} />
 
       <MyHouseholds open={switching} onClose={() => setSwitching(false)} />
       <AddSheet open={adding} onClose={() => setAdding(false)} />
       <MentionBanner />
       <AskName save open={needsName && !askedName} onClose={() => setAskedName(true)} onJoin={() => {}} />
-        <MeetPichi open={meet.open && !(needsName && !askedName)} onClose={meet.close} />
+      <MeetPichi open={meet.open && !(needsName && !askedName)} onClose={meet.close} />
     </Screen>
   )
 }
